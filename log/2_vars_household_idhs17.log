@@ -1,0 +1,983 @@
+----------------------------------------------------------------------------------------------------------------------------------
+      name:  log_2_vars_household_idhs17
+       log:  D:\RESEARCH & WRITING\master thesis_child mortality\stata\log\2_vars_household_idhs17.log
+  log type:  text
+ opened on:  15 Dec 2021, 06:57:17
+
+. 
+. *set the date
+. loc date = c(current_date)
+
+. loc time = c(current_time)
+
+. loc time_date = "`date'" + "_" + "`time'"
+
+. loc tag "`dfn'.do Ari Prasojo `time_date'"
+
+. 
+. *direktori dataset
+. *\dataset rumah tangga
+. loc hrc                 "D:\PUSDATIN\DATA MIKRO\IDHS\2017\IDHR71DT\IDHR71FL.dta"
+
+. 
+. *\dataset indeks kekayaan
+. loc wealthdata  "`dtadir'\1-wealth-index-`idhs'.dta"
+
+. 
+. *\dataset disimpan sebagai (nama)
+. loc savenm              "`dtadir'\2-vars-household-`idhs'.dta"
+
+. 
+. *merge dengan dataset indeks kekayaan
+. *use v001 v002 hhweight hmweight wi_* wiq_* wid_* using "`wealthdata'"
+. use v001 v002 hhweight hmweight drinkwat_* toiletfac_* cookfuel_*               ///
+>         wi_* wiq_* wid_* using "`wealthdata'"
+(Perhitungan indeks kekayaan \ 15 Dec 2021_06:49:53)
+
+. 
+. rename v001 hv001
+
+. rename v002 hv002
+
+. merge 1:1 hv001 hv002 using "`hrc'"
+
+    Result                      Number of obs
+    -----------------------------------------
+    Not matched                             0
+    Matched                            47,963  (_merge==3)
+    -----------------------------------------
+
+. 
+. *membuat label
+. lab def layaktidak 0 "Tidak layak" 1 "Layak"            //layaktidak
+
+. 
+. 
+. 
+. /*
+> ================================================================================
+> VARIABEL-VARIABEL DASAR
+> ================================================================================
+> */
+. 
+. *\PSU                                                                                                           [done]
+. gen psu = hv021
+
+.         lab var psu "Primary sampling unit (proksi komunitas)"
+
+. 
+. *\Geografi                                                                                                      [done]
+. *\\Provinsi
+. gen prov = hv024
+
+.         lab var prov "Provinsi"
+
+.         lab def prov 11 "Aceh" 12 "Sumatera Utara"                                                      ///
+>                                  13 "Sumatera Barat" 14 "Riau"                                                  ///
+>                                  15 "Jambi" 16 "Sumatera Selatan"                                               ///
+>                                  17 "Bengkulu" 18 "Lampung"                                                     ///
+>                                  19 "Bangka Belitung" 21 "Kepulauan Riau"                               ///
+>                                  31 "DKI Jakarta" 32 "Jawa Barat"                                               ///
+>                                  33 "Jawa Tengah" 34 "DI Yogyakarta"                                    ///
+>                                  35 "Jawa Timur" 36 "Banten"                                                    ///
+>                                  51 "Bali" 52 "Nusa Tenggara Barat"                                     ///
+>                                  53 "Nusa Tenggara Timur" 61 "Kalimantan Barat"                 ///
+>                                  62 "Kalimantan Tengah" 63 "Kalimantan Selatan"                 ///
+>                                  64 "Kalimantan Timur" 65 "Kalimantan Utara"                    ///
+>                                  71 "Sulawesi Utara" 72 "Sulawesi Tengah"                               ///
+>                                  73 "Sulawesi Selatan" 74 "Sulawesi Tenggara"                   ///
+>                                  75 "Gorontalo" 76 "Sulawesi Barat"                                             ///
+>                                  81 "Maluku" 82 "Maluku Utara"                                                  ///
+>                                  91 "Papua Barat" 94 "Papua", replace
+
+.         lab val prov prov
+
+.         tab prov, m
+
+           Provinsi |      Freq.     Percent        Cum.
+--------------------+-----------------------------------
+               Aceh |      2,239        4.67        4.67
+     Sumatera Utara |      2,347        4.89        9.56
+     Sumatera Barat |      1,099        2.29       11.85
+               Riau |        977        2.04       13.89
+              Jambi |        685        1.43       15.32
+   Sumatera Selatan |      1,082        2.26       17.57
+           Bengkulu |        817        1.70       19.28
+            Lampung |      1,283        2.67       21.95
+    Bangka Belitung |        791        1.65       23.60
+     Kepulauan Riau |        957        2.00       25.60
+        DKI Jakarta |      1,594        3.32       28.92
+         Jawa Barat |      4,886       10.19       39.11
+        Jawa Tengah |      3,747        7.81       46.92
+      DI Yogyakarta |        733        1.53       48.45
+         Jawa Timur |      4,117        8.58       57.03
+             Banten |      1,516        3.16       60.19
+               Bali |        796        1.66       61.85
+Nusa Tenggara Barat |      1,388        2.89       64.75
+Nusa Tenggara Timur |      2,123        4.43       69.17
+   Kalimantan Barat |        905        1.89       71.06
+  Kalimantan Tengah |        628        1.31       72.37
+ Kalimantan Selatan |        829        1.73       74.10
+   Kalimantan Timur |      1,213        2.53       76.63
+   Kalimantan Utara |        582        1.21       77.84
+     Sulawesi Utara |        637        1.33       79.17
+    Sulawesi Tengah |      1,179        2.46       81.63
+   Sulawesi Selatan |      1,694        3.53       85.16
+  Sulawesi Tenggara |      1,367        2.85       88.01
+          Gorontalo |        590        1.23       89.24
+     Sulawesi Barat |      1,492        3.11       92.35
+             Maluku |      1,637        3.41       95.76
+       Maluku Utara |        953        1.99       97.75
+        Papua Barat |        496        1.03       98.78
+              Papua |        584        1.22      100.00
+--------------------+-----------------------------------
+              Total |     47,963      100.00
+
+.         
+. *\\Region (7 kategori)
+. recode prov (31/36 = 1 "Jawa")                                                                                  ///
+>                         (11/21 = 2 "Sumatera")                                                                          ///
+>                         (51/53 = 3 "Bali & Nusa Tenggara")                                                      ///
+>                         (61/65 = 4 "Kalimantan")                                                                        ///
+>                         (71/76 = 5 "Sulawesi")                                                                          ///
+>                         (81 82 = 6 "Maluku")                                                                            ///
+>                         (91 94 = 7 "Papua"),                                                                            ///
+>                         gen(reg7c)
+(47963 differences between prov and reg7c)
+
+.         lab var reg7c "Regional tempat tinggal"
+
+.         tab reg7c, m
+
+     Regional tempat |
+             tinggal |      Freq.     Percent        Cum.
+---------------------+-----------------------------------
+                Jawa |     16,593       34.60       34.60
+            Sumatera |     12,277       25.60       60.19
+Bali & Nusa Tenggara |      4,307        8.98       69.17
+          Kalimantan |      4,157        8.67       77.84
+            Sulawesi |      6,959       14.51       92.35
+              Maluku |      2,590        5.40       97.75
+               Papua |      1,080        2.25      100.00
+---------------------+-----------------------------------
+               Total |     47,963      100.00
+
+.         
+. *\\Wilayah tempat tinggal (kota/desa)
+. recode hv025 (2 = 0 "Perdesaan") (1 = 1 "Perkotaan"), gen(reside)
+(23403 differences between hv025 and reside)
+
+.         lab var reside "Wilayah tempat tinggal"
+
+.         tab reside, m
+
+    Wilayah |
+     tempat |
+    tinggal |      Freq.     Percent        Cum.
+------------+-----------------------------------
+  Perdesaan |     23,403       48.79       48.79
+  Perkotaan |     24,560       51.21      100.00
+------------+-----------------------------------
+      Total |     47,963      100.00
+
+. 
+. 
+.         
+. /*
+> ================================================================================
+> VARIABEL BEBAS UTAMA
+> ================================================================================
+> */
+. 
+. /*
+> ******************************************************************
+> Sumber air                                                                                                      [done]
+> ******************************************************************
+> */
+. 
+. *\Sumber utama air minum (DHS standard recode)                          [done]
+. clonevar drinkwat = hv201                                                                       
+(3 missing values generated)
+
+.         lab var drinkwat "Sumber air minum utama di rumah tangga"
+
+.         lab def drinkwat 10 "Ledeng/keran"                                                                       ///
+>                                          11 "Ledeng sampai ke dalam rumah"                                       ///
+>                                          12 "Ledeng sampai ke halaman"                                           ///
+>                                          13 "Ledeng dari tetangga"                                                       ///
+>                                          14 "Hidran/keran umum"                                                          ///
+>                                          20 "Sumur bor"                                                                         
+>  ///
+>                                          21 "Sumur bor/pompa"                                                            ///
+>                                          30 "Sumur"                                                                             
+>          ///
+>                                          31 "Sumur terlindung"                                                           ///
+>                                          32 "Sumur tidak terlindung"                                             ///
+>                                          40 "Air permukaan"                                                                     
+>  ///
+>                                          41 "Mata air terlindung"                                                        ///
+>                                          42 "Mata air tidak terlindung"                                          ///
+>                                          43 "Sungai/dam/danau/kolam/aliran/saluran/irigasi"      ///
+>                                          51 "Air hujan"                                                                         
+>  ///
+>                                          61 "Tangki truk"                                                                       
+>  ///
+>                                          62 "Gerobak dengan tangki kecil"                                        ///
+>                                          71 "Air kemasan"                                                                       
+>  ///
+>                                          72 "Air isi ulang"                                                                     
+>  ///
+>                                          96 "Lainnya", replace
+
+.         lab val drinkwat drinkwat
+
+.         tab drinkwat, m
+
+ Sumber air minum utama di rumah tangga |      Freq.     Percent        Cum.
+----------------------------------------+-----------------------------------
+           Ledeng sampai ke dalam rumah |      4,060        8.46        8.46
+               Ledeng sampai ke halaman |        642        1.34        9.80
+                   Ledeng dari tetangga |        389        0.81       10.61
+                      Hidran/keran umum |        232        0.48       11.10
+                        Sumur bor/pompa |      6,243       13.02       24.11
+                       Sumur terlindung |      7,655       15.96       40.07
+                 Sumur tidak terlindung |      2,514        5.24       45.32
+                    Mata air terlindung |      4,445        9.27       54.58
+              Mata air tidak terlindung |      1,331        2.78       57.36
+Sungai/dam/danau/kolam/aliran/saluran/i |      1,104        2.30       59.66
+                              Air hujan |      1,347        2.81       62.47
+                            Tangki truk |        276        0.58       63.04
+            Gerobak dengan tangki kecil |        310        0.65       63.69
+                            Air kemasan |      4,568        9.52       73.21
+                          Air isi ulang |     12,838       26.77       99.98
+                                Lainnya |          6        0.01       99.99
+                                      . |          3        0.01      100.00
+----------------------------------------+-----------------------------------
+                                  Total |     47,963      100.00
+
+. 
+. *\Sumber utama air selain untuk minum                                           [done]
+. clonevar nondrinkwat = hv202
+(30,576 missing values generated)
+
+.         lab var nondrinkwat "Sumber air utama selain untuk minum"
+
+.         lab val nondrinkwat drinkwat
+
+.         tab nondrinkwat, m
+
+    Sumber air utama selain untuk minum |      Freq.     Percent        Cum.
+----------------------------------------+-----------------------------------
+           Ledeng sampai ke dalam rumah |      4,603        9.60        9.60
+               Ledeng sampai ke halaman |        547        1.14       10.74
+                   Ledeng dari tetangga |        172        0.36       11.10
+                      Hidran/keran umum |        115        0.24       11.34
+                        Sumur bor/pompa |      6,090       12.70       24.03
+                       Sumur terlindung |      3,302        6.88       30.92
+                 Sumur tidak terlindung |        936        1.95       32.87
+                    Mata air terlindung |        441        0.92       33.79
+              Mata air tidak terlindung |        101        0.21       34.00
+Sungai/dam/danau/kolam/aliran/saluran/i |        349        0.73       34.73
+                              Air hujan |        283        0.59       35.32
+                            Tangki truk |        143        0.30       35.61
+            Gerobak dengan tangki kecil |         96        0.20       35.82
+                            Air kemasan |         23        0.05       35.86
+                          Air isi ulang |        183        0.38       36.24
+                                Lainnya |          3        0.01       36.25
+                                      . |     30,576       63.75      100.00
+----------------------------------------+-----------------------------------
+                                  Total |     47,963      100.00
+
+. 
+. *\Kategori/status sumber utama air minum (layak/tidak layak)[done]
+. /*
+> https://dhsprogram.com/Data/Guide-to-DHS-Statistics/index.htm#t=Household_Drinking_Water.htm
+> berdasarkan WHO-UNICEF JMP 2017 dan Guide to DHS statistics VII
+> */
+. 
+. *\\3 kategori
+. recode nondrinkwat (32 42 43 96 71 72 = 0 "Tidak layak")                                ///
+>                                    (11/14 21 31 41 51 61 62 = 1 "Layak"),                               ///
+>                                    gen(impnondrinkwat)
+(17387 differences between nondrinkwat and impnondrinkwat)
+
+.         lab var impnondrinkwat "Kategori sumber air selain untuk minum"
+
+.         tab impnondrinkwat, m
+
+   Kategori |
+ sumber air |
+     selain |
+untuk minum |      Freq.     Percent        Cum.
+------------+-----------------------------------
+Tidak layak |      1,595        3.33        3.33
+      Layak |     15,792       32.93       36.25
+          . |     30,576       63.75      100.00
+------------+-----------------------------------
+      Total |     47,963      100.00
+
+.         
+. gen drinkwatldr = .
+(47,963 missing values generated)
+
+.         replace drinkwatldr = 0 if drinkwat == 43
+(1,104 real changes made)
+
+.         replace drinkwatldr = 1 if inlist(drinkwat,32,42,96)
+(3,851 real changes made)
+
+.         replace drinkwatldr = 2 if inlist(drinkwat,11,12,13,14,21,31,41,51,61,62)
+(25,599 real changes made)
+
+.         replace drinkwatldr = 1 if inlist(drinkwat,71,72)
+(17,406 real changes made)
+
+.         replace drinkwatldr = 2 if inlist(drinkwat,71,72) & impnondrinkwat==1
+(15,792 real changes made)
+
+.         lab var drinkwatldr "Level/kategori sumber utama air minum"
+
+.         lab def drinkwatldr 0 "Air permukaan"                                                           ///
+>                                                 1 "Tidak layak"                                                                 
+> ///
+>                                                 2 "Layak", replace
+
+.         lab val drinkwatldr drinkwatldr
+
+.         tab drinkwatldr, m
+
+Level/kategor |
+     i sumber |
+    utama air |
+        minum |      Freq.     Percent        Cum.
+--------------+-----------------------------------
+Air permukaan |      1,104        2.30        2.30
+  Tidak layak |      5,465       11.39       13.70
+        Layak |     41,391       86.30       99.99
+            . |          3        0.01      100.00
+--------------+-----------------------------------
+        Total |     47,963      100.00
+
+. 
+. *\\2 kategori (layak/tidak layak)
+. recode drinkwatldr (0 1 = 0 "Tidak layak")                                                              ///
+>                                    (2 = 1 "Layak"),                                                                             
+> ///
+>                                    gen(impdrinkwat)     
+(46856 differences between drinkwatldr and impdrinkwat)
+
+.         lab var impdrinkwat "Kategori sumber utama air minum"
+
+.         tab impdrinkwat, m
+
+   Kategori |
+     sumber |
+  utama air |
+      minum |      Freq.     Percent        Cum.
+------------+-----------------------------------
+Tidak layak |      6,569       13.70       13.70
+      Layak |     41,391       86.30       99.99
+          . |          3        0.01      100.00
+------------+-----------------------------------
+      Total |     47,963      100.00
+
+. 
+. *\\Kategori (layak/tidak layak), DHS report                                     [done]
+. gen impdrinkwatdhs = .
+(47,963 missing values generated)
+
+.         replace impdrinkwatdhs = 0 if inlist(drinkwat,32,42,43,61,62,96)
+(5,541 real changes made)
+
+.         replace impdrinkwatdhs = 1 if inlist(drinkwat,11,12,13,14,21,31,41,51)
+(25,013 real changes made)
+
+.         replace impdrinkwatdhs = 0 if inlist(drinkwat,71,72)
+(17,406 real changes made)
+
+.         replace impdrinkwatdhs = 1 if inlist(drinkwat,71,72) & impnondrinkwat==1
+(15,792 real changes made)
+
+.         lab var impdrinkwatdhs "Kategori sumber utama air minum (DHS report)"
+
+.         lab val impdrinkwatdhs layaktidak
+
+.         tab impdrinkwatdhs, m
+
+   Kategori |
+     sumber |
+  utama air |
+ minum (DHS |
+    report) |      Freq.     Percent        Cum.
+------------+-----------------------------------
+Tidak layak |      7,155       14.92       14.92
+      Layak |     40,805       85.08       99.99
+          . |          3        0.01      100.00
+------------+-----------------------------------
+      Total |     47,963      100.00
+
+. 
+. /*
+> ******************************************************************
+> Sanitasi/Toilet                                                                                         [done]
+> ******************************************************************
+> */
+. 
+. *\Jenis toilet (DHS standard recode)                                            [done]
+. clonevar toiletfac = hv205
+(11 missing values generated)
+
+.         lab var toiletfac "Jenis toilet yang biasa digunakan art"
+
+.         lab def toiletfac 10 "Toilet siram (flush)"                                                     ///
+>                                           11 "Toilet siram dengan saluran pembuangan pipa"      ///
+>                                           12 "Toilet siram siram dengan tangki septik"          ///
+>                                           13 "Toilet siram dengan jamban lubang"                        ///
+>                                           14 "Toilet siram dengan saluran pembuangan terbuka/tempat lain" ///
+>                                           15 "Toilet siram siram, pembuangan tidak diketahui"   ///
+>                                           16 "Toilet siram, tanpa tangki septik"                        ///
+>                                           17 "Toilet bersama/umum"                                                      ///
+>                                           20 "Jamban lubang"                                                            ///
+>                                           21 "Jamban lubang dengan ventilasi"                           ///
+>                                           22 "Jamban lubang dengan tutup/slab"                          ///
+>                                           23 "Jamban lubang tanpa tutup/slab"                           ///
+>                                           30 "Tidak ada fasilitas toilet"                                       ///
+>                                           31 "Tidak memiliki/semak/ladang/sungai/pantai/kolam"  ///
+>                                           41 "Toilet kompos"                                                            ///
+>                                           42 "Toilet ember"                                                                     
+> ///
+>                                           43 "Toilet/jamban gantung"                                            ///
+>                                           96 "Lainnya", replace
+
+.         lab val toiletfac toiletfac
+
+.         tab toiletfac, m
+
+  Jenis toilet yang biasa digunakan art |      Freq.     Percent        Cum.
+----------------------------------------+-----------------------------------
+Toilet siram siram dengan tangki septik |     33,638       70.13       70.13
+      Toilet siram, tanpa tangki septik |      3,895        8.12       78.25
+                    Toilet bersama/umum |      3,925        8.18       86.44
+         Jamban lubang dengan ventilasi |      1,683        3.51       89.95
+Tidak memiliki/semak/ladang/sungai/pant |      4,787        9.98       99.93
+                                Lainnya |         24        0.05       99.98
+                                      . |         11        0.02      100.00
+----------------------------------------+-----------------------------------
+                                  Total |     47,963      100.00
+
+. 
+. *\Kategori/status jenis toilet/sanitasi (layak/tidak layak)     [done]
+. /*
+> https://dhsprogram.com/data/Guide-to-DHS-Statistics/index.htm#t=Type_of_Sanitation_Facility.htm
+> berdasarkan WHO-UNICEF JMP 2017
+>  */
+. 
+. *\\3 tingkatan/kategori
+. recode toiletfac (31 = 0 "Tempat terbuka/sembarang")                                    ///
+>                                  (14 17 23 42 43 96 = 1 "Tidak layak")                                  ///
+>                                  (11/13 15 16 21 22 41 = 2 "Layak"),                                    ///
+>                                  gen(sanldr)
+(47952 differences between toiletfac and sanldr)
+
+.         lab var sanldr "Level/kategori fasilitas toilet/sanitasi"
+
+.         tab sanldr, m
+
+Level/kategori fasilitas |
+         toilet/sanitasi |      Freq.     Percent        Cum.
+-------------------------+-----------------------------------
+Tempat terbuka/sembarang |      4,787        9.98        9.98
+             Tidak layak |      3,949        8.23       18.21
+                   Layak |     39,216       81.76       99.98
+                       . |         11        0.02      100.00
+-------------------------+-----------------------------------
+                   Total |     47,963      100.00
+
+. 
+. *\\2 kategori (layak/ tidak layak)
+. recode sanldr (0/1 = 0 "Tidak layak")                                                                   ///
+>                           (2 = 1 "Layak"),                                                                                      
+> ///
+>                           gen(impsan)
+(43165 differences between sanldr and impsan)
+
+.         lab var impsan "Kategori fasilitas toilet/sanitasi"
+
+.         tab impsan, m
+
+   Kategori |
+  fasilitas |
+toilet/sani |
+       tasi |      Freq.     Percent        Cum.
+------------+-----------------------------------
+Tidak layak |      8,736       18.21       18.21
+      Layak |     39,216       81.76       99.98
+          . |         11        0.02      100.00
+------------+-----------------------------------
+      Total |     47,963      100.00
+
+.         
+. *\\Kategori, DHS report                                                                         [done]
+. gen sanldrdhs = .
+(47,963 missing values generated)
+
+.         replace sanldrdhs = 0 if sh109 == 51
+(1,126 real changes made)
+
+.         replace sanldrdhs = 1 if inlist(sh109,31,32,33,41,96)
+(5,368 real changes made)
+
+.         replace sanldrdhs = 2 if sh109 == 21
+(3,925 real changes made)
+
+.         replace sanldrdhs = 3 if inlist(sh109,11,12)
+(37,533 real changes made)
+
+.         lab var sanldrdhs "Level/kategori fasilitas toilet/sanitasi (DHS report)"
+
+.         lab def sanldrdhs 0 "Tanpa fasilitas" 1 "Tidak layak"                           ///
+>                                           2 "Bersama/publik" 3 "Layak", replace
+
+.         lab val sanldrdhs sanldrdhs
+
+.         tab sanldrdhs, m
+
+ Level/kategori |
+      fasilitas |
+toilet/sanitasi |
+   (DHS report) |      Freq.     Percent        Cum.
+----------------+-----------------------------------
+Tanpa fasilitas |      1,126        2.35        2.35
+    Tidak layak |      5,368       11.19       13.54
+ Bersama/publik |      3,925        8.18       21.72
+          Layak |     37,533       78.25       99.98
+              . |         11        0.02      100.00
+----------------+-----------------------------------
+          Total |     47,963      100.00
+
+. 
+. recode sanldrdhs (0/2 = 0 "Tidak layak") (3 = 1 "Layak"), gen(impsandhs)
+(46826 differences between sanldrdhs and impsandhs)
+
+.         lab var impsandhs "Kategori fasilitas toilet/sanitasi (DHS report)"
+
+.         tab impsandhs, m
+
+   Kategori |
+  fasilitas |
+toilet/sani |
+  tasi (DHS |
+    report) |      Freq.     Percent        Cum.
+------------+-----------------------------------
+Tidak layak |     10,419       21.72       21.72
+      Layak |     37,533       78.25       99.98
+          . |         11        0.02      100.00
+------------+-----------------------------------
+      Total |     47,963      100.00
+
+. 
+. /*
+> ******************************************************************
+> Bahan bakar memasak                                                                                     [done]
+> ******************************************************************
+> */
+. 
+. *\Jenis bahan bakar memasak (DHS standard recode)                       [done]
+. clonevar cookfuel = hv226
+(6 missing values generated)
+
+.         lab var cookfuel "Bahan bakar memasak"
+
+.         lab def cookfuel 1 "Listrik"                                                                            ///
+>                                          2 "LPG"                                                                                
+>         ///
+>                                          3 "Gas alam"                                                                           
+> ///
+>                                          4 "Biogas"                                                                             
+>         ///
+>                                          5 "Minyak tanah"                                                                       
+> ///
+>                                          6 "Batubara, lignit"                                                           ///
+>                                          7 "Arang"                                                                              
+>         ///
+>                                          8 "Kayu"                                                                               
+>         ///
+>                                          9 "Jerami/semak/rumput"                                                        ///
+>                                          10 "Tanaman pertanian"                                                         ///
+>                                          11 "Kotoran hewan"                                                                     
+> ///
+>                                          95 "Tidak ada makanan yang dimasak di rumah"           ///
+>                                          96 "Lainnya", replace
+
+.         lab val cookfuel cookfuel
+
+.         tab cookfuel,m
+
+                    Bahan bakar memasak |      Freq.     Percent        Cum.
+----------------------------------------+-----------------------------------
+                                Listrik |        200        0.42        0.42
+                                    LPG |     31,303       65.26       65.68
+                               Gas alam |        241        0.50       66.18
+                                 Biogas |          7        0.01       66.20
+                           Minyak tanah |      3,734        7.79       73.98
+                       Batubara, lignit |          6        0.01       74.00
+                                  Arang |         77        0.16       74.16
+                                   Kayu |     11,773       24.55       98.70
+                    Jerami/semak/rumput |         14        0.03       98.73
+                      Tanaman pertanian |          1        0.00       98.73
+Tidak ada makanan yang dimasak di rumah |        601        1.25       99.99
+                                      . |          6        0.01      100.00
+----------------------------------------+-----------------------------------
+                                  Total |     47,963      100.00
+
+.                                          
+. *\Kategori bahan bakar memasak (aman/tidak aman)                        [done]
+. /*
+> https://dhsprogram.com/data/Guide-to-DHS-Statistics/Cooking_Fuel.htm
+> https://www.who.int/news-room/fact-sheets/detail/household-air-pollution-and-health
+>  */
+.  
+. *\\Kategori yang digunakan
+. recode cookfuel (1/4 95 = 1 "Aman/polusi rendah") (. = .)                               ///
+>                                 (else = 0 "Tidak aman/polusi tinggi"), gen(cookfldr)
+(47757 differences between cookfuel and cookfldr)
+
+.         lab var cookfldr "Kategori bahan bakar memasak"
+
+.         tab cookfldr, m
+
+    Kategori bahan bakar |
+                 memasak |      Freq.     Percent        Cum.
+-------------------------+-----------------------------------
+Tidak aman/polusi tinggi |     15,605       32.54       32.54
+      Aman/polusi rendah |     32,352       67.45       99.99
+                       . |          6        0.01      100.00
+-------------------------+-----------------------------------
+                   Total |     47,963      100.00
+
+. 
+. *\\Kategori, DHS report                                                                         [done]
+. recode cookfuel (1/4 = 0 "Bersih")                                                                              ///
+>                                 (5 = 1 "Minyak tanah")                                                                  ///
+>                                 (6/11 = 2 "Padat")                                                                              
+> ///
+>                                 (95 = 3 "Tidak memasak")                                                                ///
+>                                 (96 = 4 "Lainnya"),                                                                             
+> ///
+>                                 gen(cookfldrdhs)
+(47957 differences between cookfuel and cookfldrdhs)
+
+.         lab var cookfldrdhs "Bahan bakar memasak"
+
+.         tab cookfldrdhs, m
+
+  Bahan bakar |
+      memasak |      Freq.     Percent        Cum.
+--------------+-----------------------------------
+       Bersih |     31,751       66.20       66.20
+ Minyak tanah |      3,734        7.79       73.98
+        Padat |     11,871       24.75       98.73
+Tidak memasak |        601        1.25       99.99
+            . |          6        0.01      100.00
+--------------+-----------------------------------
+        Total |     47,963      100.00
+
+. 
+. recode cookfldrdhs (0 3 = 1 "Bersih/tidak memasak")                                             ///
+>                                    (1 2 4 = 0 "Padat/minyak tanah/lainnya"),                    ///
+>                                    gen(impcookfldhs)
+(47957 differences between cookfldrdhs and impcookfldhs)
+
+.         lab var impcookfldhs "Bahan bakar memasak (DHS report)"
+
+.         tab impcookfldhs, m
+
+  Bahan bakar memasak (DHS |
+                   report) |      Freq.     Percent        Cum.
+---------------------------+-----------------------------------
+Padat/minyak tanah/lainnya |     15,605       32.54       32.54
+      Bersih/tidak memasak |     32,352       67.45       99.99
+                         . |          6        0.01      100.00
+---------------------------+-----------------------------------
+                     Total |     47,963      100.00
+
+. 
+. /*
+> ******************************************************************
+> Gabungan/deprivasi lingkungan rumah tangga                                      [done]
+> ******************************************************************
+> */
+. 
+. *\Banyaknya fasilitas lingkungan yang layak                                     [done]
+. 
+. *\\4 kategori (0,1,2,3)
+. gen nenvfac = impdrinkwat + impsan + cookfldr
+(19 missing values generated)
+
+.         lab var nenvfac "Banyaknya fasilitas (sumber air, sanitasi, bahan bakar) layak"
+
+.         tab nenvfac, m
+
+  Banyaknya |
+  fasilitas |
+    (sumber |
+       air, |
+  sanitasi, |
+      bahan |
+     bakar) |
+      layak |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |      1,562        3.26        3.26
+          1 |      6,052       12.62       15.87
+          2 |     14,112       29.42       45.30
+          3 |     26,218       54.66       99.96
+          . |         19        0.04      100.00
+------------+-----------------------------------
+      Total |     47,963      100.00
+
+. 
+. *\\3 kategori (0-1,2,3)
+. recode nenvfac (0 1 = 1), gen(nenvfac1)
+(1562 differences between nenvfac and nenvfac1)
+
+.         lab var nenvfac1 "Banyaknya fasilitas (sumber air, sanitasi, bahan bakar) layak"
+
+.         lab def nenvfac1 1 "0-1" 2 "2" 3 "3", replace
+
+.         lab val nenvfac1 nenvfac1
+
+.         tab nenvfac1, m
+
+  Banyaknya |
+  fasilitas |
+    (sumber |
+       air, |
+  sanitasi, |
+      bahan |
+     bakar) |
+      layak |      Freq.     Percent        Cum.
+------------+-----------------------------------
+        0-1 |      7,614       15.87       15.87
+          2 |     14,112       29.42       45.30
+          3 |     26,218       54.66       99.96
+          . |         19        0.04      100.00
+------------+-----------------------------------
+      Total |     47,963      100.00
+
+. 
+. *\\Banyaknya fasilitas lingkungan yang layak, DHS                       [done]
+. gen nenvfacdhs = impdrinkwatdhs + impsandhs + impcookfldhs
+(19 missing values generated)
+
+.         lab var nenvfac "Banyaknya fasilitas (sumber air, sanitasi, bahan bakar) layak"
+
+.         tab nenvfacdhs, m
+
+ nenvfacdhs |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |      2,143        4.47        4.47
+          1 |      6,508       13.57       18.04
+          2 |     13,726       28.62       46.65
+          3 |     25,567       53.31       99.96
+          . |         19        0.04      100.00
+------------+-----------------------------------
+      Total |     47,963      100.00
+
+. 
+. *\Deprivasi lingkungan rumah tangga                                                     [done]
+. 
+. *\\2 kategori (tidak/ya)
+. recode nenvfac (3 = 0 "Tidak") (0/2 = 1 "Ya"), gen(depriv2c)
+(41892 differences between nenvfac and depriv2c)
+
+.         lab var depriv "Status deprivasi lingkungan rumah tangga"
+
+.         tab depriv2c, m
+
+     Status |
+  deprivasi |
+ lingkungan |
+      rumah |
+     tangga |      Freq.     Percent        Cum.
+------------+-----------------------------------
+      Tidak |     26,218       54.66       54.66
+         Ya |     21,726       45.30       99.96
+          . |         19        0.04      100.00
+------------+-----------------------------------
+      Total |     47,963      100.00
+
+.         
+. *\\3 kategori (tidak,rendah,tinggi)
+. recode nenvfac (3 = 0 "Tidak") (2 = 1 "Rendah") (0/1 = 2 "Tinggi"), gen(depriv)
+(47944 differences between nenvfac and depriv)
+
+.         lab var depriv "Status deprivasi lingkungan rumah tangga (3 kategori)"
+
+.         tab depriv, m
+
+     Status |
+  deprivasi |
+ lingkungan |
+      rumah |
+  tangga (3 |
+  kategori) |      Freq.     Percent        Cum.
+------------+-----------------------------------
+      Tidak |     26,218       54.66       54.66
+     Rendah |     14,112       29.42       84.09
+     Tinggi |      7,614       15.87       99.96
+          . |         19        0.04      100.00
+------------+-----------------------------------
+      Total |     47,963      100.00
+
+. 
+. /*
+> *\\Kontinyu dengan pca
+> 
+> *\\\pca
+> pca impdrinkwat impsan cookfldr
+> *screeplot, yline(1) ci(het)
+> predict depc1 depc2, score
+> matrix eig = e(Ev)
+> scalar eig1p = eig[1,1]
+> scalar eig2p = eig[1,2]
+> scalar w1p = eig1p/(eig1p+eig2p)
+> scalar w2p = eig2p/(eig1p+eig2p)
+> gen deprivpc = w1p*depc1 + w2p*depc2
+> *histogram deprivpc, density normal
+> 
+> *\\\polychoric pca
+> polychoricpca impdrinkwat impsan cookfldr, score(deppcpol) nscore(2)
+> scalar eig1 = r(lambda1)
+> scalar eig2 = r(lambda2)
+> scalar w1 = eig1/(eig1+eig2)
+> scalar w2 = eig2/(eig1+eig2)
+> gen deprivpcpol = w1*deppcpol1 + w2*deppcpol2
+> *histogram deprivpcpol, density normal
+> 
+> *\\\pca fasilitas
+> glo depindic "drinkwat_* toiletfac_* cookfuel_*"
+> pca $depindic
+> predict deprivc, score
+> *histogram deprivc, density normal
+>  */
+. 
+.         
+.         
+. /*
+> ******************************************************************
+> Status ekonomi/kekayaan/wealth                                                          [done]
+> ******************************************************************
+> */
+. 
+. *\indeks kekayaan, tereduksi                                                            [done]
+. /*
+> tanpa komponen air,sanitasi,bahan bakar
+> */
+. 
+. *\\gabungan
+. recode wiq_reduce_combine (1/2 = 0 "Miskin")                                                    ///
+>                                                   (3/4 = 1 "Menengah")                                                  ///
+>                                                   (5 = 2 "Kaya"),                                                               
+> ///
+>                                                   gen(wealth)
+(47963 differences between wiq_reduce_combine and wealth)
+
+.         lab var wealth "Indeks kekayaan rumah tangga"
+
+.         tab wealth, m
+
+     Indeks |
+   kekayaan |
+      rumah |
+     tangga |      Freq.     Percent        Cum.
+------------+-----------------------------------
+     Miskin |     22,942       47.83       47.83
+   Menengah |     16,798       35.02       82.86
+       Kaya |      8,223       17.14      100.00
+------------+-----------------------------------
+      Total |     47,963      100.00
+
+. 
+. /*
+> *\\kota-desa
+> recode wiq_reduce_urbrur  (1/2 = 0 "Miskin")                                                    ///
+>                                                   (3/4 = 1 "Menengah")                                                  ///
+>                                                   (5 = 2 "Kaya"),                                                               
+> ///
+>                                                   gen(wealth1)
+>         lab var wealth1 "Indeks kekayaan rumah tangga (kota-desa)"
+>         tab wealth1, m
+> */
+. 
+. 
+. 
+. /*
+> ================================================================================
+> FINALISASI
+> ================================================================================
+> */
+. 
+. rename hv001 v001
+
+. rename hv002 v002
+
+. keep hhid v001 v002 hhweight hmweight psu-reside                                                ///
+>          wi_* wiq_* wid_* drinkwat-wealth
+
+. order hhid v001 v002 psu-reside hhweight hmweight                                               ///
+>          wi_* wiq_* wid_* drinkwat-wealth
+
+.          
+. quietly compress
+
+. datasignature set, reset
+  47963:44(121907):1710114387:2655324197       (data signature reset)
+
+. lab data "Variabel level rumah tangga \ `time_date'"
+
+. note: `idhs'-mortstudy-hh.dta \ `tag'
+
+. save "`savenm'", replace
+(file dta\2-vars-household-idhs17.dta not found)
+file dta\2-vars-household-idhs17.dta saved
+
+. 
+end of do-file
+
+. do "D:\RESEARCH & WRITING\master thesis_child mortality\stata\do\3-vars-women.do"
+
+. /*
+> ================================================================================
+> ********************************************************************************
+> PROJECT:
+> PENELITIAN TESIS
+> DEPRIVASI LINGKUNGAN RUMAH TANGGA DAN KEMATIAN BAYI DAN ANAK DI INDONESIA
+> 
+> SYNTAX:
+> 3-MEMBENTUK VARIABEL PEREMPUAN/IBU
+> 
+> PENULIS:
+> ARI PURWANTO SARWO PRASOJO (2006500321)
+> MAGISTER EKONOMI KEPENDUDUKAN DAN KETENAGAKERJAAN
+> FEB, UNIVERSITAS INDONESIA
+> 2021
+> ********************************************************************************
+> ================================================================================
+> */
+. 
+. 
+. 
+. /*
+> ================================================================================
+> PENYIAPAN
+> ================================================================================
+> */
+. 
+. cls
+
+. log close _all
+      name:  log_2_vars_household_idhs17
+       log:  D:\RESEARCH & WRITING\master thesis_child mortality\stata\log\2_vars_household_idhs17.log
+  log type:  text
+ closed on:  15 Dec 2021, 06:59:09
+----------------------------------------------------------------------------------------------------------------------------------

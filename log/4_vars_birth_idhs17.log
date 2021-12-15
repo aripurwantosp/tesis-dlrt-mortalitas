@@ -1,0 +1,754 @@
+----------------------------------------------------------------------------------------------------------------------------------
+      name:  log_4_vars_birth_idhs17
+       log:  D:\RESEARCH & WRITING\master thesis_child mortality\stata\log\4_vars_birth_idhs17.log
+  log type:  text
+ opened on:  15 Dec 2021, 07:00:27
+
+. 
+. *set the date
+. loc date = c(current_date)
+
+. loc time = c(current_time)
+
+. loc time_date = "`date'" + "_" + "`time'"
+
+. loc tag "`dfn'.do Ari Prasojo `time_date'"
+
+. 
+. *direktori dataset
+. *\dataset kelahiran
+. loc brc                 "D:\PUSDATIN\DATA MIKRO\IDHS\2017\IDBR71DT\IDBR71FL.dta"
+
+. 
+. *\dataset disimpan sebagai (nama)
+. loc savenm              "`dtadir'\4-vars-birth-`idhs'.dta"
+
+. 
+. *read data
+. use "`brc'"
+
+. 
+. *membuat label
+. lab def yatidak 0 "Tidak" 1 "Ya"                //yatidak
+
+. 
+. 
+. 
+. /*
+> ================================================================================
+> SAMPEL
+> ================================================================================
+> */
+. 
+. *\umur hipotetik/lama lahir-interview (bulan)                           [done]
+. gen hypage = v008-b3
+
+.         lab var hypage "Umur hipotetik (lahir-interview, bulan)"
+
+. 
+. *\anak dilahirkan tunggal / tidak memiliki saudara kembar       [done]
+. recode b0 (0 = 1) (1/5 = 0), g(chsingle)
+(86265 differences between b0 and chsingle)
+
+.         lab var chsingle "Anak dilahirkan tidak memiliki saudara kembar"
+
+.         lab val chsingle yatidak
+
+.         tab chsingle, m
+
+       Anak |
+ dilahirkan |
+      tidak |
+   memiliki |
+    saudara |
+     kembar |      Freq.     Percent        Cum.
+------------+-----------------------------------
+      Tidak |      1,212        1.40        1.40
+         Ya |     85,053       98.60      100.00
+------------+-----------------------------------
+      Total |     86,265      100.00
+
+. 
+. *\anak terakhir dilahirkan
+. gen lastbirth = bidx == 1
+
+.         lab var lastbirth "Kelahiran terakhir"
+
+.         lab val lastbirth yatidak
+
+.         tab lastbirth, m
+
+  Kelahiran |
+   terakhir |      Freq.     Percent        Cum.
+------------+-----------------------------------
+      Tidak |     52,066       60.36       60.36
+         Ya |     34,199       39.64      100.00
+------------+-----------------------------------
+      Total |     86,265      100.00
+
+. 
+. *\anak yang dilahirkan 0-5 tahun sebelum survei                         [done]
+. gen precsvy5 = .
+(86,265 missing values generated)
+
+.         lab var precsvy5 "Dilahirkan 0-5 tahun sebelum survei"
+
+.         replace precsvy5 = 1 if inrange(hypage, 0, 59)
+(17,848 real changes made)
+
+.         replace precsvy5 = 0 if hypage > 59
+(68,417 real changes made)
+
+.         lab val precsvy5 yatidak
+
+.         tab precsvy5, m
+
+ Dilahirkan |
+  0-5 tahun |
+    sebelum |
+     survei |      Freq.     Percent        Cum.
+------------+-----------------------------------
+      Tidak |     68,417       79.31       79.31
+         Ya |     17,848       20.69      100.00
+------------+-----------------------------------
+      Total |     86,265      100.00
+
+.         
+. *\anak yang dilahirkan 0-10 tahun sebelum survei                        [done]
+. gen precsvy10 = .
+(86,265 missing values generated)
+
+.         lab var precsvy10 "Dilahirkan 0-10 tahun sebelum survei"
+
+.         replace precsvy10 = 1 if inrange(hypage, 0, 119)
+(36,371 real changes made)
+
+.         replace precsvy10 = 0 if hypage > 119
+(49,894 real changes made)
+
+.         lab val precsvy10 yatidak
+
+.         tab precsvy10, m
+
+ Dilahirkan |
+ 0-10 tahun |
+    sebelum |
+     survei |      Freq.     Percent        Cum.
+------------+-----------------------------------
+      Tidak |     49,894       57.84       57.84
+         Ya |     36,371       42.16      100.00
+------------+-----------------------------------
+      Total |     86,265      100.00
+
+. 
+. *\anak yang dilahirkan 0-15 tahun sebelum survei                        [done]
+. gen precsvy15 = .
+(86,265 missing values generated)
+
+.         lab var precsvy15 "Dilahirkan 0-15 tahun sebelum survei"
+
+.         replace precsvy15 = 1 if inrange(hypage, 0, 179)
+(54,116 real changes made)
+
+.         replace precsvy15 = 0 if hypage > 179
+(32,149 real changes made)
+
+.         lab val precsvy15 yatidak
+
+.         tab precsvy15, m
+
+ Dilahirkan |
+ 0-15 tahun |
+    sebelum |
+     survei |      Freq.     Percent        Cum.
+------------+-----------------------------------
+      Tidak |     32,149       37.27       37.27
+         Ya |     54,116       62.73      100.00
+------------+-----------------------------------
+      Total |     86,265      100.00
+
+.         
+. 
+.         
+. /*
+> ================================================================================
+> VARIABEL TERIKAT
+> ================================================================================
+> */
+. 
+. *\Status kelangsungan hidup anak                                                        [done]
+. gen chalive = b5
+
+.         lab var chalive "Apakah anak masih hidup?"
+
+.         lab val chalive yatidak
+
+.         tab chalive, m
+
+Apakah anak |
+      masih |
+     hidup? |      Freq.     Percent        Cum.
+------------+-----------------------------------
+      Tidak |      5,260        6.10        6.10
+         Ya |     81,005       93.90      100.00
+------------+-----------------------------------
+      Total |     86,265      100.00
+
+. 
+. /*
+> ******************************************************************
+> Umur anak saat meninggal                                                                        [done]
+> ******************************************************************
+> */
+. 
+. *\identifier satuan usia saat meninggal 
+. *-b6 adalah usia saat meninggal (satuan digit di depan)
+. gen satdeath = int(b6/100) if !inlist(b6,199,299,399,997,998)
+(81,040 missing values generated)
+
+.         lab var satdeath "Satuan usia saat meninggal"
+
+.         lab def satdeath 1 "Hari" 2 "Bulan" 3 "Tahun"
+
+.         lab val satdeath satdeath
+
+.         tab satdeath, m
+
+Satuan usia |
+       saat |
+  meninggal |      Freq.     Percent        Cum.
+------------+-----------------------------------
+       Hari |      2,071        2.40        2.40
+      Bulan |      1,953        2.26        4.66
+      Tahun |      1,201        1.39        6.06
+          . |     81,040       93.94      100.00
+------------+-----------------------------------
+      Total |     86,265      100.00
+
+. 
+. *\usia saat meninggal (bulan, imputed DHS)
+. gen agedeathimp = b7
+(81,005 missing values generated)
+
+.         lab var agedeathimp "Usia anak saat meninggal (bulan,imputasi DHS)"
+
+.         tab agedeathimp, m
+
+  Usia anak |
+       saat |
+  meninggal |
+(bulan,impu |
+  tasi DHS) |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |      2,078        2.41        2.41
+          1 |        314        0.36        2.77
+          2 |        262        0.30        3.08
+          3 |        237        0.27        3.35
+          4 |        128        0.15        3.50
+          5 |        113        0.13        3.63
+          6 |        138        0.16        3.79
+          7 |        140        0.16        3.95
+          8 |        123        0.14        4.10
+          9 |         92        0.11        4.20
+         10 |         43        0.05        4.25
+         11 |         42        0.05        4.30
+         12 |        296        0.34        4.64
+         13 |         10        0.01        4.66
+         14 |         15        0.02        4.67
+         15 |         10        0.01        4.68
+         16 |         14        0.02        4.70
+         17 |         13        0.02        4.72
+         18 |         25        0.03        4.74
+         19 |          7        0.01        4.75
+         20 |          8        0.01        4.76
+         23 |          1        0.00        4.76
+         24 |        224        0.26        5.02
+         36 |        174        0.20        5.22
+         48 |         98        0.11        5.34
+         60 |         89        0.10        5.44
+         72 |         55        0.06        5.51
+         84 |         75        0.09        5.59
+         96 |         32        0.04        5.63
+        108 |         21        0.02        5.65
+        120 |         33        0.04        5.69
+        132 |         22        0.03        5.72
+        144 |         39        0.05        5.76
+        156 |         27        0.03        5.79
+        168 |         29        0.03        5.83
+        180 |         33        0.04        5.87
+        192 |         22        0.03        5.89
+        204 |         45        0.05        5.94
+        216 |         27        0.03        5.97
+        228 |         29        0.03        6.01
+        240 |         23        0.03        6.03
+        252 |          7        0.01        6.04
+        264 |          9        0.01        6.05
+        276 |         12        0.01        6.07
+        288 |          3        0.00        6.07
+        300 |          7        0.01        6.08
+        312 |          4        0.00        6.08
+        324 |          5        0.01        6.09
+        336 |          1        0.00        6.09
+        360 |          4        0.00        6.10
+        372 |          1        0.00        6.10
+        384 |          1        0.00        6.10
+          . |     81,005       93.90      100.00
+------------+-----------------------------------
+      Total |     86,265      100.00
+
+. 
+. *\hitung dari laporan dalam survei
+. *-satuan masih sesuai dengan format DHS
+. gen agedeath = .
+(86,265 missing values generated)
+
+.         lab var agedeath "Usia anak saat meninggal"
+
+.         replace agedeath = b6-100 if satdeath == 1
+(2,071 real changes made)
+
+.         replace agedeath = b6-200 if satdeath == 2
+(1,953 real changes made)
+
+.         replace agedeath = b6-300 if satdeath == 3
+(1,201 real changes made)
+
+. *br b5-b7 satdeath agedeath
+. 
+. *\dari laporan survei konversi ke hari
+. gen agedeathd = .
+(86,265 missing values generated)
+
+.         lab var agedeathd "Usia anak saat meninggal (hari)"
+
+.         replace agedeathd = agedeath if satdeath == 1
+(2,071 real changes made)
+
+.         replace agedeathd = agedeath*30 if satdeath == 2
+(1,953 real changes made)
+
+.         replace agedeathd = agedeath*360 if satdeath == 3
+(1,201 real changes made)
+
+. 
+. *\dari laporan survei konversi ke bulan
+. gen agedeathm = .
+(86,265 missing values generated)
+
+.         lab var agedeathm "Usia anak saat meninggal (bulan)"
+
+.         *replace agedeathm = 0 if satdeath == 1 & agedeath < 30
+.         *replace agedeathm = 1 if satdeath == 1 & agedeath >= 30
+.         replace agedeathm = int(agedeath/30) if satdeath == 1
+(2,071 real changes made)
+
+.         replace agedeathm = agedeath if satdeath == 2
+(1,953 real changes made)
+
+.         replace agedeathm = agedeath*12 if satdeath == 3
+(1,201 real changes made)
+
+. *br agedeathimp agedeathm if chalive == 0
+. 
+. /*
+> ******************************************************************
+> Kematian neonatal (0-28 hari)                                                           [done]
+> ******************************************************************
+> */
+. 
+. *\Status kematian neonatal
+. gen nndeath = .
+(86,265 missing values generated)
+
+.         lab var nndeath "Meninggal saat periode neonatal"
+
+.         replace nndeath = 1 if satdeath == 1 & agedeath <= 28
+(2,057 real changes made)
+
+.         replace nndeath = 0 if nndeath != 1
+(84,208 real changes made)
+
+.         replace nndeath = . if chalive == 0 & agedeath == .
+(35 real changes made, 35 to missing)
+
+.         lab val nndeath yatidak
+
+.         tab nndeath, m
+
+  Meninggal |
+       saat |
+    periode |
+   neonatal |      Freq.     Percent        Cum.
+------------+-----------------------------------
+      Tidak |     84,173       97.57       97.57
+         Ya |      2,057        2.38       99.96
+          . |         35        0.04      100.00
+------------+-----------------------------------
+      Total |     86,265      100.00
+
+. 
+. *\Umur periode neonatal
+. gen agenndeath = .
+(86,265 missing values generated)
+
+.         lab var agenndeath "Umur bayi/anak, berdasarkan periode neonatal (hari)"
+
+.         replace agenndeath = agedeath if nndeath == 1
+(2,057 real changes made)
+
+.         replace agenndeath = 28 if nndeath == 0
+(84,173 real changes made)
+
+.         summ agenndeath
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
+-------------+---------------------------------------------------------
+  agenndeath |     86,230    27.42419    3.776116          0         28
+
+. 
+. /*
+> ******************************************************************
+> Kematian bayi (0-11 bulan)                                                                      [done]
+> ******************************************************************
+> */
+. 
+. *\Status kematian bayi
+. gen ideath = .
+(86,265 missing values generated)
+
+.         lab var ideath "Meninggal saat periode 0-11 bulan"
+
+.         replace ideath = 1 if agedeathm <= 11
+(3,684 real changes made)
+
+.         replace ideath = 0 if ideath != 1
+(82,581 real changes made)
+
+.         replace ideath = . if chalive == 0 & agedeath == .
+(35 real changes made, 35 to missing)
+
+.         lab val ideath yatidak
+
+.         tab ideath, m
+
+  Meninggal |
+       saat |
+    periode |
+ 0-11 bulan |      Freq.     Percent        Cum.
+------------+-----------------------------------
+      Tidak |     82,546       95.69       95.69
+         Ya |      3,684        4.27       99.96
+          . |         35        0.04      100.00
+------------+-----------------------------------
+      Total |     86,265      100.00
+
+. 
+. *\Umur periode kematian bayi
+. gen ageideath = .
+(86,265 missing values generated)
+
+.         lab var ageideath "Umur bayi/anak, berdasarkan periode kematian bayi (bulan)"
+
+.         replace ageideath = agedeathm if ideath == 1
+(3,684 real changes made)
+
+.         replace ageideath = 11 if ideath == 0
+(82,546 real changes made)
+
+.         summ ageideath
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
+-------------+---------------------------------------------------------
+   ageideath |     86,230    10.61258    1.929688          0         11
+
+.         
+. gen ageideathd = agedeathd
+(81,040 missing values generated)
+
+.         lab var ageideathd "Umur bayi/anak, berdasarkan periode kematian bayi (hari)"
+
+.         replace ageideathd = 359 if ideath == 0
+(82,546 real changes made)
+
+.         summ ageideathd
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
+-------------+---------------------------------------------------------
+  ageideathd |     86,230    346.2322    62.98624          0        359
+
+. 
+. /*
+> ******************************************************************
+> Kematian anak di bawah 5 tahun (0-59 bulan)                                     [done]
+> ******************************************************************
+> */
+. 
+. *\Status kematian anak di bawah 5 tahun
+. gen u5death = .
+(86,265 missing values generated)
+
+.         lab var u5death "Meninggal saat periode 0-59 bulan"
+
+.         replace u5death = 1 if agedeathm <= 59
+(4,572 real changes made)
+
+.         replace u5death = 0 if u5death != 1
+(81,693 real changes made)
+
+.         replace u5death = . if chalive == 0 & agedeath == .
+(35 real changes made, 35 to missing)
+
+.         lab val u5death yatidak
+
+.         tab u5death, m
+
+  Meninggal |
+       saat |
+    periode |
+ 0-59 bulan |      Freq.     Percent        Cum.
+------------+-----------------------------------
+      Tidak |     81,658       94.66       94.66
+         Ya |      4,572        5.30       99.96
+          . |         35        0.04      100.00
+------------+-----------------------------------
+      Total |     86,265      100.00
+
+. 
+. *\Umur periode kematian anak di bawah 5 tahun
+. gen ageu5death = .
+(86,265 missing values generated)
+
+.         lab var ageu5death "Umur bayi/anak, berdasarkan periode kematian di bawah 5 tahun (bulan)"
+
+.         replace ageu5death = agedeathm if u5death == 1
+(4,572 real changes made)
+
+.         replace ageu5death = 59 if u5death == 0
+(81,658 real changes made)
+
+.         summ ageu5death
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
+-------------+---------------------------------------------------------
+  ageu5death |     86,230    56.20263    12.07101          0         59
+
+. 
+. gen ageu5deathd = agedeathd
+(81,040 missing values generated)
+
+.         lab var ageu5deathd "Umur bayi/anak, berdasarkan periode kematian di bawah 5 tahun (hari)"
+
+.         replace ageu5deathd = 1799 if u5death == 0
+(81,658 real changes made)
+
+.         summ ageu5deathd
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
+-------------+---------------------------------------------------------
+ ageu5deathd |     86,230    1713.635    368.0624          0       1799
+
+. 
+.         
+.         
+. /*
+> ================================================================================
+> VARIABEL BEBAS
+> ================================================================================
+> */
+. 
+. /*
+> ******************************************************************
+> Jenis kelamin anak                                                                                      [done]
+> ******************************************************************
+> */
+. 
+. recode b4 (2 = 0 "Perempuan") (1 = 1 "Laki-laki"), gen(chsex)
+(41697 differences between b4 and chsex)
+
+.         lab var chsex "Jenis kelamin anak"
+
+.         tab chsex, m
+
+      Jenis |
+    kelamin |
+       anak |      Freq.     Percent        Cum.
+------------+-----------------------------------
+  Perempuan |     41,697       48.34       48.34
+  Laki-laki |     44,568       51.66      100.00
+------------+-----------------------------------
+      Total |     86,265      100.00
+
+. 
+. /*
+> ******************************************************************
+> Umur ibu saat melahirkan                                                                        [done]
+> ******************************************************************
+> */
+. 
+. *\Kontinyu
+. /*
+> -dihitung dari tanggal lahir ibu dan tanggal lahir anak (CMC),
+> -hasil dalam satuan tahun
+> */
+. 
+. gen mageby = floor((b3-v011)/12)
+
+.         lab var mageby "Umur ibu saat melahirkan"
+
+. 
+. gen mageby2 = mageby^2
+
+.         lab var mageby2 "Umur ibu saat melahirkan^2"
+
+. 
+. *\4 kategori
+. recode mageby (min/19 = 0 "<20")                                                                                ///
+>                           (20/29 = 1 "20-29")                                                                           ///
+>                           (30/39 = 2 "30-39")                                                                           ///
+>                           (40/49 = 3 "40-49"),                                                                          ///
+>                           gen(mageb)
+(86265 differences between mageby and mageb)
+
+.         lab var mageb "Umur ibu saat melahirkan"
+
+.         tab mageb, m
+
+   Umur ibu |
+       saat |
+ melahirkan |      Freq.     Percent        Cum.
+------------+-----------------------------------
+        <20 |     14,117       16.36       16.36
+      20-29 |     50,431       58.46       74.83
+      30-39 |     20,506       23.77       98.60
+      40-49 |      1,211        1.40      100.00
+------------+-----------------------------------
+      Total |     86,265      100.00
+
+. 
+. /*
+> *\Umur ibu saat melahirkan, 3 kategori
+> recode mageby (min/19 = 0 "<20")                                                                                ///
+>                           (20/34  = 1 "20-34")                                                                          ///
+>                           (35/max = 2 ">34"),                                                                           ///
+>                           gen(mageb3c)
+>         lab var mageb3c "Umur ibu saat melahirkan"
+>         tab mageb3c, m
+> */
+.         
+. /*
+> ******************************************************************
+> Urutan dan jarak dengan kelahiran sebelumnya                            [done]
+> ******************************************************************
+> */
+. 
+. *-bord adalah urutan kelahiran
+. *-b11 adalah jarak kelahiran sebelumnya (dalam bulan)
+. gen bordin = .
+(86,265 missing values generated)
+
+.         replace bordin = 0 if bord == 1
+(34,199 real changes made)
+
+.         replace bordin = 1 if bord == 2 & b11 >= 24
+(21,051 real changes made)
+
+.         replace bordin = 2 if bord == 2 & b11 < 24
+(4,492 real changes made)
+
+.         replace bordin = 3 if bord >= 3 & b11 >= 24
+(21,679 real changes made)
+
+.         replace bordin = 4 if bord >= 3 & b11 < 24
+(4,844 real changes made)
+
+.         lab var bordin "Urutan dan jarak kelahiran sebelumnya"
+
+.         lab def bordin 0 "Pertama"                                      ///
+>                                         1 "2 dan >=24 bulan"            ///
+>                                         2 "2 dan <24 bulan"             ///
+>                                         3 ">=3 dan >=24 bulan"  ///
+>                                         4 ">=3 dan <24 bulan", replace
+
+.         lab val bordin bordin
+
+.         tab bordin, m
+
+  Urutan dan jarak |
+         kelahiran |
+        sebelumnya |      Freq.     Percent        Cum.
+-------------------+-----------------------------------
+           Pertama |     34,199       39.64       39.64
+  2 dan >=24 bulan |     21,051       24.40       64.05
+   2 dan <24 bulan |      4,492        5.21       69.25
+>=3 dan >=24 bulan |     21,679       25.13       94.38
+ >=3 dan <24 bulan |      4,844        5.62      100.00
+-------------------+-----------------------------------
+             Total |     86,265      100.00
+
+.         assert bordin == 0 if bord == 1
+
+. 
+. 
+.    
+. /*
+> ================================================================================
+> FINALISASI
+> ================================================================================
+> */
+. 
+. keep v001 v002 v003 bidx hypage-bordin
+
+.          
+. quietly compress
+
+. datasignature set, reset
+  86265:29(22477):3213997320:2714642448       (data signature set)
+
+. lab data "Variabel anak-kelahiran \ `time_date'"
+
+. note: `idhs'-mortstudy-birth.dta \ `tag'
+
+. save "`savenm'", replace
+(file dta\4-vars-birth-idhs17.dta not found)
+file dta\4-vars-birth-idhs17.dta saved
+
+. 
+end of do-file
+
+. do "D:\RESEARCH & WRITING\master thesis_child mortality\stata\do\5-vars-community.do"
+
+. /*
+> ================================================================================
+> ********************************************************************************
+> PROJECT:
+> PENELITIAN TESIS
+> DEPRIVASI LINGKUNGAN RUMAH TANGGA DAN KEMATIAN BAYI DAN ANAK DI INDONESIA
+> 
+> SYNTAX:
+> 5-MEMBENTUK VARIABEL TINGKAT KOMUNITAS
+> 
+> PENULIS:
+> ARI PURWANTO SARWO PRASOJO (2006500321)
+> MAGISTER EKONOMI KEPENDUDUKAN DAN KETENAGAKERJAAN
+> FEB, UNIVERSITAS INDONESIA
+> 2021
+> ********************************************************************************
+> ================================================================================
+> */
+. 
+. 
+. 
+. /*
+> ================================================================================
+> PENYIAPAN
+> ================================================================================
+> */
+. 
+. cls
+
+. log close _all
+      name:  log_4_vars_birth_idhs17
+       log:  D:\RESEARCH & WRITING\master thesis_child mortality\stata\log\4_vars_birth_idhs17.log
+  log type:  text
+ closed on:  15 Dec 2021, 07:05:52
+----------------------------------------------------------------------------------------------------------------------------------

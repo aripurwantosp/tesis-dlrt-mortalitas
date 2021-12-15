@@ -1,0 +1,2358 @@
+----------------------------------------------------------------------------------------------------------------------------------
+      name:  log_7a_descriptive_idhs17
+       log:  D:\RESEARCH & WRITING\master thesis_child mortality\stata\log\7a_descriptive_idhs17.log
+  log type:  text
+ opened on:  15 Dec 2021, 07:14:44
+
+. 
+. 
+. 
+. /*
+> ================================================================================
+> ANAK-KELAHIRAN
+> ================================================================================
+> */
+. 
+. /*
+> ******************************************************************
+> Set sampel                                                                                                      [done]
+> ******************************************************************
+> */
+. 
+. *data
+. use "`dtadir'\6-chmort-`idhs'.dta"
+(Data merge\ 15 Dec 2021_07:08:57)
+
+. 
+. *filter non-missing
+. gen nomisvaruse = .
+(86,265 missing values generated)
+
+.         replace nomisvaruse = 1 if !(chalive == 0 & missing(agedeath)) &        ///
+>                                                            !missing(depriv) &                                           ///
+>                                                            !missing(peduc)         
+(80,458 real changes made)
+
+. loc sett  "precsvy10==1 & nomisvaruse==1"
+
+. keep if `sett'
+(51,457 observations deleted)
+
+. 
+. *cek missing
+. #delimit ;
+delimiter now ;
+. glo vars
+>         /*var bebas utama, lingkungan*/
+>         depriv depriv2c
+>         impdrinkwat impsan cookfldr
+>         /*antara*/
+>         chsex bordin mageb
+>         /*sosek*/
+>         meduc4c peduc4c pareduc wealth reside pwdisthfac3c
+>         ;
+
+. #delimit cr
+delimiter now cr
+. 
+. foreach p in $vars{
+  2.         nmissing `p'
+  3. }
+
+. 
+. *ganti label bordin
+. label drop bordin
+
+. lab def bordin 0 "Pertama"                      ///
+>                            1 "2 dan >=24"               ///
+>                            2 "2 dan <24"                ///
+>                            3 ">=3 dan >=24"             ///
+>                            4 ">=3 dan <24"
+
+. lab val bordin bordin
+
+. 
+. gen con = 1
+
+. 
+. *as survey design
+. egen strata = group(prov reside)
+
+. svyset psu [pw=wweight],strata(strata)  
+
+Sampling weights: wweight
+             VCE: linearized
+     Single unit: missing
+        Strata 1: strata
+ Sampling unit 1: psu
+           FPC 1: <zero>
+
+. 
+. 
+. /*
+> ******************************************************************
+> Gambaran umum sampel                                                                            [done]
+> ******************************************************************
+> */
+. 
+. *univar
+. foreach p in $vars chalive nndeath ideath u5death {
+  2.             quietly tabout `p'                  ///
+>                 using "output\univar_.xls", c(freq col) clab(N %) format(0c 2) append
+  3. }
+
+. 
+. foreach p in $vars chalive nndeath ideath u5death {
+  2.             quietly tabout `p' [iw=wweight]                     ///
+>                 using "output\univar_iw.xls", c(freq col) clab(N %) format(0c 2) append
+  3. }
+
+. 
+. *kontinyu
+. *duplicates drop psu, force
+. table [iw=wweight], stat(mean pwdisthfac)       ///
+>                                         stat(median pwdisthfac) ///
+>                                         stat(sd pwdisthfac)
+
+------------------------------
+Mean               |  .1192561
+Median             |  .0769231
+Standard deviation |  .1431062
+------------------------------
+
+.                                         
+. table, stat(mean pwdisthfac)    ///
+>            stat(median pwdisthfac)      ///
+>            stat(sd pwdisthfac)  
+
+------------------------------
+Mean               |  .1265855
+Median             |  .0869565
+Standard deviation |  .1431184
+------------------------------
+
+.   
+. /*
+> ******************************************************************
+> Karakteristik sosial ekonomi dan status deprivasi                       [done]
+> ******************************************************************
+> */
+. 
+. *Weight
+. tabmult [aw=wweight],                                                                                                   ///
+>                 cat(meduc4c peduc4c pareduc wealth reside)                                              ///
+>                 by(impdrinkwat impsan cookfldr depriv2c depriv) row                             ///
+>                 save(output\desc_soc_depriv.xls) sheet(persen_w) replace
+note: results saved to output\desc_soc_depriv.xls
+
+. 
+. tabmult [aw=wweight],                                                                                                   ///
+>                 cat(meduc4c peduc4c pareduc wealth reside)                                              ///
+>                 by(impdrinkwat impsan cookfldr depriv2c depriv)                                 ///
+>                 save(output\desc_soc_depriv.xls) sheet(absolut) append
+note: results saved to output\desc_soc_depriv.xls
+
+. 
+. *Two-way pearson chi-squared
+. *\sumber utama air minum
+. foreach p of varlist meduc4c peduc4c pareduc wealth reside{
+  2.     tab `p' impdrinkwat, row m chi2
+  3. }
+
++----------------+
+| Key            |
+|----------------|
+|   frequency    |
+| row percentage |
++----------------+
+
+   Pendidikan |
+    tertinggi |
+         yang | Kategori sumber utama
+   ditamatkan |       air minum
+          ibu | Tidak lay      Layak |     Total
+--------------+----------------------+----------
+Tidak sekolah |       251        376 |       627 
+              |     40.03      59.97 |    100.00 
+--------------+----------------------+----------
+        Dasar |     2,180      7,534 |     9,714 
+              |     22.44      77.56 |    100.00 
+--------------+----------------------+----------
+     Menengah |     2,374     16,566 |    18,940 
+              |     12.53      87.47 |    100.00 
+--------------+----------------------+----------
+       Tinggi |       403      5,124 |     5,527 
+              |      7.29      92.71 |    100.00 
+--------------+----------------------+----------
+        Total |     5,208     29,600 |    34,808 
+              |     14.96      85.04 |    100.00 
+
+          Pearson chi2(3) =  1.1e+03   Pr = 0.000
+
++----------------+
+| Key            |
+|----------------|
+|   frequency    |
+| row percentage |
++----------------+
+
+   Pendidikan |
+    tertinggi |
+         yang | Kategori sumber utama
+   ditamatkan |       air minum
+         ayah | Tidak lay      Layak |     Total
+--------------+----------------------+----------
+Tidak sekolah |       217        392 |       609 
+              |     35.63      64.37 |    100.00 
+--------------+----------------------+----------
+        Dasar |     2,235      7,696 |     9,931 
+              |     22.51      77.49 |    100.00 
+--------------+----------------------+----------
+     Menengah |     2,423     16,903 |    19,326 
+              |     12.54      87.46 |    100.00 
+--------------+----------------------+----------
+       Tinggi |       333      4,609 |     4,942 
+              |      6.74      93.26 |    100.00 
+--------------+----------------------+----------
+        Total |     5,208     29,600 |    34,808 
+              |     14.96      85.04 |    100.00 
+
+          Pearson chi2(3) =  1.0e+03   Pr = 0.000
+
++----------------+
+| Key            |
+|----------------|
+|   frequency    |
+| row percentage |
++----------------+
+
+Pendidikan | Kategori sumber utama
+ orang tua |       air minum
+(ibu-ayah) | Tidak lay      Layak |     Total
+-----------+----------------------+----------
+    Rendah |     1,645      4,795 |     6,440 
+           |     25.54      74.46 |    100.00 
+-----------+----------------------+----------
+Ibu < ayah |       786      3,115 |     3,901 
+           |     20.15      79.85 |    100.00 
+-----------+----------------------+----------
+Ibu > ayah |       807      3,293 |     4,100 
+           |     19.68      80.32 |    100.00 
+-----------+----------------------+----------
+    Tinggi |     1,970     18,397 |    20,367 
+           |      9.67      90.33 |    100.00 
+-----------+----------------------+----------
+     Total |     5,208     29,600 |    34,808 
+           |     14.96      85.04 |    100.00 
+
+          Pearson chi2(3) =  1.2e+03   Pr = 0.000
+
++----------------+
+| Key            |
+|----------------|
+|   frequency    |
+| row percentage |
++----------------+
+
+    Indeks |
+  kekayaan | Kategori sumber utama
+     rumah |       air minum
+    tangga | Tidak lay      Layak |     Total
+-----------+----------------------+----------
+    Miskin |     3,971     12,737 |    16,708 
+           |     23.77      76.23 |    100.00 
+-----------+----------------------+----------
+  Menengah |     1,020     10,970 |    11,990 
+           |      8.51      91.49 |    100.00 
+-----------+----------------------+----------
+      Kaya |       217      5,893 |     6,110 
+           |      3.55      96.45 |    100.00 
+-----------+----------------------+----------
+     Total |     5,208     29,600 |    34,808 
+           |     14.96      85.04 |    100.00 
+
+          Pearson chi2(2) =  2.0e+03   Pr = 0.000
+
++----------------+
+| Key            |
+|----------------|
+|   frequency    |
+| row percentage |
++----------------+
+
+   Wilayah | Kategori sumber utama
+    tempat |       air minum
+   tinggal | Tidak lay      Layak |     Total
+-----------+----------------------+----------
+ Perdesaan |     4,104     13,645 |    17,749 
+           |     23.12      76.88 |    100.00 
+-----------+----------------------+----------
+ Perkotaan |     1,104     15,955 |    17,059 
+           |      6.47      93.53 |    100.00 
+-----------+----------------------+----------
+     Total |     5,208     29,600 |    34,808 
+           |     14.96      85.04 |    100.00 
+
+          Pearson chi2(1) =  1.9e+03   Pr = 0.000
+
+. 
+. *\sanitasi
+. foreach p of varlist meduc4c peduc4c pareduc wealth reside{
+  2.     tab `p' impsan, row m chi2
+  3. }
+
++----------------+
+| Key            |
+|----------------|
+|   frequency    |
+| row percentage |
++----------------+
+
+   Pendidikan |
+    tertinggi |
+         yang |  Kategori fasilitas
+   ditamatkan |    toilet/sanitasi
+          ibu | Tidak lay      Layak |     Total
+--------------+----------------------+----------
+Tidak sekolah |       340        287 |       627 
+              |     54.23      45.77 |    100.00 
+--------------+----------------------+----------
+        Dasar |     3,232      6,482 |     9,714 
+              |     33.27      66.73 |    100.00 
+--------------+----------------------+----------
+     Menengah |     2,973     15,967 |    18,940 
+              |     15.70      84.30 |    100.00 
+--------------+----------------------+----------
+       Tinggi |       276      5,251 |     5,527 
+              |      4.99      95.01 |    100.00 
+--------------+----------------------+----------
+        Total |     6,821     27,987 |    34,808 
+              |     19.60      80.40 |    100.00 
+
+          Pearson chi2(3) =  2.6e+03   Pr = 0.000
+
++----------------+
+| Key            |
+|----------------|
+|   frequency    |
+| row percentage |
++----------------+
+
+   Pendidikan |
+    tertinggi |
+         yang |  Kategori fasilitas
+   ditamatkan |    toilet/sanitasi
+         ayah | Tidak lay      Layak |     Total
+--------------+----------------------+----------
+Tidak sekolah |       287        322 |       609 
+              |     47.13      52.87 |    100.00 
+--------------+----------------------+----------
+        Dasar |     3,296      6,635 |     9,931 
+              |     33.19      66.81 |    100.00 
+--------------+----------------------+----------
+     Menengah |     2,989     16,337 |    19,326 
+              |     15.47      84.53 |    100.00 
+--------------+----------------------+----------
+       Tinggi |       249      4,693 |     4,942 
+              |      5.04      94.96 |    100.00 
+--------------+----------------------+----------
+        Total |     6,821     27,987 |    34,808 
+              |     19.60      80.40 |    100.00 
+
+          Pearson chi2(3) =  2.3e+03   Pr = 0.000
+
++----------------+
+| Key            |
+|----------------|
+|   frequency    |
+| row percentage |
++----------------+
+
+Pendidikan |  Kategori fasilitas
+ orang tua |    toilet/sanitasi
+(ibu-ayah) | Tidak lay      Layak |     Total
+-----------+----------------------+----------
+    Rendah |     2,514      3,926 |     6,440 
+           |     39.04      60.96 |    100.00 
+-----------+----------------------+----------
+Ibu < ayah |     1,058      2,843 |     3,901 
+           |     27.12      72.88 |    100.00 
+-----------+----------------------+----------
+Ibu > ayah |     1,069      3,031 |     4,100 
+           |     26.07      73.93 |    100.00 
+-----------+----------------------+----------
+    Tinggi |     2,180     18,187 |    20,367 
+           |     10.70      89.30 |    100.00 
+-----------+----------------------+----------
+     Total |     6,821     27,987 |    34,808 
+           |     19.60      80.40 |    100.00 
+
+          Pearson chi2(3) =  2.8e+03   Pr = 0.000
+
++----------------+
+| Key            |
+|----------------|
+|   frequency    |
+| row percentage |
++----------------+
+
+    Indeks |
+  kekayaan |  Kategori fasilitas
+     rumah |    toilet/sanitasi
+    tangga | Tidak lay      Layak |     Total
+-----------+----------------------+----------
+    Miskin |     5,974     10,734 |    16,708 
+           |     35.76      64.24 |    100.00 
+-----------+----------------------+----------
+  Menengah |       800     11,190 |    11,990 
+           |      6.67      93.33 |    100.00 
+-----------+----------------------+----------
+      Kaya |        47      6,063 |     6,110 
+           |      0.77      99.23 |    100.00 
+-----------+----------------------+----------
+     Total |     6,821     27,987 |    34,808 
+           |     19.60      80.40 |    100.00 
+
+          Pearson chi2(2) =  5.4e+03   Pr = 0.000
+
++----------------+
+| Key            |
+|----------------|
+|   frequency    |
+| row percentage |
++----------------+
+
+   Wilayah |  Kategori fasilitas
+    tempat |    toilet/sanitasi
+   tinggal | Tidak lay      Layak |     Total
+-----------+----------------------+----------
+ Perdesaan |     5,078     12,671 |    17,749 
+           |     28.61      71.39 |    100.00 
+-----------+----------------------+----------
+ Perkotaan |     1,743     15,316 |    17,059 
+           |     10.22      89.78 |    100.00 
+-----------+----------------------+----------
+     Total |     6,821     27,987 |    34,808 
+           |     19.60      80.40 |    100.00 
+
+          Pearson chi2(1) =  1.9e+03   Pr = 0.000
+
+. 
+. *\bahan bakar memasak
+. foreach p of varlist meduc4c peduc4c pareduc wealth reside{
+  2.     tab `p' cookfldr, row m chi2
+  3. }
+
++----------------+
+| Key            |
+|----------------|
+|   frequency    |
+| row percentage |
++----------------+
+
+   Pendidikan |
+    tertinggi |
+         yang | Kategori bahan bakar
+   ditamatkan |        memasak
+          ibu | Tidak ama  Aman/polu |     Total
+--------------+----------------------+----------
+Tidak sekolah |       500        127 |       627 
+              |     79.74      20.26 |    100.00 
+--------------+----------------------+----------
+        Dasar |     4,503      5,211 |     9,714 
+              |     46.36      53.64 |    100.00 
+--------------+----------------------+----------
+     Menengah |     5,250     13,690 |    18,940 
+              |     27.72      72.28 |    100.00 
+--------------+----------------------+----------
+       Tinggi |     1,237      4,290 |     5,527 
+              |     22.38      77.62 |    100.00 
+--------------+----------------------+----------
+        Total |    11,490     23,318 |    34,808 
+              |     33.01      66.99 |    100.00 
+
+          Pearson chi2(3) =  1.9e+03   Pr = 0.000
+
++----------------+
+| Key            |
+|----------------|
+|   frequency    |
+| row percentage |
++----------------+
+
+   Pendidikan |
+    tertinggi |
+         yang | Kategori bahan bakar
+   ditamatkan |        memasak
+         ayah | Tidak ama  Aman/polu |     Total
+--------------+----------------------+----------
+Tidak sekolah |       428        181 |       609 
+              |     70.28      29.72 |    100.00 
+--------------+----------------------+----------
+        Dasar |     4,492      5,439 |     9,931 
+              |     45.23      54.77 |    100.00 
+--------------+----------------------+----------
+     Menengah |     5,511     13,815 |    19,326 
+              |     28.52      71.48 |    100.00 
+--------------+----------------------+----------
+       Tinggi |     1,059      3,883 |     4,942 
+              |     21.43      78.57 |    100.00 
+--------------+----------------------+----------
+        Total |    11,490     23,318 |    34,808 
+              |     33.01      66.99 |    100.00 
+
+          Pearson chi2(3) =  1.5e+03   Pr = 0.000
+
++----------------+
+| Key            |
+|----------------|
+|   frequency    |
+| row percentage |
++----------------+
+
+Pendidikan | Kategori bahan bakar
+ orang tua |        memasak
+(ibu-ayah) | Tidak ama  Aman/polu |     Total
+-----------+----------------------+----------
+    Rendah |     3,324      3,116 |     6,440 
+           |     51.61      48.39 |    100.00 
+-----------+----------------------+----------
+Ibu < ayah |     1,679      2,222 |     3,901 
+           |     43.04      56.96 |    100.00 
+-----------+----------------------+----------
+Ibu > ayah |     1,596      2,504 |     4,100 
+           |     38.93      61.07 |    100.00 
+-----------+----------------------+----------
+    Tinggi |     4,891     15,476 |    20,367 
+           |     24.01      75.99 |    100.00 
+-----------+----------------------+----------
+     Total |    11,490     23,318 |    34,808 
+           |     33.01      66.99 |    100.00 
+
+          Pearson chi2(3) =  2.0e+03   Pr = 0.000
+
++----------------+
+| Key            |
+|----------------|
+|   frequency    |
+| row percentage |
++----------------+
+
+    Indeks |
+  kekayaan | Kategori bahan bakar
+     rumah |        memasak
+    tangga | Tidak ama  Aman/polu |     Total
+-----------+----------------------+----------
+    Miskin |     8,934      7,774 |    16,708 
+           |     53.47      46.53 |    100.00 
+-----------+----------------------+----------
+  Menengah |     2,029      9,961 |    11,990 
+           |     16.92      83.08 |    100.00 
+-----------+----------------------+----------
+      Kaya |       527      5,583 |     6,110 
+           |      8.63      91.37 |    100.00 
+-----------+----------------------+----------
+     Total |    11,490     23,318 |    34,808 
+           |     33.01      66.99 |    100.00 
+
+          Pearson chi2(2) =  6.2e+03   Pr = 0.000
+
++----------------+
+| Key            |
+|----------------|
+|   frequency    |
+| row percentage |
++----------------+
+
+   Wilayah | Kategori bahan bakar
+    tempat |        memasak
+   tinggal | Tidak ama  Aman/polu |     Total
+-----------+----------------------+----------
+ Perdesaan |     8,575      9,174 |    17,749 
+           |     48.31      51.69 |    100.00 
+-----------+----------------------+----------
+ Perkotaan |     2,915     14,144 |    17,059 
+           |     17.09      82.91 |    100.00 
+-----------+----------------------+----------
+     Total |    11,490     23,318 |    34,808 
+           |     33.01      66.99 |    100.00 
+
+          Pearson chi2(1) =  3.8e+03   Pr = 0.000
+
+. 
+. *\depriv 2 kategori
+. foreach p of varlist meduc4c peduc4c pareduc wealth reside{
+  2.     tab `p' depriv2c, row m chi2
+  3. }
+
++----------------+
+| Key            |
+|----------------|
+|   frequency    |
+| row percentage |
++----------------+
+
+   Pendidikan |
+    tertinggi |   Status deprivasi
+         yang |   lingkungan rumah
+   ditamatkan |        tangga
+          ibu |     Tidak         Ya |     Total
+--------------+----------------------+----------
+Tidak sekolah |        71        556 |       627 
+              |     11.32      88.68 |    100.00 
+--------------+----------------------+----------
+        Dasar |     3,465      6,249 |     9,714 
+              |     35.67      64.33 |    100.00 
+--------------+----------------------+----------
+     Menengah |    11,198      7,742 |    18,940 
+              |     59.12      40.88 |    100.00 
+--------------+----------------------+----------
+       Tinggi |     3,918      1,609 |     5,527 
+              |     70.89      29.11 |    100.00 
+--------------+----------------------+----------
+        Total |    18,652     16,156 |    34,808 
+              |     53.59      46.41 |    100.00 
+
+          Pearson chi2(3) =  2.6e+03   Pr = 0.000
+
++----------------+
+| Key            |
+|----------------|
+|   frequency    |
+| row percentage |
++----------------+
+
+   Pendidikan |
+    tertinggi |   Status deprivasi
+         yang |   lingkungan rumah
+   ditamatkan |        tangga
+         ayah |     Tidak         Ya |     Total
+--------------+----------------------+----------
+Tidak sekolah |       115        494 |       609 
+              |     18.88      81.12 |    100.00 
+--------------+----------------------+----------
+        Dasar |     3,558      6,373 |     9,931 
+              |     35.83      64.17 |    100.00 
+--------------+----------------------+----------
+     Menengah |    11,388      7,938 |    19,326 
+              |     58.93      41.07 |    100.00 
+--------------+----------------------+----------
+       Tinggi |     3,591      1,351 |     4,942 
+              |     72.66      27.34 |    100.00 
+--------------+----------------------+----------
+        Total |    18,652     16,156 |    34,808 
+              |     53.59      46.41 |    100.00 
+
+          Pearson chi2(3) =  2.5e+03   Pr = 0.000
+
++----------------+
+| Key            |
+|----------------|
+|   frequency    |
+| row percentage |
++----------------+
+
+           |   Status deprivasi
+Pendidikan |   lingkungan rumah
+ orang tua |        tangga
+(ibu-ayah) |     Tidak         Ya |     Total
+-----------+----------------------+----------
+    Rendah |     1,924      4,516 |     6,440 
+           |     29.88      70.12 |    100.00 
+-----------+----------------------+----------
+Ibu < ayah |     1,612      2,289 |     3,901 
+           |     41.32      58.68 |    100.00 
+-----------+----------------------+----------
+Ibu > ayah |     1,749      2,351 |     4,100 
+           |     42.66      57.34 |    100.00 
+-----------+----------------------+----------
+    Tinggi |    13,367      7,000 |    20,367 
+           |     65.63      34.37 |    100.00 
+-----------+----------------------+----------
+     Total |    18,652     16,156 |    34,808 
+           |     53.59      46.41 |    100.00 
+
+          Pearson chi2(3) =  3.1e+03   Pr = 0.000
+
++----------------+
+| Key            |
+|----------------|
+|   frequency    |
+| row percentage |
++----------------+
+
+    Indeks |   Status deprivasi
+  kekayaan |   lingkungan rumah
+     rumah |        tangga
+    tangga |     Tidak         Ya |     Total
+-----------+----------------------+----------
+    Miskin |     4,712     11,996 |    16,708 
+           |     28.20      71.80 |    100.00 
+-----------+----------------------+----------
+  Menengah |     8,589      3,401 |    11,990 
+           |     71.63      28.37 |    100.00 
+-----------+----------------------+----------
+      Kaya |     5,351        759 |     6,110 
+           |     87.58      12.42 |    100.00 
+-----------+----------------------+----------
+     Total |    18,652     16,156 |    34,808 
+           |     53.59      46.41 |    100.00 
+
+          Pearson chi2(2) =  8.7e+03   Pr = 0.000
+
++----------------+
+| Key            |
+|----------------|
+|   frequency    |
+| row percentage |
++----------------+
+
+           |   Status deprivasi
+   Wilayah |   lingkungan rumah
+    tempat |        tangga
+   tinggal |     Tidak         Ya |     Total
+-----------+----------------------+----------
+ Perdesaan |     6,286     11,463 |    17,749 
+           |     35.42      64.58 |    100.00 
+-----------+----------------------+----------
+ Perkotaan |    12,366      4,693 |    17,059 
+           |     72.49      27.51 |    100.00 
+-----------+----------------------+----------
+     Total |    18,652     16,156 |    34,808 
+           |     53.59      46.41 |    100.00 
+
+          Pearson chi2(1) =  4.8e+03   Pr = 0.000
+
+. 
+. *\depriv 3 kategori
+. foreach p of varlist meduc4c peduc4c pareduc wealth reside{
+  2.     tab `p' depriv, row m chi2
+  3. }
+
++----------------+
+| Key            |
+|----------------|
+|   frequency    |
+| row percentage |
++----------------+
+
+   Pendidikan |
+    tertinggi |
+         yang |   Status deprivasi lingkungan
+   ditamatkan |    rumah tangga (3 kategori)
+          ibu |     Tidak     Rendah     Tinggi |     Total
+--------------+---------------------------------+----------
+Tidak sekolah |        71        154        402 |       627 
+              |     11.32      24.56      64.11 |    100.00 
+--------------+---------------------------------+----------
+        Dasar |     3,465      3,279      2,970 |     9,714 
+              |     35.67      33.76      30.57 |    100.00 
+--------------+---------------------------------+----------
+     Menengah |    11,198      5,313      2,429 |    18,940 
+              |     59.12      28.05      12.82 |    100.00 
+--------------+---------------------------------+----------
+       Tinggi |     3,918      1,331        278 |     5,527 
+              |     70.89      24.08       5.03 |    100.00 
+--------------+---------------------------------+----------
+        Total |    18,652     10,077      6,079 |    34,808 
+              |     53.59      28.95      17.46 |    100.00 
+
+          Pearson chi2(6) =  3.8e+03   Pr = 0.000
+
++----------------+
+| Key            |
+|----------------|
+|   frequency    |
+| row percentage |
++----------------+
+
+   Pendidikan |
+    tertinggi |
+         yang |   Status deprivasi lingkungan
+   ditamatkan |    rumah tangga (3 kategori)
+         ayah |     Tidak     Rendah     Tinggi |     Total
+--------------+---------------------------------+----------
+Tidak sekolah |       115        161        333 |       609 
+              |     18.88      26.44      54.68 |    100.00 
+--------------+---------------------------------+----------
+        Dasar |     3,558      3,417      2,956 |     9,931 
+              |     35.83      34.41      29.77 |    100.00 
+--------------+---------------------------------+----------
+     Menengah |    11,388      5,412      2,526 |    19,326 
+              |     58.93      28.00      13.07 |    100.00 
+--------------+---------------------------------+----------
+       Tinggi |     3,591      1,087        264 |     4,942 
+              |     72.66      22.00       5.34 |    100.00 
+--------------+---------------------------------+----------
+        Total |    18,652     10,077      6,079 |    34,808 
+              |     53.59      28.95      17.46 |    100.00 
+
+          Pearson chi2(6) =  3.3e+03   Pr = 0.000
+
++----------------+
+| Key            |
+|----------------|
+|   frequency    |
+| row percentage |
++----------------+
+
+Pendidikan |   Status deprivasi lingkungan
+ orang tua |    rumah tangga (3 kategori)
+(ibu-ayah) |     Tidak     Rendah     Tinggi |     Total
+-----------+---------------------------------+----------
+    Rendah |     1,924      2,145      2,371 |     6,440 
+           |     29.88      33.31      36.82 |    100.00 
+-----------+---------------------------------+----------
+Ibu < ayah |     1,612      1,288      1,001 |     3,901 
+           |     41.32      33.02      25.66 |    100.00 
+-----------+---------------------------------+----------
+Ibu > ayah |     1,749      1,433        918 |     4,100 
+           |     42.66      34.95      22.39 |    100.00 
+-----------+---------------------------------+----------
+    Tinggi |    13,367      5,211      1,789 |    20,367 
+           |     65.63      25.59       8.78 |    100.00 
+-----------+---------------------------------+----------
+     Total |    18,652     10,077      6,079 |    34,808 
+           |     53.59      28.95      17.46 |    100.00 
+
+          Pearson chi2(6) =  4.1e+03   Pr = 0.000
+
++----------------+
+| Key            |
+|----------------|
+|   frequency    |
+| row percentage |
++----------------+
+
+    Indeks |
+  kekayaan |   Status deprivasi lingkungan
+     rumah |    rumah tangga (3 kategori)
+    tangga |     Tidak     Rendah     Tinggi |     Total
+-----------+---------------------------------+----------
+    Miskin |     4,712      6,380      5,616 |    16,708 
+           |     28.20      38.19      33.61 |    100.00 
+-----------+---------------------------------+----------
+  Menengah |     8,589      2,970        431 |    11,990 
+           |     71.63      24.77       3.59 |    100.00 
+-----------+---------------------------------+----------
+      Kaya |     5,351        727         32 |     6,110 
+           |     87.58      11.90       0.52 |    100.00 
+-----------+---------------------------------+----------
+     Total |    18,652     10,077      6,079 |    34,808 
+           |     53.59      28.95      17.46 |    100.00 
+
+          Pearson chi2(4) =  1.0e+04   Pr = 0.000
+
++----------------+
+| Key            |
+|----------------|
+|   frequency    |
+| row percentage |
++----------------+
+
+   Wilayah |   Status deprivasi lingkungan
+    tempat |    rumah tangga (3 kategori)
+   tinggal |     Tidak     Rendah     Tinggi |     Total
+-----------+---------------------------------+----------
+ Perdesaan |     6,286      6,341      5,122 |    17,749 
+           |     35.42      35.73      28.86 |    100.00 
+-----------+---------------------------------+----------
+ Perkotaan |    12,366      3,736        957 |    17,059 
+           |     72.49      21.90       5.61 |    100.00 
+-----------+---------------------------------+----------
+     Total |    18,652     10,077      6,079 |    34,808 
+           |     53.59      28.95      17.46 |    100.00 
+
+          Pearson chi2(2) =  5.5e+03   Pr = 0.000
+
+. 
+. *Spearman corr
+. *\impdrinkwat
+. quietly spearman meduc4c peduc4c pareduc wealth reside impdrinkwat, stats(rho p)
+
+. matrix list r(Rho), format(%4.3f)
+
+symmetric r(Rho)[6,6]
+                 meduc4c      peduc4c      pareduc       wealth       reside  impdrinkwat
+    meduc4c        1.000
+    peduc4c        0.565        1.000
+    pareduc        0.823        0.741        1.000
+     wealth        0.427        0.431        0.411        1.000
+     reside        0.246        0.257        0.284        0.412        1.000
+impdrinkwat        0.166        0.165        0.182        0.239        0.233        1.000
+
+. matrix list r(P), format(%4.3f)
+
+symmetric r(P)[6,6]
+                 meduc4c      peduc4c      pareduc       wealth       reside  impdrinkwat
+    meduc4c        0.000
+    peduc4c        0.000        0.000
+    pareduc        0.000        0.000        0.000
+     wealth        0.000        0.000        0.000        0.000
+     reside        0.000        0.000        0.000        0.000        0.000
+impdrinkwat        0.000        0.000        0.000        0.000        0.000        0.000
+
+. *\impsan
+. quietly spearman meduc4c peduc4c pareduc wealth reside impsan, stats(rho p)
+
+. matrix list r(Rho), format(%4.3f)
+
+symmetric r(Rho)[6,6]
+         meduc4c  peduc4c  pareduc   wealth   reside   impsan
+meduc4c    1.000
+peduc4c    0.565    1.000
+pareduc    0.823    0.741    1.000
+ wealth    0.427    0.431    0.411    1.000
+ reside    0.246    0.257    0.284    0.412    1.000
+ impsan    0.265    0.256    0.282    0.386    0.232    1.000
+
+. matrix list r(P), format(%4.3f)
+
+symmetric r(P)[6,6]
+         meduc4c  peduc4c  pareduc   wealth   reside   impsan
+meduc4c    0.000
+peduc4c    0.000    0.000
+pareduc    0.000    0.000    0.000
+ wealth    0.000    0.000    0.000    0.000
+ reside    0.000    0.000    0.000    0.000    0.000
+ impsan    0.000    0.000    0.000    0.000    0.000    0.000
+
+. *\cookfldr
+. quietly spearman meduc4c peduc4c pareduc wealth reside cookfldr, stats(rho p)
+
+. matrix list r(Rho), format(%4.3f)
+
+symmetric r(Rho)[6,6]
+           meduc4c   peduc4c   pareduc    wealth    reside  cookfldr
+ meduc4c     1.000
+ peduc4c     0.565     1.000
+ pareduc     0.823     0.741     1.000
+  wealth     0.427     0.431     0.411     1.000
+  reside     0.246     0.257     0.284     0.412     1.000
+cookfldr     0.212     0.198     0.239     0.414     0.332     1.000
+
+. matrix list r(P), format(%4.3f)
+
+symmetric r(P)[6,6]
+           meduc4c   peduc4c   pareduc    wealth    reside  cookfldr
+ meduc4c     0.000
+ peduc4c     0.000     0.000
+ pareduc     0.000     0.000     0.000
+  wealth     0.000     0.000     0.000     0.000
+  reside     0.000     0.000     0.000     0.000     0.000
+cookfldr     0.000     0.000     0.000     0.000     0.000     0.000
+
+. *\depriv
+. *spearman meduc4c peduc4c pareduc wealth reside depriv2c, stats(rho p)
+. quietly spearman meduc4c peduc4c pareduc wealth reside depriv, stats(rho p)
+
+. matrix list r(Rho), format(%4.3f)
+
+symmetric r(Rho)[6,6]
+         meduc4c  peduc4c  pareduc   wealth   reside   depriv
+meduc4c    1.000
+peduc4c    0.565    1.000
+pareduc    0.823    0.741    1.000
+ wealth    0.427    0.431    0.411    1.000
+ reside    0.246    0.257    0.284    0.412    1.000
+ depriv   -0.301   -0.293   -0.332   -0.526   -0.397    1.000
+
+. matrix list r(P), format(%4.3f)
+
+symmetric r(P)[6,6]
+         meduc4c  peduc4c  pareduc   wealth   reside   depriv
+meduc4c    0.000
+peduc4c    0.000    0.000
+pareduc    0.000    0.000    0.000
+ wealth    0.000    0.000    0.000    0.000
+ reside    0.000    0.000    0.000    0.000    0.000
+ depriv    0.000    0.000    0.000    0.000    0.000    0.000
+
+. 
+. /*
+> ******************************************************************
+> Kecenderungan kematian anak menurut kovariat                            [done]
+> ******************************************************************
+> */
+. 
+. *Unweight
+. tabmult, cat(depriv depriv2c chsex bordin mageb pareduc wealth reside   ///
+>                         pwdisthfac3c)                                                                                           
+> ///
+>                 cont(pwdisthfac)                                                                                                
+> ///
+>                 by(nndeath ideath u5death) row statc(mean med sd)                               ///
+>                 save(output\desc_2way_death.xls) sheet(persen) replace
+note: results saved to output\desc_2way_death.xls
+
+. 
+. tabmult, cat(depriv depriv2c chsex bordin mageb pareduc wealth reside   ///
+>                         pwdisthfac3c)                                                                                           
+> ///
+>                 cont(pwdisthfac)                                                                                                
+> ///
+>                 by(nndeath ideath u5death) statc(mean med sd)                                   ///
+>                 save(output\desc_2way_death.xls) sheet(absolut) append
+note: results saved to output\desc_2way_death.xls
+
+.                 
+. *Weight
+. tabmult [aw=wweight],                                                                                                   ///
+>                 cat(depriv depriv2c chsex bordin mageb pareduc wealth reside    ///
+>                         pwdisthfac3c)                                                                                           
+> ///
+>                 cont(pwdisthfac)                                                                                                
+> ///
+>                 by(nndeath ideath u5death) row statc(mean med sd)                               ///
+>                 save(output\desc_2way_death.xls) sheet(persen_w) append
+note: results saved to output\desc_2way_death.xls
+
+. 
+.                 
+. *Two-way pearson chi-squared
+. *\neonatal
+. foreach p in $vars{
+  2.         tab `p' nndeath, row m chi2
+  3. }
+
++----------------+
+| Key            |
+|----------------|
+|   frequency    |
+| row percentage |
++----------------+
+
+    Status |
+ deprivasi |
+lingkungan |
+     rumah |    Meninggal saat
+ tangga (3 |   periode neonatal
+ kategori) |     Tidak         Ya |     Total
+-----------+----------------------+----------
+     Tidak |    18,362        290 |    18,652 
+           |     98.45       1.55 |    100.00 
+-----------+----------------------+----------
+    Rendah |     9,873        204 |    10,077 
+           |     97.98       2.02 |    100.00 
+-----------+----------------------+----------
+    Tinggi |     5,932        147 |     6,079 
+           |     97.58       2.42 |    100.00 
+-----------+----------------------+----------
+     Total |    34,167        641 |    34,808 
+           |     98.16       1.84 |    100.00 
+
+          Pearson chi2(2) =  21.5303   Pr = 0.000
+
++----------------+
+| Key            |
+|----------------|
+|   frequency    |
+| row percentage |
++----------------+
+
+    Status |
+ deprivasi |
+lingkungan |    Meninggal saat
+     rumah |   periode neonatal
+    tangga |     Tidak         Ya |     Total
+-----------+----------------------+----------
+     Tidak |    18,362        290 |    18,652 
+           |     98.45       1.55 |    100.00 
+-----------+----------------------+----------
+        Ya |    15,805        351 |    16,156 
+           |     97.83       2.17 |    100.00 
+-----------+----------------------+----------
+     Total |    34,167        641 |    34,808 
+           |     98.16       1.84 |    100.00 
+
+          Pearson chi2(1) =  18.2782   Pr = 0.000
+
++----------------+
+| Key            |
+|----------------|
+|   frequency    |
+| row percentage |
++----------------+
+
+   Kategori |
+     sumber |    Meninggal saat
+  utama air |   periode neonatal
+      minum |     Tidak         Ya |     Total
+------------+----------------------+----------
+Tidak layak |     5,092        116 |     5,208 
+            |     97.77       2.23 |    100.00 
+------------+----------------------+----------
+      Layak |    29,075        525 |    29,600 
+            |     98.23       1.77 |    100.00 
+------------+----------------------+----------
+      Total |    34,167        641 |    34,808 
+            |     98.16       1.84 |    100.00 
+
+          Pearson chi2(1) =   5.0432   Pr = 0.025
+
++----------------+
+| Key            |
+|----------------|
+|   frequency    |
+| row percentage |
++----------------+
+
+   Kategori |
+  fasilitas |    Meninggal saat
+toilet/sani |   periode neonatal
+       tasi |     Tidak         Ya |     Total
+------------+----------------------+----------
+Tidak layak |     6,670        151 |     6,821 
+            |     97.79       2.21 |    100.00 
+------------+----------------------+----------
+      Layak |    27,497        490 |    27,987 
+            |     98.25       1.75 |    100.00 
+------------+----------------------+----------
+      Total |    34,167        641 |    34,808 
+            |     98.16       1.84 |    100.00 
+
+          Pearson chi2(1) =   6.5023   Pr = 0.011
+
++----------------+
+| Key            |
+|----------------|
+|   frequency    |
+| row percentage |
++----------------+
+
+                      |    Meninggal saat
+ Kategori bahan bakar |   periode neonatal
+              memasak |     Tidak         Ya |     Total
+----------------------+----------------------+----------
+Tidak aman/polusi tin |    11,230        260 |    11,490 
+                      |     97.74       2.26 |    100.00 
+----------------------+----------------------+----------
+   Aman/polusi rendah |    22,937        381 |    23,318 
+                      |     98.37       1.63 |    100.00 
+----------------------+----------------------+----------
+                Total |    34,167        641 |    34,808 
+                      |     98.16       1.84 |    100.00 
+
+          Pearson chi2(1) =  16.8421   Pr = 0.000
+
++----------------+
+| Key            |
+|----------------|
+|   frequency    |
+| row percentage |
++----------------+
+
+     Jenis |    Meninggal saat
+   kelamin |   periode neonatal
+      anak |     Tidak         Ya |     Total
+-----------+----------------------+----------
+ Perempuan |    16,571        279 |    16,850 
+           |     98.34       1.66 |    100.00 
+-----------+----------------------+----------
+ Laki-laki |    17,596        362 |    17,958 
+           |     97.98       2.02 |    100.00 
+-----------+----------------------+----------
+     Total |    34,167        641 |    34,808 
+           |     98.16       1.84 |    100.00 
+
+          Pearson chi2(1) =   6.2337   Pr = 0.013
+
++----------------+
+| Key            |
+|----------------|
+|   frequency    |
+| row percentage |
++----------------+
+
+  Urutan dan |
+       jarak |    Meninggal saat
+   kelahiran |   periode neonatal
+  sebelumnya |     Tidak         Ya |     Total
+-------------+----------------------+----------
+     Pertama |    11,462        231 |    11,693 
+             |     98.02       1.98 |    100.00 
+-------------+----------------------+----------
+  2 dan >=24 |     9,341        121 |     9,462 
+             |     98.72       1.28 |    100.00 
+-------------+----------------------+----------
+   2 dan <24 |     1,193         27 |     1,220 
+             |     97.79       2.21 |    100.00 
+-------------+----------------------+----------
+>=3 dan >=24 |    10,572        198 |    10,770 
+             |     98.16       1.84 |    100.00 
+-------------+----------------------+----------
+ >=3 dan <24 |     1,599         64 |     1,663 
+             |     96.15       3.85 |    100.00 
+-------------+----------------------+----------
+       Total |    34,167        641 |    34,808 
+             |     98.16       1.84 |    100.00 
+
+          Pearson chi2(4) =  55.7256   Pr = 0.000
+
++----------------+
+| Key            |
+|----------------|
+|   frequency    |
+| row percentage |
++----------------+
+
+  Umur ibu |    Meninggal saat
+      saat |   periode neonatal
+melahirkan |     Tidak         Ya |     Total
+-----------+----------------------+----------
+       <20 |     2,821         78 |     2,899 
+           |     97.31       2.69 |    100.00 
+-----------+----------------------+----------
+     20-29 |    17,802        288 |    18,090 
+           |     98.41       1.59 |    100.00 
+-----------+----------------------+----------
+     30-39 |    12,440        231 |    12,671 
+           |     98.18       1.82 |    100.00 
+-----------+----------------------+----------
+     40-49 |     1,104         44 |     1,148 
+           |     96.17       3.83 |    100.00 
+-----------+----------------------+----------
+     Total |    34,167        641 |    34,808 
+           |     98.16       1.84 |    100.00 
+
+          Pearson chi2(3) =  42.9957   Pr = 0.000
+
++----------------+
+| Key            |
+|----------------|
+|   frequency    |
+| row percentage |
++----------------+
+
+   Pendidikan |
+    tertinggi |
+         yang |    Meninggal saat
+   ditamatkan |   periode neonatal
+          ibu |     Tidak         Ya |     Total
+--------------+----------------------+----------
+Tidak sekolah |       609         18 |       627 
+              |     97.13       2.87 |    100.00 
+--------------+----------------------+----------
+        Dasar |     9,503        211 |     9,714 
+              |     97.83       2.17 |    100.00 
+--------------+----------------------+----------
+     Menengah |    18,617        323 |    18,940 
+              |     98.29       1.71 |    100.00 
+--------------+----------------------+----------
+       Tinggi |     5,438         89 |     5,527 
+              |     98.39       1.61 |    100.00 
+--------------+----------------------+----------
+        Total |    34,167        641 |    34,808 
+              |     98.16       1.84 |    100.00 
+
+          Pearson chi2(3) =  13.1253   Pr = 0.004
+
++----------------+
+| Key            |
+|----------------|
+|   frequency    |
+| row percentage |
++----------------+
+
+   Pendidikan |
+    tertinggi |
+         yang |    Meninggal saat
+   ditamatkan |   periode neonatal
+         ayah |     Tidak         Ya |     Total
+--------------+----------------------+----------
+Tidak sekolah |       578         31 |       609 
+              |     94.91       5.09 |    100.00 
+--------------+----------------------+----------
+        Dasar |     9,730        201 |     9,931 
+              |     97.98       2.02 |    100.00 
+--------------+----------------------+----------
+     Menengah |    18,983        343 |    19,326 
+              |     98.23       1.77 |    100.00 
+--------------+----------------------+----------
+       Tinggi |     4,876         66 |     4,942 
+              |     98.66       1.34 |    100.00 
+--------------+----------------------+----------
+        Total |    34,167        641 |    34,808 
+              |     98.16       1.84 |    100.00 
+
+          Pearson chi2(3) =  44.8647   Pr = 0.000
+
++----------------+
+| Key            |
+|----------------|
+|   frequency    |
+| row percentage |
++----------------+
+
+Pendidikan |    Meninggal saat
+ orang tua |   periode neonatal
+(ibu-ayah) |     Tidak         Ya |     Total
+-----------+----------------------+----------
+    Rendah |     6,289        151 |     6,440 
+           |     97.66       2.34 |    100.00 
+-----------+----------------------+----------
+Ibu < ayah |     3,823         78 |     3,901 
+           |     98.00       2.00 |    100.00 
+-----------+----------------------+----------
+Ibu > ayah |     4,019         81 |     4,100 
+           |     98.02       1.98 |    100.00 
+-----------+----------------------+----------
+    Tinggi |    20,036        331 |    20,367 
+           |     98.37       1.63 |    100.00 
+-----------+----------------------+----------
+     Total |    34,167        641 |    34,808 
+           |     98.16       1.84 |    100.00 
+
+          Pearson chi2(3) =  15.2410   Pr = 0.002
+
++----------------+
+| Key            |
+|----------------|
+|   frequency    |
+| row percentage |
++----------------+
+
+    Indeks |
+  kekayaan |    Meninggal saat
+     rumah |   periode neonatal
+    tangga |     Tidak         Ya |     Total
+-----------+----------------------+----------
+    Miskin |    16,358        350 |    16,708 
+           |     97.91       2.09 |    100.00 
+-----------+----------------------+----------
+  Menengah |    11,787        203 |    11,990 
+           |     98.31       1.69 |    100.00 
+-----------+----------------------+----------
+      Kaya |     6,022         88 |     6,110 
+           |     98.56       1.44 |    100.00 
+-----------+----------------------+----------
+     Total |    34,167        641 |    34,808 
+           |     98.16       1.84 |    100.00 
+
+          Pearson chi2(2) =  12.8336   Pr = 0.002
+
++----------------+
+| Key            |
+|----------------|
+|   frequency    |
+| row percentage |
++----------------+
+
+   Wilayah |    Meninggal saat
+    tempat |   periode neonatal
+   tinggal |     Tidak         Ya |     Total
+-----------+----------------------+----------
+ Perdesaan |    17,408        341 |    17,749 
+           |     98.08       1.92 |    100.00 
+-----------+----------------------+----------
+ Perkotaan |    16,759        300 |    17,059 
+           |     98.24       1.76 |    100.00 
+-----------+----------------------+----------
+     Total |    34,167        641 |    34,808 
+           |     98.16       1.84 |    100.00 
+
+          Pearson chi2(1) =   1.2728   Pr = 0.259
+
++----------------+
+| Key            |
+|----------------|
+|   frequency    |
+| row percentage |
++----------------+
+
+   Masalah |
+aksesibili |    Meninggal saat
+    tas ke |   periode neonatal
+    faskes |     Tidak         Ya |     Total
+-----------+----------------------+----------
+    Rendah |    12,930        217 |    13,147 
+           |     98.35       1.65 |    100.00 
+-----------+----------------------+----------
+    Sedang |    13,650        243 |    13,893 
+           |     98.25       1.75 |    100.00 
+-----------+----------------------+----------
+    Tinggi |     7,587        181 |     7,768 
+           |     97.67       2.33 |    100.00 
+-----------+----------------------+----------
+     Total |    34,167        641 |    34,808 
+           |     98.16       1.84 |    100.00 
+
+          Pearson chi2(2) =  13.5658   Pr = 0.001
+
+. 
+. *\bayi
+. foreach p in $vars{
+  2.         tab `p' ideath, row m chi2
+  3. }
+
++----------------+
+| Key            |
+|----------------|
+|   frequency    |
+| row percentage |
++----------------+
+
+    Status |
+ deprivasi |
+lingkungan |
+     rumah |    Meninggal saat
+ tangga (3 |  periode 0-11 bulan
+ kategori) |     Tidak         Ya |     Total
+-----------+----------------------+----------
+     Tidak |    18,226        426 |    18,652 
+           |     97.72       2.28 |    100.00 
+-----------+----------------------+----------
+    Rendah |     9,745        332 |    10,077 
+           |     96.71       3.29 |    100.00 
+-----------+----------------------+----------
+    Tinggi |     5,829        250 |     6,079 
+           |     95.89       4.11 |    100.00 
+-----------+----------------------+----------
+     Total |    33,800      1,008 |    34,808 
+           |     97.10       2.90 |    100.00 
+
+          Pearson chi2(2) =  62.5355   Pr = 0.000
+
++----------------+
+| Key            |
+|----------------|
+|   frequency    |
+| row percentage |
++----------------+
+
+    Status |
+ deprivasi |
+lingkungan |    Meninggal saat
+     rumah |  periode 0-11 bulan
+    tangga |     Tidak         Ya |     Total
+-----------+----------------------+----------
+     Tidak |    18,226        426 |    18,652 
+           |     97.72       2.28 |    100.00 
+-----------+----------------------+----------
+        Ya |    15,574        582 |    16,156 
+           |     96.40       3.60 |    100.00 
+-----------+----------------------+----------
+     Total |    33,800      1,008 |    34,808 
+           |     97.10       2.90 |    100.00 
+
+          Pearson chi2(1) =  53.5157   Pr = 0.000
+
++----------------+
+| Key            |
+|----------------|
+|   frequency    |
+| row percentage |
++----------------+
+
+   Kategori |
+     sumber |    Meninggal saat
+  utama air |  periode 0-11 bulan
+      minum |     Tidak         Ya |     Total
+------------+----------------------+----------
+Tidak layak |     5,029        179 |     5,208 
+            |     96.56       3.44 |    100.00 
+------------+----------------------+----------
+      Layak |    28,771        829 |    29,600 
+            |     97.20       2.80 |    100.00 
+------------+----------------------+----------
+      Total |    33,800      1,008 |    34,808 
+            |     97.10       2.90 |    100.00 
+
+          Pearson chi2(1) =   6.3775   Pr = 0.012
+
++----------------+
+| Key            |
+|----------------|
+|   frequency    |
+| row percentage |
++----------------+
+
+   Kategori |
+  fasilitas |    Meninggal saat
+toilet/sani |  periode 0-11 bulan
+       tasi |     Tidak         Ya |     Total
+------------+----------------------+----------
+Tidak layak |     6,568        253 |     6,821 
+            |     96.29       3.71 |    100.00 
+------------+----------------------+----------
+      Layak |    27,232        755 |    27,987 
+            |     97.30       2.70 |    100.00 
+------------+----------------------+----------
+      Total |    33,800      1,008 |    34,808 
+            |     97.10       2.90 |    100.00 
+
+          Pearson chi2(1) =  19.9525   Pr = 0.000
+
++----------------+
+| Key            |
+|----------------|
+|   frequency    |
+| row percentage |
++----------------+
+
+                      |    Meninggal saat
+ Kategori bahan bakar |  periode 0-11 bulan
+              memasak |     Tidak         Ya |     Total
+----------------------+----------------------+----------
+Tidak aman/polusi tin |    11,047        443 |    11,490 
+                      |     96.14       3.86 |    100.00 
+----------------------+----------------------+----------
+   Aman/polusi rendah |    22,753        565 |    23,318 
+                      |     97.58       2.42 |    100.00 
+----------------------+----------------------+----------
+                Total |    33,800      1,008 |    34,808 
+                      |     97.10       2.90 |    100.00 
+
+          Pearson chi2(1) =  56.1702   Pr = 0.000
+
++----------------+
+| Key            |
+|----------------|
+|   frequency    |
+| row percentage |
++----------------+
+
+     Jenis |    Meninggal saat
+   kelamin |  periode 0-11 bulan
+      anak |     Tidak         Ya |     Total
+-----------+----------------------+----------
+ Perempuan |    16,389        461 |    16,850 
+           |     97.26       2.74 |    100.00 
+-----------+----------------------+----------
+ Laki-laki |    17,411        547 |    17,958 
+           |     96.95       3.05 |    100.00 
+-----------+----------------------+----------
+     Total |    33,800      1,008 |    34,808 
+           |     97.10       2.90 |    100.00 
+
+          Pearson chi2(1) =   2.9726   Pr = 0.085
+
++----------------+
+| Key            |
+|----------------|
+|   frequency    |
+| row percentage |
++----------------+
+
+  Urutan dan |
+       jarak |    Meninggal saat
+   kelahiran |  periode 0-11 bulan
+  sebelumnya |     Tidak         Ya |     Total
+-------------+----------------------+----------
+     Pertama |    11,368        325 |    11,693 
+             |     97.22       2.78 |    100.00 
+-------------+----------------------+----------
+  2 dan >=24 |     9,279        183 |     9,462 
+             |     98.07       1.93 |    100.00 
+-------------+----------------------+----------
+   2 dan <24 |     1,170         50 |     1,220 
+             |     95.90       4.10 |    100.00 
+-------------+----------------------+----------
+>=3 dan >=24 |    10,419        351 |    10,770 
+             |     96.74       3.26 |    100.00 
+-------------+----------------------+----------
+ >=3 dan <24 |     1,564         99 |     1,663 
+             |     94.05       5.95 |    100.00 
+-------------+----------------------+----------
+       Total |    33,800      1,008 |    34,808 
+             |     97.10       2.90 |    100.00 
+
+          Pearson chi2(4) =  98.2918   Pr = 0.000
+
++----------------+
+| Key            |
+|----------------|
+|   frequency    |
+| row percentage |
++----------------+
+
+  Umur ibu |    Meninggal saat
+      saat |  periode 0-11 bulan
+melahirkan |     Tidak         Ya |     Total
+-----------+----------------------+----------
+       <20 |     2,786        113 |     2,899 
+           |     96.10       3.90 |    100.00 
+-----------+----------------------+----------
+     20-29 |    17,637        453 |    18,090 
+           |     97.50       2.50 |    100.00 
+-----------+----------------------+----------
+     30-39 |    12,287        384 |    12,671 
+           |     96.97       3.03 |    100.00 
+-----------+----------------------+----------
+     40-49 |     1,090         58 |     1,148 
+           |     94.95       5.05 |    100.00 
+-----------+----------------------+----------
+     Total |    33,800      1,008 |    34,808 
+           |     97.10       2.90 |    100.00 
+
+          Pearson chi2(3) =  40.0234   Pr = 0.000
+
++----------------+
+| Key            |
+|----------------|
+|   frequency    |
+| row percentage |
++----------------+
+
+   Pendidikan |
+    tertinggi |
+         yang |    Meninggal saat
+   ditamatkan |  periode 0-11 bulan
+          ibu |     Tidak         Ya |     Total
+--------------+----------------------+----------
+Tidak sekolah |       592         35 |       627 
+              |     94.42       5.58 |    100.00 
+--------------+----------------------+----------
+        Dasar |     9,357        357 |     9,714 
+              |     96.32       3.68 |    100.00 
+--------------+----------------------+----------
+     Menengah |    18,462        478 |    18,940 
+              |     97.48       2.52 |    100.00 
+--------------+----------------------+----------
+       Tinggi |     5,389        138 |     5,527 
+              |     97.50       2.50 |    100.00 
+--------------+----------------------+----------
+        Total |    33,800      1,008 |    34,808 
+              |     97.10       2.90 |    100.00 
+
+          Pearson chi2(3) =  49.5214   Pr = 0.000
+
++----------------+
+| Key            |
+|----------------|
+|   frequency    |
+| row percentage |
++----------------+
+
+   Pendidikan |
+    tertinggi |
+         yang |    Meninggal saat
+   ditamatkan |  periode 0-11 bulan
+         ayah |     Tidak         Ya |     Total
+--------------+----------------------+----------
+Tidak sekolah |       561         48 |       609 
+              |     92.12       7.88 |    100.00 
+--------------+----------------------+----------
+        Dasar |     9,602        329 |     9,931 
+              |     96.69       3.31 |    100.00 
+--------------+----------------------+----------
+     Menengah |    18,807        519 |    19,326 
+              |     97.31       2.69 |    100.00 
+--------------+----------------------+----------
+       Tinggi |     4,830        112 |     4,942 
+              |     97.73       2.27 |    100.00 
+--------------+----------------------+----------
+        Total |    33,800      1,008 |    34,808 
+              |     97.10       2.90 |    100.00 
+
+          Pearson chi2(3) =  69.9859   Pr = 0.000
+
++----------------+
+| Key            |
+|----------------|
+|   frequency    |
+| row percentage |
++----------------+
+
+Pendidikan |    Meninggal saat
+ orang tua |  periode 0-11 bulan
+(ibu-ayah) |     Tidak         Ya |     Total
+-----------+----------------------+----------
+    Rendah |     6,182        258 |     6,440 
+           |     95.99       4.01 |    100.00 
+-----------+----------------------+----------
+Ibu < ayah |     3,767        134 |     3,901 
+           |     96.56       3.44 |    100.00 
+-----------+----------------------+----------
+Ibu > ayah |     3,981        119 |     4,100 
+           |     97.10       2.90 |    100.00 
+-----------+----------------------+----------
+    Tinggi |    19,870        497 |    20,367 
+           |     97.56       2.44 |    100.00 
+-----------+----------------------+----------
+     Total |    33,800      1,008 |    34,808 
+           |     97.10       2.90 |    100.00 
+
+          Pearson chi2(3) =  47.3048   Pr = 0.000
+
++----------------+
+| Key            |
+|----------------|
+|   frequency    |
+| row percentage |
++----------------+
+
+    Indeks |
+  kekayaan |    Meninggal saat
+     rumah |  periode 0-11 bulan
+    tangga |     Tidak         Ya |     Total
+-----------+----------------------+----------
+    Miskin |    16,123        585 |    16,708 
+           |     96.50       3.50 |    100.00 
+-----------+----------------------+----------
+  Menengah |    11,693        297 |    11,990 
+           |     97.52       2.48 |    100.00 
+-----------+----------------------+----------
+      Kaya |     5,984        126 |     6,110 
+           |     97.94       2.06 |    100.00 
+-----------+----------------------+----------
+     Total |    33,800      1,008 |    34,808 
+           |     97.10       2.90 |    100.00 
+
+          Pearson chi2(2) =  44.3601   Pr = 0.000
+
++----------------+
+| Key            |
+|----------------|
+|   frequency    |
+| row percentage |
++----------------+
+
+   Wilayah |    Meninggal saat
+    tempat |  periode 0-11 bulan
+   tinggal |     Tidak         Ya |     Total
+-----------+----------------------+----------
+ Perdesaan |    17,181        568 |    17,749 
+           |     96.80       3.20 |    100.00 
+-----------+----------------------+----------
+ Perkotaan |    16,619        440 |    17,059 
+           |     97.42       2.58 |    100.00 
+-----------+----------------------+----------
+     Total |    33,800      1,008 |    34,808 
+           |     97.10       2.90 |    100.00 
+
+          Pearson chi2(1) =  11.9253   Pr = 0.001
+
++----------------+
+| Key            |
+|----------------|
+|   frequency    |
+| row percentage |
++----------------+
+
+   Masalah |
+aksesibili |    Meninggal saat
+    tas ke |  periode 0-11 bulan
+    faskes |     Tidak         Ya |     Total
+-----------+----------------------+----------
+    Rendah |    12,833        314 |    13,147 
+           |     97.61       2.39 |    100.00 
+-----------+----------------------+----------
+    Sedang |    13,484        409 |    13,893 
+           |     97.06       2.94 |    100.00 
+-----------+----------------------+----------
+    Tinggi |     7,483        285 |     7,768 
+           |     96.33       3.67 |    100.00 
+-----------+----------------------+----------
+     Total |    33,800      1,008 |    34,808 
+           |     97.10       2.90 |    100.00 
+
+          Pearson chi2(2) =  28.6627   Pr = 0.000
+
+. 
+. *\di bawah 5 tahun
+. foreach p in $vars{
+  2.         tab `p' u5death, row m chi2
+  3. }
+
++----------------+
+| Key            |
+|----------------|
+|   frequency    |
+| row percentage |
++----------------+
+
+    Status |
+ deprivasi |
+lingkungan |
+     rumah |    Meninggal saat
+ tangga (3 |  periode 0-59 bulan
+ kategori) |     Tidak         Ya |     Total
+-----------+----------------------+----------
+     Tidak |    18,143        509 |    18,652 
+           |     97.27       2.73 |    100.00 
+-----------+----------------------+----------
+    Rendah |     9,677        400 |    10,077 
+           |     96.03       3.97 |    100.00 
+-----------+----------------------+----------
+    Tinggi |     5,773        306 |     6,079 
+           |     94.97       5.03 |    100.00 
+-----------+----------------------+----------
+     Total |    33,593      1,215 |    34,808 
+           |     96.51       3.49 |    100.00 
+
+          Pearson chi2(2) =  81.9499   Pr = 0.000
+
++----------------+
+| Key            |
+|----------------|
+|   frequency    |
+| row percentage |
++----------------+
+
+    Status |
+ deprivasi |
+lingkungan |    Meninggal saat
+     rumah |  periode 0-59 bulan
+    tangga |     Tidak         Ya |     Total
+-----------+----------------------+----------
+     Tidak |    18,143        509 |    18,652 
+           |     97.27       2.73 |    100.00 
+-----------+----------------------+----------
+        Ya |    15,450        706 |    16,156 
+           |     95.63       4.37 |    100.00 
+-----------+----------------------+----------
+     Total |    33,593      1,215 |    34,808 
+           |     96.51       3.49 |    100.00 
+
+          Pearson chi2(1) =  69.2008   Pr = 0.000
+
++----------------+
+| Key            |
+|----------------|
+|   frequency    |
+| row percentage |
++----------------+
+
+   Kategori |
+     sumber |    Meninggal saat
+  utama air |  periode 0-59 bulan
+      minum |     Tidak         Ya |     Total
+------------+----------------------+----------
+Tidak layak |     4,996        212 |     5,208 
+            |     95.93       4.07 |    100.00 
+------------+----------------------+----------
+      Layak |    28,597      1,003 |    29,600 
+            |     96.61       3.39 |    100.00 
+------------+----------------------+----------
+      Total |    33,593      1,215 |    34,808 
+            |     96.51       3.49 |    100.00 
+
+          Pearson chi2(1) =   6.1175   Pr = 0.013
+
++----------------+
+| Key            |
+|----------------|
+|   frequency    |
+| row percentage |
++----------------+
+
+   Kategori |
+  fasilitas |    Meninggal saat
+toilet/sani |  periode 0-59 bulan
+       tasi |     Tidak         Ya |     Total
+------------+----------------------+----------
+Tidak layak |     6,509        312 |     6,821 
+            |     95.43       4.57 |    100.00 
+------------+----------------------+----------
+      Layak |    27,084        903 |    27,987 
+            |     96.77       3.23 |    100.00 
+------------+----------------------+----------
+      Total |    33,593      1,215 |    34,808 
+            |     96.51       3.49 |    100.00 
+
+          Pearson chi2(1) =  29.5657   Pr = 0.000
+
++----------------+
+| Key            |
+|----------------|
+|   frequency    |
+| row percentage |
++----------------+
+
+                      |    Meninggal saat
+ Kategori bahan bakar |  periode 0-59 bulan
+              memasak |     Tidak         Ya |     Total
+----------------------+----------------------+----------
+Tidak aman/polusi tin |    10,945        545 |    11,490 
+                      |     95.26       4.74 |    100.00 
+----------------------+----------------------+----------
+   Aman/polusi rendah |    22,648        670 |    23,318 
+                      |     97.13       2.87 |    100.00 
+----------------------+----------------------+----------
+                Total |    33,593      1,215 |    34,808 
+                      |     96.51       3.49 |    100.00 
+
+          Pearson chi2(1) =  79.8950   Pr = 0.000
+
++----------------+
+| Key            |
+|----------------|
+|   frequency    |
+| row percentage |
++----------------+
+
+     Jenis |    Meninggal saat
+   kelamin |  periode 0-59 bulan
+      anak |     Tidak         Ya |     Total
+-----------+----------------------+----------
+ Perempuan |    16,303        547 |    16,850 
+           |     96.75       3.25 |    100.00 
+-----------+----------------------+----------
+ Laki-laki |    17,290        668 |    17,958 
+           |     96.28       3.72 |    100.00 
+-----------+----------------------+----------
+     Total |    33,593      1,215 |    34,808 
+           |     96.51       3.49 |    100.00 
+
+          Pearson chi2(1) =   5.7856   Pr = 0.016
+
++----------------+
+| Key            |
+|----------------|
+|   frequency    |
+| row percentage |
++----------------+
+
+  Urutan dan |
+       jarak |    Meninggal saat
+   kelahiran |  periode 0-59 bulan
+  sebelumnya |     Tidak         Ya |     Total
+-------------+----------------------+----------
+     Pertama |    11,320        373 |    11,693 
+             |     96.81       3.19 |    100.00 
+-------------+----------------------+----------
+  2 dan >=24 |     9,236        226 |     9,462 
+             |     97.61       2.39 |    100.00 
+-------------+----------------------+----------
+   2 dan <24 |     1,157         63 |     1,220 
+             |     94.84       5.16 |    100.00 
+-------------+----------------------+----------
+>=3 dan >=24 |    10,342        428 |    10,770 
+             |     96.03       3.97 |    100.00 
+-------------+----------------------+----------
+ >=3 dan <24 |     1,538        125 |     1,663 
+             |     92.48       7.52 |    100.00 
+-------------+----------------------+----------
+       Total |    33,593      1,215 |    34,808 
+             |     96.51       3.49 |    100.00 
+
+          Pearson chi2(4) = 134.8775   Pr = 0.000
+
++----------------+
+| Key            |
+|----------------|
+|   frequency    |
+| row percentage |
++----------------+
+
+  Umur ibu |    Meninggal saat
+      saat |  periode 0-59 bulan
+melahirkan |     Tidak         Ya |     Total
+-----------+----------------------+----------
+       <20 |     2,772        127 |     2,899 
+           |     95.62       4.38 |    100.00 
+-----------+----------------------+----------
+     20-29 |    17,525        565 |    18,090 
+           |     96.88       3.12 |    100.00 
+-----------+----------------------+----------
+     30-39 |    12,221        450 |    12,671 
+           |     96.45       3.55 |    100.00 
+-----------+----------------------+----------
+     40-49 |     1,075         73 |     1,148 
+           |     93.64       6.36 |    100.00 
+-----------+----------------------+----------
+     Total |    33,593      1,215 |    34,808 
+           |     96.51       3.49 |    100.00 
+
+          Pearson chi2(3) =  42.2409   Pr = 0.000
+
++----------------+
+| Key            |
+|----------------|
+|   frequency    |
+| row percentage |
++----------------+
+
+   Pendidikan |
+    tertinggi |
+         yang |    Meninggal saat
+   ditamatkan |  periode 0-59 bulan
+          ibu |     Tidak         Ya |     Total
+--------------+----------------------+----------
+Tidak sekolah |       578         49 |       627 
+              |     92.19       7.81 |    100.00 
+--------------+----------------------+----------
+        Dasar |     9,276        438 |     9,714 
+              |     95.49       4.51 |    100.00 
+--------------+----------------------+----------
+     Menengah |    18,371        569 |    18,940 
+              |     97.00       3.00 |    100.00 
+--------------+----------------------+----------
+       Tinggi |     5,368        159 |     5,527 
+              |     97.12       2.88 |    100.00 
+--------------+----------------------+----------
+        Total |    33,593      1,215 |    34,808 
+              |     96.51       3.49 |    100.00 
+
+          Pearson chi2(3) =  84.1915   Pr = 0.000
+
++----------------+
+| Key            |
+|----------------|
+|   frequency    |
+| row percentage |
++----------------+
+
+   Pendidikan |
+    tertinggi |
+         yang |    Meninggal saat
+   ditamatkan |  periode 0-59 bulan
+         ayah |     Tidak         Ya |     Total
+--------------+----------------------+----------
+Tidak sekolah |       550         59 |       609 
+              |     90.31       9.69 |    100.00 
+--------------+----------------------+----------
+        Dasar |     9,536        395 |     9,931 
+              |     96.02       3.98 |    100.00 
+--------------+----------------------+----------
+     Menengah |    18,699        627 |    19,326 
+              |     96.76       3.24 |    100.00 
+--------------+----------------------+----------
+       Tinggi |     4,808        134 |     4,942 
+              |     97.29       2.71 |    100.00 
+--------------+----------------------+----------
+        Total |    33,593      1,215 |    34,808 
+              |     96.51       3.49 |    100.00 
+
+          Pearson chi2(3) =  88.8062   Pr = 0.000
+
++----------------+
+| Key            |
+|----------------|
+|   frequency    |
+| row percentage |
++----------------+
+
+Pendidikan |    Meninggal saat
+ orang tua |  periode 0-59 bulan
+(ibu-ayah) |     Tidak         Ya |     Total
+-----------+----------------------+----------
+    Rendah |     6,129        311 |     6,440 
+           |     95.17       4.83 |    100.00 
+-----------+----------------------+----------
+Ibu < ayah |     3,725        176 |     3,901 
+           |     95.49       4.51 |    100.00 
+-----------+----------------------+----------
+Ibu > ayah |     3,957        143 |     4,100 
+           |     96.51       3.49 |    100.00 
+-----------+----------------------+----------
+    Tinggi |    19,782        585 |    20,367 
+           |     97.13       2.87 |    100.00 
+-----------+----------------------+----------
+     Total |    33,593      1,215 |    34,808 
+           |     96.51       3.49 |    100.00 
+
+          Pearson chi2(3) =  69.4410   Pr = 0.000
+
++----------------+
+| Key            |
+|----------------|
+|   frequency    |
+| row percentage |
++----------------+
+
+    Indeks |
+  kekayaan |    Meninggal saat
+     rumah |  periode 0-59 bulan
+    tangga |     Tidak         Ya |     Total
+-----------+----------------------+----------
+    Miskin |    15,993        715 |    16,708 
+           |     95.72       4.28 |    100.00 
+-----------+----------------------+----------
+  Menengah |    11,634        356 |    11,990 
+           |     97.03       2.97 |    100.00 
+-----------+----------------------+----------
+      Kaya |     5,966        144 |     6,110 
+           |     97.64       2.36 |    100.00 
+-----------+----------------------+----------
+     Total |    33,593      1,215 |    34,808 
+           |     96.51       3.49 |    100.00 
+
+          Pearson chi2(2) =  63.8528   Pr = 0.000
+
++----------------+
+| Key            |
+|----------------|
+|   frequency    |
+| row percentage |
++----------------+
+
+   Wilayah |    Meninggal saat
+    tempat |  periode 0-59 bulan
+   tinggal |     Tidak         Ya |     Total
+-----------+----------------------+----------
+ Perdesaan |    17,054        695 |    17,749 
+           |     96.08       3.92 |    100.00 
+-----------+----------------------+----------
+ Perkotaan |    16,539        520 |    17,059 
+           |     96.95       3.05 |    100.00 
+-----------+----------------------+----------
+     Total |    33,593      1,215 |    34,808 
+           |     96.51       3.49 |    100.00 
+
+          Pearson chi2(1) =  19.4308   Pr = 0.000
+
++----------------+
+| Key            |
+|----------------|
+|   frequency    |
+| row percentage |
++----------------+
+
+   Masalah |
+aksesibili |    Meninggal saat
+    tas ke |  periode 0-59 bulan
+    faskes |     Tidak         Ya |     Total
+-----------+----------------------+----------
+    Rendah |    12,766        381 |    13,147 
+           |     97.10       2.90 |    100.00 
+-----------+----------------------+----------
+    Sedang |    13,411        482 |    13,893 
+           |     96.53       3.47 |    100.00 
+-----------+----------------------+----------
+    Tinggi |     7,416        352 |     7,768 
+           |     95.47       4.53 |    100.00 
+-----------+----------------------+----------
+     Total |    33,593      1,215 |    34,808 
+           |     96.51       3.49 |    100.00 
+
+          Pearson chi2(2) =  38.7034   Pr = 0.000
+
+. 
+. *Spearman corr
+. *\neonatal
+. quietly spearman $vars pwdisthfac nndeath, stats(rho p)
+
+. matrix list r(Rho), format(%4.3f)
+
+symmetric r(Rho)[16,16]
+                    depriv      depriv2c   impdrinkwat        impsan      cookfldr         chsex        bordin         mageb
+      depriv         1.000
+    depriv2c         0.956         1.000
+ impdrinkwat        -0.535        -0.451         1.000
+      impsan        -0.641        -0.530         0.195         1.000
+    cookfldr        -0.778        -0.754         0.172         0.260         1.000
+       chsex         0.004         0.004        -0.009        -0.005         0.002         1.000
+      bordin         0.105         0.096        -0.040        -0.048        -0.118         0.001         1.000
+       mageb        -0.054        -0.050         0.035         0.067         0.015         0.003         0.550         1.000
+     meduc4c        -0.301        -0.266         0.166         0.265         0.212        -0.003        -0.217        -0.047
+     peduc4c        -0.293        -0.265         0.165         0.256         0.198        -0.006        -0.134        -0.008
+     pareduc        -0.332        -0.296         0.182         0.282         0.239        -0.006        -0.203        -0.069
+      wealth        -0.526        -0.497         0.239         0.386         0.414        -0.003        -0.078         0.087
+      reside        -0.397        -0.372         0.233         0.232         0.332         0.002        -0.053         0.058
+pwdisthfac3c         0.259         0.235        -0.135        -0.167        -0.230         0.001         0.079        -0.021
+  pwdisthfac         0.271         0.245        -0.150        -0.178        -0.233         0.003         0.075        -0.024
+     nndeath         0.025         0.023        -0.012        -0.014        -0.022         0.013         0.010         0.005
+
+                   meduc4c       peduc4c       pareduc        wealth        reside  pwdisthfac3c    pwdisthfac       nndeath
+     meduc4c         1.000
+     peduc4c         0.565         1.000
+     pareduc         0.823         0.741         1.000
+      wealth         0.427         0.431         0.411         1.000
+      reside         0.246         0.257         0.284         0.412         1.000
+pwdisthfac3c        -0.156        -0.142        -0.174        -0.235        -0.244         1.000
+  pwdisthfac        -0.167        -0.147        -0.185        -0.246        -0.254         0.936         1.000
+     nndeath        -0.018        -0.023        -0.021        -0.019        -0.006         0.017         0.016         1.000
+
+. matrix list r(P), format(%4.3f)
+
+symmetric r(P)[16,16]
+                    depriv      depriv2c   impdrinkwat        impsan      cookfldr         chsex        bordin         mageb
+      depriv         0.000
+    depriv2c         0.000         0.000
+ impdrinkwat         0.000         0.000         0.000
+      impsan         0.000         0.000         0.000         0.000
+    cookfldr         0.000         0.000         0.000         0.000         0.000
+       chsex         0.410         0.493         0.092         0.332         0.734         0.000
+      bordin         0.000         0.000         0.000         0.000         0.000         0.865         0.000
+       mageb         0.000         0.000         0.000         0.000         0.005         0.537         0.000         0.000
+     meduc4c         0.000         0.000         0.000         0.000         0.000         0.599         0.000         0.000
+     peduc4c         0.000         0.000         0.000         0.000         0.000         0.275         0.000         0.114
+     pareduc         0.000         0.000         0.000         0.000         0.000         0.273         0.000         0.000
+      wealth         0.000         0.000         0.000         0.000         0.000         0.525         0.000         0.000
+      reside         0.000         0.000         0.000         0.000         0.000         0.652         0.000         0.000
+pwdisthfac3c         0.000         0.000         0.000         0.000         0.000         0.787         0.000         0.000
+  pwdisthfac         0.000         0.000         0.000         0.000         0.000         0.533         0.000         0.000
+     nndeath         0.000         0.000         0.025         0.011         0.000         0.013         0.067         0.343
+
+                   meduc4c       peduc4c       pareduc        wealth        reside  pwdisthfac3c    pwdisthfac       nndeath
+     meduc4c         0.000
+     peduc4c         0.000         0.000
+     pareduc         0.000         0.000         0.000
+      wealth         0.000         0.000         0.000         0.000
+      reside         0.000         0.000         0.000         0.000         0.000
+pwdisthfac3c         0.000         0.000         0.000         0.000         0.000         0.000
+  pwdisthfac         0.000         0.000         0.000         0.000         0.000         0.000         0.000
+     nndeath         0.001         0.000         0.000         0.000         0.259         0.001         0.002         0.000
+
+. *\bayi
+. quietly spearman $vars pwdisthfac ideath, stats(rho p)
+
+. matrix list r(Rho), format(%4.3f)
+
+symmetric r(Rho)[16,16]
+                    depriv      depriv2c   impdrinkwat        impsan      cookfldr         chsex        bordin         mageb
+      depriv         1.000
+    depriv2c         0.956         1.000
+ impdrinkwat        -0.535        -0.451         1.000
+      impsan        -0.641        -0.530         0.195         1.000
+    cookfldr        -0.778        -0.754         0.172         0.260         1.000
+       chsex         0.004         0.004        -0.009        -0.005         0.002         1.000
+      bordin         0.105         0.096        -0.040        -0.048        -0.118         0.001         1.000
+       mageb        -0.054        -0.050         0.035         0.067         0.015         0.003         0.550         1.000
+     meduc4c        -0.301        -0.266         0.166         0.265         0.212        -0.003        -0.217        -0.047
+     peduc4c        -0.293        -0.265         0.165         0.256         0.198        -0.006        -0.134        -0.008
+     pareduc        -0.332        -0.296         0.182         0.282         0.239        -0.006        -0.203        -0.069
+      wealth        -0.526        -0.497         0.239         0.386         0.414        -0.003        -0.078         0.087
+      reside        -0.397        -0.372         0.233         0.232         0.332         0.002        -0.053         0.058
+pwdisthfac3c         0.259         0.235        -0.135        -0.167        -0.230         0.001         0.079        -0.021
+  pwdisthfac         0.271         0.245        -0.150        -0.178        -0.233         0.003         0.075        -0.024
+      ideath         0.042         0.039        -0.014        -0.024        -0.040         0.009         0.028         0.010
+
+                   meduc4c       peduc4c       pareduc        wealth        reside  pwdisthfac3c    pwdisthfac        ideath
+     meduc4c         1.000
+     peduc4c         0.565         1.000
+     pareduc         0.823         0.741         1.000
+      wealth         0.427         0.431         0.411         1.000
+      reside         0.246         0.257         0.284         0.412         1.000
+pwdisthfac3c        -0.156        -0.142        -0.174        -0.235        -0.244         1.000
+  pwdisthfac        -0.167        -0.147        -0.185        -0.246        -0.254         0.936         1.000
+      ideath        -0.032        -0.030        -0.036        -0.036        -0.019         0.028         0.029         1.000
+
+. matrix list r(P), format(%4.3f)
+
+symmetric r(P)[16,16]
+                    depriv      depriv2c   impdrinkwat        impsan      cookfldr         chsex        bordin         mageb
+      depriv         0.000
+    depriv2c         0.000         0.000
+ impdrinkwat         0.000         0.000         0.000
+      impsan         0.000         0.000         0.000         0.000
+    cookfldr         0.000         0.000         0.000         0.000         0.000
+       chsex         0.410         0.493         0.092         0.332         0.734         0.000
+      bordin         0.000         0.000         0.000         0.000         0.000         0.865         0.000
+       mageb         0.000         0.000         0.000         0.000         0.005         0.537         0.000         0.000
+     meduc4c         0.000         0.000         0.000         0.000         0.000         0.599         0.000         0.000
+     peduc4c         0.000         0.000         0.000         0.000         0.000         0.275         0.000         0.114
+     pareduc         0.000         0.000         0.000         0.000         0.000         0.273         0.000         0.000
+      wealth         0.000         0.000         0.000         0.000         0.000         0.525         0.000         0.000
+      reside         0.000         0.000         0.000         0.000         0.000         0.652         0.000         0.000
+pwdisthfac3c         0.000         0.000         0.000         0.000         0.000         0.787         0.000         0.000
+  pwdisthfac         0.000         0.000         0.000         0.000         0.000         0.533         0.000         0.000
+      ideath         0.000         0.000         0.012         0.000         0.000         0.085         0.000         0.072
+
+                   meduc4c       peduc4c       pareduc        wealth        reside  pwdisthfac3c    pwdisthfac        ideath
+     meduc4c         0.000
+     peduc4c         0.000         0.000
+     pareduc         0.000         0.000         0.000
+      wealth         0.000         0.000         0.000         0.000
+      reside         0.000         0.000         0.000         0.000         0.000
+pwdisthfac3c         0.000         0.000         0.000         0.000         0.000         0.000
+  pwdisthfac         0.000         0.000         0.000         0.000         0.000         0.000         0.000
+      ideath         0.000         0.000         0.000         0.000         0.001         0.000         0.000         0.000
+
+. *\di bawah 5 tahun
+. quietly spearman $vars pwdisthfac u5death, stats(rho p)
+
+. matrix list r(Rho), format(%4.3f)
+
+symmetric r(Rho)[16,16]
+                    depriv      depriv2c   impdrinkwat        impsan      cookfldr         chsex        bordin         mageb
+      depriv         1.000
+    depriv2c         0.956         1.000
+ impdrinkwat        -0.535        -0.451         1.000
+      impsan        -0.641        -0.530         0.195         1.000
+    cookfldr        -0.778        -0.754         0.172         0.260         1.000
+       chsex         0.004         0.004        -0.009        -0.005         0.002         1.000
+      bordin         0.105         0.096        -0.040        -0.048        -0.118         0.001         1.000
+       mageb        -0.054        -0.050         0.035         0.067         0.015         0.003         0.550         1.000
+     meduc4c        -0.301        -0.266         0.166         0.265         0.212        -0.003        -0.217        -0.047
+     peduc4c        -0.293        -0.265         0.165         0.256         0.198        -0.006        -0.134        -0.008
+     pareduc        -0.332        -0.296         0.182         0.282         0.239        -0.006        -0.203        -0.069
+      wealth        -0.526        -0.497         0.239         0.386         0.414        -0.003        -0.078         0.087
+      reside        -0.397        -0.372         0.233         0.232         0.332         0.002        -0.053         0.058
+pwdisthfac3c         0.259         0.235        -0.135        -0.167        -0.230         0.001         0.079        -0.021
+  pwdisthfac         0.271         0.245        -0.150        -0.178        -0.233         0.003         0.075        -0.024
+     u5death         0.048         0.045        -0.013        -0.029        -0.048         0.013         0.037         0.010
+
+                   meduc4c       peduc4c       pareduc        wealth        reside  pwdisthfac3c    pwdisthfac       u5death
+     meduc4c         1.000
+     peduc4c         0.565         1.000
+     pareduc         0.823         0.741         1.000
+      wealth         0.427         0.431         0.411         1.000
+      reside         0.246         0.257         0.284         0.412         1.000
+pwdisthfac3c        -0.156        -0.142        -0.174        -0.235        -0.244         1.000
+  pwdisthfac        -0.167        -0.147        -0.185        -0.246        -0.254         0.936         1.000
+     u5death        -0.041        -0.033        -0.044        -0.043        -0.024         0.032         0.033         1.000
+
+. matrix list r(P), format(%4.3f)
+
+symmetric r(P)[16,16]
+                    depriv      depriv2c   impdrinkwat        impsan      cookfldr         chsex        bordin         mageb
+      depriv         0.000
+    depriv2c         0.000         0.000
+ impdrinkwat         0.000         0.000         0.000
+      impsan         0.000         0.000         0.000         0.000
+    cookfldr         0.000         0.000         0.000         0.000         0.000
+       chsex         0.410         0.493         0.092         0.332         0.734         0.000
+      bordin         0.000         0.000         0.000         0.000         0.000         0.865         0.000
+       mageb         0.000         0.000         0.000         0.000         0.005         0.537         0.000         0.000
+     meduc4c         0.000         0.000         0.000         0.000         0.000         0.599         0.000         0.000
+     peduc4c         0.000         0.000         0.000         0.000         0.000         0.275         0.000         0.114
+     pareduc         0.000         0.000         0.000         0.000         0.000         0.273         0.000         0.000
+      wealth         0.000         0.000         0.000         0.000         0.000         0.525         0.000         0.000
+      reside         0.000         0.000         0.000         0.000         0.000         0.652         0.000         0.000
+pwdisthfac3c         0.000         0.000         0.000         0.000         0.000         0.787         0.000         0.000
+  pwdisthfac         0.000         0.000         0.000         0.000         0.000         0.533         0.000         0.000
+     u5death         0.000         0.000         0.013         0.000         0.000         0.016         0.000         0.060
+
+                   meduc4c       peduc4c       pareduc        wealth        reside  pwdisthfac3c    pwdisthfac       u5death
+     meduc4c         0.000
+     peduc4c         0.000         0.000
+     pareduc         0.000         0.000         0.000
+      wealth         0.000         0.000         0.000         0.000
+      reside         0.000         0.000         0.000         0.000         0.000
+pwdisthfac3c         0.000         0.000         0.000         0.000         0.000         0.000
+  pwdisthfac         0.000         0.000         0.000         0.000         0.000         0.000         0.000
+     u5death         0.000         0.000         0.000         0.000         0.000         0.000         0.000         0.000
+
+. 
+end of do-file
+
+. do "D:\RESEARCH & WRITING\master thesis_child mortality\stata\do\7b-descriptive-full.do"
+
+. /*
+> ================================================================================
+> ********************************************************************************
+> PROJECT:
+> PENELITIAN TESIS
+> DEPRIVASI LINGKUNGAN RUMAH TANGGA DAN KEMATIAN BAYI DAN ANAK DI INDONESIA
+> 
+> SYNTAX:
+> 7-ANALISIS DESKRIPTIF FULL SAMPLE
+> 
+> PENULIS:
+> ARI PURWANTO SARWO PRASOJO (2006500321)
+> MAGISTER EKONOMI KEPENDUDUKAN DAN KETENAGAKERJAAN
+> FEB, UNIVERSITAS INDONESIA
+> 2021
+> ********************************************************************************
+> ================================================================================
+> */
+. 
+. 
+. 
+. /*
+> ================================================================================
+> PENYIAPAN
+> ================================================================================
+> */
+. 
+. cls
+
+. log close _all
+      name:  log_7a_descriptive_idhs17
+       log:  D:\RESEARCH & WRITING\master thesis_child mortality\stata\log\7a_descriptive_idhs17.log
+  log type:  text
+ closed on:  15 Dec 2021, 07:18:57
+----------------------------------------------------------------------------------------------------------------------------------

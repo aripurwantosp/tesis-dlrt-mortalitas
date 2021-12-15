@@ -1,0 +1,146 @@
+----------------------------------------------------------------------------------------------------------------------------------
+      name:  log_7b_descriptive_full_idhs17
+       log:  D:\RESEARCH & WRITING\master thesis_child mortality\stata\log\7b_descriptive_full_idhs17.log
+  log type:  text
+ opened on:  15 Dec 2021, 07:18:57
+
+. 
+. 
+. 
+. /*
+> ================================================================================
+> ANAK-KELAHIRAN
+> ================================================================================
+> */
+. 
+. /*
+> ******************************************************************
+> Set sampel                                                                                                      [done]
+> ******************************************************************
+> */
+. 
+. *data
+. use "`dtadir'\6-chmort-`idhs'.dta"
+(Data merge\ 15 Dec 2021_07:08:57)
+
+. keep if precsvy10 == 1
+(49,894 observations deleted)
+
+. 
+. *cek missing
+. #delimit ;
+delimiter now ;
+. glo vars
+>         /*var bebas utama, lingkungan*/
+>         depriv depriv2c
+>         impdrinkwat impsan cookfldr
+>         /*antara*/
+>         chsex bordin mageb
+>         /*sosek*/
+>         meduc4c peduc4c pareduc wealth reside pwdisthfac3c
+>         ;
+
+. #delimit cr
+delimiter now cr
+. 
+. foreach p in $vars{
+  2.         nmissing `p'
+  3. }
+
+depriv              9
+
+depriv2c            9
+
+impsan              5
+
+cookfldr            4
+
+peduc4c          1548
+
+pareduc          1548
+
+. 
+. /*
+> ******************************************************************
+> Gambaran umum sampel                                                                            [done]
+> ******************************************************************
+> */
+. 
+. *univar
+. foreach p in $vars chalive nndeath ideath u5death {
+  2.             quietly tabout `p'                  ///
+>                 using "output\univar_full_.xls", c(freq col) clab(N %)                  ///
+>                 format(0c 2) mi append
+  3. }
+
+. 
+. foreach p in $vars chalive nndeath ideath u5death {
+  2.             quietly tabout `p' [iw=wweight]                     ///
+>                 using "output\univar_full_iw.xls", c(freq col) clab(N %)                ///
+>                 format(0c 2) mi append
+  3. }
+
+. 
+. *kontinyu
+. *duplicates drop psu, force
+. table [iw=wweight], stat(mean pwdisthfac)       ///
+>                                         stat(median pwdisthfac) ///
+>                                         stat(sd pwdisthfac)
+
+------------------------------
+Mean               |   .119424
+Median             |  .0769231
+Standard deviation |  .1434745
+------------------------------
+
+.                                         
+. table, stat(mean pwdisthfac)    ///
+>            stat(median pwdisthfac)      ///
+>            stat(sd pwdisthfac)  
+
+------------------------------
+Mean               |   .126783
+Median             |  .0869565
+Standard deviation |  .1432643
+------------------------------
+
+. 
+end of do-file
+
+. do "D:\RESEARCH & WRITING\master thesis_child mortality\stata\do\8-set-data-model.do"
+
+. /*
+> ================================================================================
+> ********************************************************************************
+> PROJECT:
+> PENELITIAN TESIS
+> DEPRIVASI LINGKUNGAN RUMAH TANGGA DAN KEMATIAN BAYI DAN ANAK DI INDONESIA
+> 
+> SYNTAX:
+> 8a-MENYIAPKAN DATA UNTUK PEMODELAN
+> 
+> PENULIS:
+> ARI PURWANTO SARWO PRASOJO (2006500321)
+> MAGISTER EKONOMI KEPENDUDUKAN DAN KETENAGAKERJAAN
+> FEB, UNIVERSITAS INDONESIA
+> 2021
+> ********************************************************************************
+> ================================================================================
+> */
+. 
+. 
+. 
+. /*
+> ================================================================================
+> PENYIAPAN
+> ================================================================================
+> */
+. 
+. cls
+
+. log close _all
+      name:  log_7b_descriptive_full_idhs17
+       log:  D:\RESEARCH & WRITING\master thesis_child mortality\stata\log\7b_descriptive_full_idhs17.log
+  log type:  text
+ closed on:  15 Dec 2021, 07:21:42
+----------------------------------------------------------------------------------------------------------------------------------

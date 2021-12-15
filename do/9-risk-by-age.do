@@ -1,3 +1,12 @@
+log close _all
+cls
+*dir & log file
+cd 				"D:\RESEARCH & WRITING\master thesis_child mortality\stata\"
+loc logdir		"log"
+loc idhs 		"idhs17"
+loc dfn 		"log_9_risk_by_age_`idhs'"
+log using 		"`logdir'\9_risk_by_age_`idhs'", name(`dfn') text replace
+
 /*
 ================================================================================
 ********************************************************************************
@@ -25,25 +34,15 @@ PENYIAPAN
 ================================================================================
 */
 
-cls
-log close _all
 clear all
 macro drop _all
 set maxvar 10000
 
 *direktori kerja
-cd 				"D:\RESEARCH & WRITING\master thesis_child mortality\stata\"
-loc logdir		"log"
 loc dtadir		"dta"
 *loc outdir		"output"
 
-*log file
-loc dfn 		"log_9_risk_by_age"
-log using 		"`logdir'\9_risk_by_age", name(`dfn') text replace
-
-
 *baca data
-loc idhs		"idhs17"
 loc dta			"`dtadir'\8-data-model-`idhs'.dta"
 use `dta'
 
@@ -75,7 +74,6 @@ marginsplot, noci															///
 		   position(6) rows(1))												///
 	scheme(gg_tableau)
 graph export ".\output\risk_by_age.png", replace
-
 
 
 

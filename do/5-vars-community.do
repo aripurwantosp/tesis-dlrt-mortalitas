@@ -1,3 +1,13 @@
+log close _all
+loc logdir		"log"
+loc idhs 		"idhs17"
+*dir & log file
+cd 				"D:\RESEARCH & WRITING\master thesis_child mortality\stata\"
+loc logdir		"log"
+loc idhs 		"idhs17"
+loc dfn 		"log_5_vars_community_`idhs'"
+log using 		"`logdir'\5_vars_community_`idhs'", name(`dfn') text replace
+
 /*
 ================================================================================
 ********************************************************************************
@@ -25,21 +35,12 @@ PENYIAPAN
 ================================================================================
 */
 
-cls
-log close _all
 clear all
 macro drop _all
 set maxvar 10000
 
 *direktori kerja
-cd 				"D:\RESEARCH & WRITING\master thesis_child mortality\stata\"
-loc logdir		"log"
 loc dtadir		"dta"
-
-*log file
-loc idhs		"idhs17"
-loc dfn 		"log_5_vars_community_`idhs'"
-log using 		"`logdir'\5_vars_community_`idhs'", name(`dfn') text replace
 
 *set the date
 loc date = c(current_date)

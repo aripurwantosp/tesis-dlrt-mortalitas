@@ -2,7 +2,46 @@
       name:  log_3_vars_women_idhs17
        log:  D:\RESEARCH & WRITING\master thesis_child mortality\stata\log\3_vars_women_idhs17.log
   log type:  text
- opened on:  15 Dec 2021, 06:59:09
+ opened on:  15 Dec 2021, 16:32:09
+
+. 
+. /*
+> ================================================================================
+> ********************************************************************************
+> PROJECT:
+> PENELITIAN TESIS
+> DEPRIVASI LINGKUNGAN RUMAH TANGGA DAN KEMATIAN BAYI DAN ANAK DI INDONESIA
+> 
+> SYNTAX:
+> 3-MEMBENTUK VARIABEL PEREMPUAN/IBU
+> 
+> PENULIS:
+> ARI PURWANTO SARWO PRASOJO (2006500321)
+> MAGISTER EKONOMI KEPENDUDUKAN DAN KETENAGAKERJAAN
+> FEB, UNIVERSITAS INDONESIA
+> 2021
+> ********************************************************************************
+> ================================================================================
+> */
+. 
+. 
+. 
+. /*
+> ================================================================================
+> PENYIAPAN
+> ================================================================================
+> */
+. 
+. clear all
+
+. macro drop _all
+
+. set maxvar 10000
+
+
+. 
+. *direktori kerja
+. loc dtadir              "dta"
 
 . 
 . *set the date
@@ -525,46 +564,17 @@ Tidak/tidak masalah |     43,814       88.29       88.29
 . note: `idhs'-mortstudy-women.dta \ `tag'
 
 . save "`savenm'", replace
-(file dta\3-vars-women-idhs17.dta not found)
-file dta\3-vars-women-idhs17.dta saved
+(file dta\3-vars-women-.dta not found)
+file dta\3-vars-women-.dta saved
 
 . 
 end of do-file
 
 . do "D:\RESEARCH & WRITING\master thesis_child mortality\stata\do\4-vars-birth.do"
 
-. /*
-> ================================================================================
-> ********************************************************************************
-> PROJECT:
-> PENELITIAN TESIS
-> DEPRIVASI LINGKUNGAN RUMAH TANGGA DAN KEMATIAN BAYI DAN ANAK DI INDONESIA
-> 
-> SYNTAX:
-> 4-MEMBENTUK VARIABEL ANAK/KELAHIRAN
-> 
-> PENULIS:
-> ARI PURWANTO SARWO PRASOJO (2006500321)
-> MAGISTER EKONOMI KEPENDUDUKAN DAN KETENAGAKERJAAN
-> FEB, UNIVERSITAS INDONESIA
-> 2021
-> ********************************************************************************
-> ================================================================================
-> */
-. 
-. 
-. 
-. /*
-> ================================================================================
-> PENYIAPAN
-> ================================================================================
-> */
-. 
-. cls
-
 . log close _all
       name:  log_3_vars_women_idhs17
        log:  D:\RESEARCH & WRITING\master thesis_child mortality\stata\log\3_vars_women_idhs17.log
   log type:  text
- closed on:  15 Dec 2021, 07:00:26
+ closed on:  15 Dec 2021, 16:32:28
 ----------------------------------------------------------------------------------------------------------------------------------

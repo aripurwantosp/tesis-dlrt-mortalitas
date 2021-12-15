@@ -2,7 +2,46 @@
       name:  log_4_vars_birth_idhs17
        log:  D:\RESEARCH & WRITING\master thesis_child mortality\stata\log\4_vars_birth_idhs17.log
   log type:  text
- opened on:  15 Dec 2021, 07:00:27
+ opened on:  15 Dec 2021, 16:32:28
+
+. 
+. /*
+> ================================================================================
+> ********************************************************************************
+> PROJECT:
+> PENELITIAN TESIS
+> DEPRIVASI LINGKUNGAN RUMAH TANGGA DAN KEMATIAN BAYI DAN ANAK DI INDONESIA
+> 
+> SYNTAX:
+> 4-MEMBENTUK VARIABEL ANAK/KELAHIRAN
+> 
+> PENULIS:
+> ARI PURWANTO SARWO PRASOJO (2006500321)
+> MAGISTER EKONOMI KEPENDUDUKAN DAN KETENAGAKERJAAN
+> FEB, UNIVERSITAS INDONESIA
+> 2021
+> ********************************************************************************
+> ================================================================================
+> */
+. 
+. 
+. 
+. /*
+> ================================================================================
+> PENYIAPAN
+> ================================================================================
+> */
+. 
+. clear all
+
+. macro drop _all
+
+. set maxvar 10000
+
+
+. 
+. *direktori kerja
+. loc dtadir              "dta"
 
 . 
 . *set the date
@@ -709,46 +748,17 @@ Satuan usia |
 . note: `idhs'-mortstudy-birth.dta \ `tag'
 
 . save "`savenm'", replace
-(file dta\4-vars-birth-idhs17.dta not found)
-file dta\4-vars-birth-idhs17.dta saved
+(file dta\4-vars-birth-.dta not found)
+file dta\4-vars-birth-.dta saved
 
 . 
 end of do-file
 
 . do "D:\RESEARCH & WRITING\master thesis_child mortality\stata\do\5-vars-community.do"
 
-. /*
-> ================================================================================
-> ********************************************************************************
-> PROJECT:
-> PENELITIAN TESIS
-> DEPRIVASI LINGKUNGAN RUMAH TANGGA DAN KEMATIAN BAYI DAN ANAK DI INDONESIA
-> 
-> SYNTAX:
-> 5-MEMBENTUK VARIABEL TINGKAT KOMUNITAS
-> 
-> PENULIS:
-> ARI PURWANTO SARWO PRASOJO (2006500321)
-> MAGISTER EKONOMI KEPENDUDUKAN DAN KETENAGAKERJAAN
-> FEB, UNIVERSITAS INDONESIA
-> 2021
-> ********************************************************************************
-> ================================================================================
-> */
-. 
-. 
-. 
-. /*
-> ================================================================================
-> PENYIAPAN
-> ================================================================================
-> */
-. 
-. cls
-
 . log close _all
       name:  log_4_vars_birth_idhs17
        log:  D:\RESEARCH & WRITING\master thesis_child mortality\stata\log\4_vars_birth_idhs17.log
   log type:  text
- closed on:  15 Dec 2021, 07:05:52
+ closed on:  15 Dec 2021, 16:32:52
 ----------------------------------------------------------------------------------------------------------------------------------

@@ -2,7 +2,48 @@
       name:  log_6_merge_idhs17
        log:  D:\RESEARCH & WRITING\master thesis_child mortality\stata\log\6_merge_idhs17.log
   log type:  text
- opened on:  15 Dec 2021, 07:08:57
+ opened on:  15 Dec 2021, 16:33:10
+
+. 
+. /*
+> ================================================================================
+> ********************************************************************************
+> PROJECT:
+> PENELITIAN TESIS
+> DEPRIVASI LINGKUNGAN RUMAH TANGGA DAN KEMATIAN BAYI DAN ANAK DI INDONESIA
+> 
+> SYNTAX:
+> 6-MENGGABUNGKAN DATASET (1-5)
+> 
+> PENULIS:
+> ARI PURWANTO SARWO PRASOJO (2006500321)
+> MAGISTER EKONOMI KEPENDUDUKAN DAN KETENAGAKERJAAN
+> FEB, UNIVERSITAS INDONESIA
+> 2021
+> ********************************************************************************
+> ================================================================================
+> */
+. 
+. 
+. 
+. /*
+> ================================================================================
+> PENYIAPAN
+> ================================================================================
+> */
+. 
+. clear all
+
+. macro drop _all
+
+. set maxvar 10000
+
+
+. 
+. *direktori kerja
+. loc dtadir              "dta"
+
+. loc yearsvy             2017
 
 . 
 . *set the date
@@ -29,7 +70,7 @@
 . 
 . *merge dataset
 . use     "`dtadir'\4-vars-birth-`idhs'.dta"
-(Variabel anak-kelahiran \ 15 Dec 2021_07:00:27)
+(Variabel anak-kelahiran \ 15 Dec 2021_16:32:28)
 
 . merge m:1 v001 v002 v003 using "`dtadir'\3-vars-women-`idhs'.dta", keep(match) keepus() nogen
 
@@ -74,46 +115,17 @@
 . note: `idhs'-mortstudy-mergedata.dta \ `tag'
 
 . save "`savenm'", replace
-(file dta\6-chmort-idhs17.dta not found)
-file dta\6-chmort-idhs17.dta saved
+(file dta\6-chmort-.dta not found)
+file dta\6-chmort-.dta saved
 
 . 
 end of do-file
 
 . do "D:\RESEARCH & WRITING\master thesis_child mortality\stata\do\7a-descriptive.do"
 
-. /*
-> ================================================================================
-> ********************************************************************************
-> PROJECT:
-> PENELITIAN TESIS
-> DEPRIVASI LINGKUNGAN RUMAH TANGGA DAN KEMATIAN BAYI DAN ANAK DI INDONESIA
-> 
-> SYNTAX:
-> 7-ANALISIS DESKRIPTIF
-> 
-> PENULIS:
-> ARI PURWANTO SARWO PRASOJO (2006500321)
-> MAGISTER EKONOMI KEPENDUDUKAN DAN KETENAGAKERJAAN
-> FEB, UNIVERSITAS INDONESIA
-> 2021
-> ********************************************************************************
-> ================================================================================
-> */
-. 
-. 
-. 
-. /*
-> ================================================================================
-> PENYIAPAN
-> ================================================================================
-> */
-. 
-. cls
-
 . log close _all
       name:  log_6_merge_idhs17
        log:  D:\RESEARCH & WRITING\master thesis_child mortality\stata\log\6_merge_idhs17.log
   log type:  text
- closed on:  15 Dec 2021, 07:14:44
+ closed on:  15 Dec 2021, 16:34:06
 ----------------------------------------------------------------------------------------------------------------------------------

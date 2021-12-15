@@ -2,7 +2,46 @@
       name:  log_2_vars_household_idhs17
        log:  D:\RESEARCH & WRITING\master thesis_child mortality\stata\log\2_vars_household_idhs17.log
   log type:  text
- opened on:  15 Dec 2021, 06:57:17
+ opened on:  15 Dec 2021, 16:31:44
+
+. 
+. /*
+> ================================================================================
+> ********************************************************************************
+> PROJECT:
+> PENELITIAN TESIS
+> DEPRIVASI LINGKUNGAN RUMAH TANGGA DAN KEMATIAN BAYI DAN ANAK DI INDONESIA
+> 
+> SYNTAX:
+> 2-MEMBENTUK VARIABEL DI TINGKAT RUMAH TANGGA
+> 
+> PENULIS:
+> ARI PURWANTO SARWO PRASOJO (2006500321)
+> MAGISTER EKONOMI KEPENDUDUKAN DAN KETENAGAKERJAAN
+> FEB, UNIVERSITAS INDONESIA
+> 2021
+> ********************************************************************************
+> ================================================================================
+> */
+. 
+. 
+. 
+. /*
+> ================================================================================
+> PENYIAPAN
+> ================================================================================
+> */
+. 
+. clear all
+
+. macro drop _all
+
+. set maxvar 10000
+
+
+. 
+. *direktori kerja
+. loc dtadir              "dta"
 
 . 
 . *set the date
@@ -32,7 +71,7 @@
 . *use v001 v002 hhweight hmweight wi_* wiq_* wid_* using "`wealthdata'"
 . use v001 v002 hhweight hmweight drinkwat_* toiletfac_* cookfuel_*               ///
 >         wi_* wiq_* wid_* using "`wealthdata'"
-(Perhitungan indeks kekayaan \ 15 Dec 2021_06:49:53)
+(Perhitungan indeks kekayaan \ 15 Dec 2021_16:30:04)
 
 . 
 . rename v001 hv001
@@ -938,46 +977,17 @@ Padat/minyak tanah/lainnya |     15,605       32.54       32.54
 . note: `idhs'-mortstudy-hh.dta \ `tag'
 
 . save "`savenm'", replace
-(file dta\2-vars-household-idhs17.dta not found)
-file dta\2-vars-household-idhs17.dta saved
+(file dta\2-vars-household-.dta not found)
+file dta\2-vars-household-.dta saved
 
 . 
 end of do-file
 
 . do "D:\RESEARCH & WRITING\master thesis_child mortality\stata\do\3-vars-women.do"
 
-. /*
-> ================================================================================
-> ********************************************************************************
-> PROJECT:
-> PENELITIAN TESIS
-> DEPRIVASI LINGKUNGAN RUMAH TANGGA DAN KEMATIAN BAYI DAN ANAK DI INDONESIA
-> 
-> SYNTAX:
-> 3-MEMBENTUK VARIABEL PEREMPUAN/IBU
-> 
-> PENULIS:
-> ARI PURWANTO SARWO PRASOJO (2006500321)
-> MAGISTER EKONOMI KEPENDUDUKAN DAN KETENAGAKERJAAN
-> FEB, UNIVERSITAS INDONESIA
-> 2021
-> ********************************************************************************
-> ================================================================================
-> */
-. 
-. 
-. 
-. /*
-> ================================================================================
-> PENYIAPAN
-> ================================================================================
-> */
-. 
-. cls
-
 . log close _all
       name:  log_2_vars_household_idhs17
        log:  D:\RESEARCH & WRITING\master thesis_child mortality\stata\log\2_vars_household_idhs17.log
   log type:  text
- closed on:  15 Dec 2021, 06:59:09
+ closed on:  15 Dec 2021, 16:32:09
 ----------------------------------------------------------------------------------------------------------------------------------

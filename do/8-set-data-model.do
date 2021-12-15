@@ -1,3 +1,12 @@
+log close _all
+cls
+*dir & log file
+cd 				"D:\RESEARCH & WRITING\master thesis_child mortality\stata\"
+loc logdir		"log"
+loc idhs 		"idhs17"
+loc dfn 		"log_8_data_model_`idhs'"
+log using 		"`logdir'\8_data_model_`idhs'", name(`dfn') text replace
+
 /*
 ================================================================================
 ********************************************************************************
@@ -25,21 +34,13 @@ PENYIAPAN
 ================================================================================
 */
 
-cls
-log close _all
 clear all
 macro drop _all
 set maxvar 10000
 
 *direktori kerja
-cd 				"D:\RESEARCH & WRITING\master thesis_child mortality\stata\"
-loc logdir		"log"
 loc dtadir		"dta"
 *loc outdir		"output"
-
-*log file
-loc dfn 		"log_8_data_model"
-log using 		"`logdir'\8_data_model", name(`dfn') text replace
 
 *tag
 loc date = c(current_date)
@@ -48,7 +49,6 @@ loc time_date = "`date'" + "_" + "`time'"
 loc tag "`dfn'.do Ari Prasojo `time_date'"
 
 *data
-loc idhs		"idhs17"
 loc dta			"`dtadir'\6-chmort-`idhs'.dta"
 loc savenm		"`dtadir'\8-data-model-`idhs'.dta"
 

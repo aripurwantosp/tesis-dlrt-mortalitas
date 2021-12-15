@@ -1,3 +1,12 @@
+log close _all
+cls
+*dir & log file
+cd 				"D:\RESEARCH & WRITING\master thesis_child mortality\stata\"
+loc logdir		"log"
+loc idhs 		"idhs17"
+loc dfn 		"log_10_modeling_`idhs'"
+log using 		"`logdir'\10_modeling_`idhs'", name(`dfn') text replace
+
 /*
 ================================================================================
 ********************************************************************************
@@ -25,25 +34,15 @@ PENYIAPAN
 ================================================================================
 */
 
-cls
-log close _all
 clear all
 macro drop _all
 set maxvar 10000
 
 *direktori kerja
-cd 				"D:\RESEARCH & WRITING\master thesis_child mortality\stata\"
-loc logdir		"log"
 loc dtadir		"dta"
 *loc outdir		"output"
 
-*log file
-loc dfn 		"log_10_modeling"
-log using 		"`logdir'\10_modeling", name(`dfn') text replace
-
-
 *baca data
-loc idhs		"idhs17"
 loc dta			"`dtadir'\8-data-model-`idhs'.dta"
 use `dta'
 
@@ -127,7 +126,7 @@ quietly collect layout (colname) (cmdset#result[_r_b stars _r_se])
 collect style _cons first
 collect style cell result[_r_b], nformat(%6,3fc)
 collect style cell result[_r_se], nformat(%6,3fc) sformat("(%s)")
-collect stars _r_p "0.01" "***" "0.05" "**" "0.1" "*"
+collect stars _r_p "0.001" "***" "0.01" "**" "0.05" "*"
 collect style column, dups(center)
 collect style header result, level(hide)
 collect style row stack, nobinder delimiter(" x ")
@@ -146,7 +145,7 @@ collect label levels result N "Jumlah Observasi" chi2 "Chi2-simultan"		///
 collect style cell result[_r_b chi2 chi2_c], nformat(%6,3fc)
 collect style cell result[_r_se], nformat(%6,3fc) sformat("(%s)")
 collect style cell result[N N_g], nformat(%9,0fc)
-collect stars _r_p "0.01" "***" "0.05" "**" "0.1" "*", attach(_r_b)
+collect stars _r_p "0.001" "***" "0.01" "**" "0.05" "*", attach(_r_b)
 collect style column, dups(center)
 collect style row stack, nobinder delimiter(" x ")
 collect style header result, level(hide)
@@ -167,7 +166,7 @@ quietly collect layout (colname) (cmdset#result[_r_b stars _r_ci])
 collect style _cons first
 collect style cell result[_r_b], nformat(%6,2fc)
 collect style cell result[_r_ci], nformat(%6,2fc) sformat("(%s)") cidelimiter("-")
-collect stars _r_p "0.01" "***" "0.05" "**" "0.1" "*"
+collect stars _r_p "0.001" "***" "0.01" "**" "0.05" "*"
 collect style column, dups(center)
 collect style header result, level(hide)
 collect style row stack, nobinder delimiter(" x ")
@@ -186,7 +185,7 @@ collect label levels result N "Jumlah Observasi" chi2 "Chi2-simultan"		///
 collect style cell result[_r_b chi2 chi2_c], nformat(%6,2fc)
 collect style cell result[_r_ci], nformat(%6,2fc) sformat("(%s)") cidelimiter("-")
 collect style cell result[N N_g], nformat(%9,0fc)
-collect stars _r_p "0.01" "***" "0.05" "**" "0.1" "*", attach(_r_b)
+collect stars _r_p "0.001" "***" "0.01" "**" "0.05" "*", attach(_r_b)
 collect style column, dups(center)
 collect style row stack, nobinder delimiter(" x ")
 collect style header result, level(hide)
@@ -276,7 +275,7 @@ quietly collect layout (colname) (cmdset#result[_r_b stars _r_se])
 collect style _cons first
 collect style cell result[_r_b], nformat(%6,3fc)
 collect style cell result[_r_se], nformat(%6,3fc) sformat("(%s)")
-collect stars _r_p "0.01" "***" "0.05" "**" "0.1" "*"
+collect stars _r_p "0.001" "***" "0.01" "**" "0.05" "*"
 collect style column, dups(center)
 collect style header result, level(hide)
 collect style row stack, nobinder delimiter(" x ")
@@ -295,7 +294,7 @@ collect label levels result N "Jumlah Observasi" chi2 "Chi2-simultan"		///
 collect style cell result[_r_b chi2 chi2_c], nformat(%6,3fc)
 collect style cell result[_r_se], nformat(%6,3fc) sformat("(%s)")
 collect style cell result[N N_g], nformat(%9,0fc)
-collect stars _r_p "0.01" "***" "0.05" "**" "0.1" "*", attach(_r_b)
+collect stars _r_p "0.001" "***" "0.01" "**" "0.05" "*", attach(_r_b)
 collect style column, dups(center)
 collect style row stack, nobinder delimiter(" x ")
 collect style header result, level(hide)
@@ -316,7 +315,7 @@ quietly collect layout (colname) (cmdset#result[_r_b stars _r_ci])
 collect style _cons first
 collect style cell result[_r_b], nformat(%6,2fc)
 collect style cell result[_r_ci], nformat(%6,2fc) sformat("(%s)") cidelimiter("-")
-collect stars _r_p "0.01" "***" "0.05" "**" "0.1" "*"
+collect stars _r_p "0.001" "***" "0.01" "**" "0.05" "*"
 collect style column, dups(center)
 collect style header result, level(hide)
 collect style row stack, nobinder delimiter(" x ")
@@ -335,7 +334,7 @@ collect label levels result N "Jumlah Observasi" chi2 "Chi2-simultan"		///
 collect style cell result[_r_b chi2 chi2_c], nformat(%6,2fc)
 collect style cell result[_r_ci], nformat(%6,2fc) sformat("(%s)") cidelimiter("-")
 collect style cell result[N N_g], nformat(%9,0fc)
-collect stars _r_p "0.01" "***" "0.05" "**" "0.1" "*", attach(_r_b)
+collect stars _r_p "0.001" "***" "0.01" "**" "0.05" "*", attach(_r_b)
 collect style column, dups(center)
 collect style row stack, nobinder delimiter(" x ")
 collect style header result, level(hide)
@@ -426,7 +425,7 @@ quietly collect layout (colname) (cmdset#result[_r_b stars _r_se])
 collect style _cons first
 collect style cell result[_r_b], nformat(%6,3fc)
 collect style cell result[_r_se], nformat(%6,3fc) sformat("(%s)")
-collect stars _r_p "0.01" "***" "0.05" "**" "0.1" "*"
+collect stars _r_p "0.001" "***" "0.01" "**" "0.05" "*"
 collect style column, dups(center)
 collect style header result, level(hide)
 collect style row stack, nobinder delimiter(" x ")
@@ -445,7 +444,7 @@ collect label levels result N "Jumlah Observasi" chi2 "Chi2-simultan"		///
 collect style cell result[_r_b chi2 chi2_c], nformat(%6,3fc)
 collect style cell result[_r_se], nformat(%6,3fc) sformat("(%s)")
 collect style cell result[N N_g], nformat(%9,0fc)
-collect stars _r_p "0.01" "***" "0.05" "**" "0.1" "*", attach(_r_b)
+collect stars _r_p "0.001" "***" "0.01" "**" "0.05" "*", attach(_r_b)
 collect style column, dups(center)
 collect style row stack, nobinder delimiter(" x ")
 collect style header result, level(hide)
@@ -466,7 +465,7 @@ quietly collect layout (colname) (cmdset#result[_r_b stars _r_ci])
 collect style _cons first
 collect style cell result[_r_b], nformat(%6,2fc)
 collect style cell result[_r_ci], nformat(%6,2fc) sformat("(%s)") cidelimiter("-")
-collect stars _r_p "0.01" "***" "0.05" "**" "0.1" "*"
+collect stars _r_p "0.001" "***" "0.01" "**" "0.05" "*"
 collect style column, dups(center)
 collect style header result, level(hide)
 collect style row stack, nobinder delimiter(" x ")
@@ -485,7 +484,7 @@ collect label levels result N "Jumlah Observasi" chi2 "Chi2-simultan"		///
 collect style cell result[_r_b chi2 chi2_c], nformat(%6,2fc)
 collect style cell result[_r_ci], nformat(%6,2fc) sformat("(%s)") cidelimiter("-")
 collect style cell result[N N_g], nformat(%9,0fc)
-collect stars _r_p "0.01" "***" "0.05" "**" "0.1" "*", attach(_r_b)
+collect stars _r_p "0.001" "***" "0.01" "**" "0.05" "*", attach(_r_b)
 collect style column, dups(center)
 collect style row stack, nobinder delimiter(" x ")
 collect style header result, level(hide)

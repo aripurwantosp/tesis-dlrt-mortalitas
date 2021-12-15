@@ -2,8 +2,48 @@
       name:  log_7b_descriptive_full_idhs17
        log:  D:\RESEARCH & WRITING\master thesis_child mortality\stata\log\7b_descriptive_full_idhs17.log
   log type:  text
- opened on:  15 Dec 2021, 07:18:57
+ opened on:  15 Dec 2021, 16:34:59
 
+. 
+. /*
+> ================================================================================
+> ********************************************************************************
+> PROJECT:
+> PENELITIAN TESIS
+> DEPRIVASI LINGKUNGAN RUMAH TANGGA DAN KEMATIAN BAYI DAN ANAK DI INDONESIA
+> 
+> SYNTAX:
+> 7-ANALISIS DESKRIPTIF FULL SAMPLE
+> 
+> PENULIS:
+> ARI PURWANTO SARWO PRASOJO (2006500321)
+> MAGISTER EKONOMI KEPENDUDUKAN DAN KETENAGAKERJAAN
+> FEB, UNIVERSITAS INDONESIA
+> 2021
+> ********************************************************************************
+> ================================================================================
+> */
+. 
+. 
+. 
+. /*
+> ================================================================================
+> PENYIAPAN
+> ================================================================================
+> */
+. 
+. clear all
+
+. macro drop _all
+
+. set maxvar 10000
+
+
+. 
+. *direktori kerja
+. loc dtadir              "dta"
+
+. *loc outdir             "output"
 . 
 . 
 . 
@@ -21,7 +61,7 @@
 . 
 . *data
 . use "`dtadir'\6-chmort-`idhs'.dta"
-(Data merge\ 15 Dec 2021_07:08:57)
+(Data merge\ 15 Dec 2021_16:33:10)
 
 . keep if precsvy10 == 1
 (49,894 observations deleted)
@@ -109,38 +149,9 @@ end of do-file
 
 . do "D:\RESEARCH & WRITING\master thesis_child mortality\stata\do\8-set-data-model.do"
 
-. /*
-> ================================================================================
-> ********************************************************************************
-> PROJECT:
-> PENELITIAN TESIS
-> DEPRIVASI LINGKUNGAN RUMAH TANGGA DAN KEMATIAN BAYI DAN ANAK DI INDONESIA
-> 
-> SYNTAX:
-> 8a-MENYIAPKAN DATA UNTUK PEMODELAN
-> 
-> PENULIS:
-> ARI PURWANTO SARWO PRASOJO (2006500321)
-> MAGISTER EKONOMI KEPENDUDUKAN DAN KETENAGAKERJAAN
-> FEB, UNIVERSITAS INDONESIA
-> 2021
-> ********************************************************************************
-> ================================================================================
-> */
-. 
-. 
-. 
-. /*
-> ================================================================================
-> PENYIAPAN
-> ================================================================================
-> */
-. 
-. cls
-
 . log close _all
       name:  log_7b_descriptive_full_idhs17
        log:  D:\RESEARCH & WRITING\master thesis_child mortality\stata\log\7b_descriptive_full_idhs17.log
   log type:  text
- closed on:  15 Dec 2021, 07:21:42
+ closed on:  15 Dec 2021, 16:35:36
 ----------------------------------------------------------------------------------------------------------------------------------

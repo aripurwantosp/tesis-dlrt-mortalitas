@@ -1,11 +1,12 @@
 log close _all
+clear all
+macro drop _all
 cls
 *dir & log file
 cd 				"D:\RESEARCH & WRITING\master thesis_child mortality\stata\"
-loc logdir		"log"
 loc idhs 		"idhs17"
 loc dfn 		"log_1_wealth_index_`idhs'"
-log using 		"`logdir'\1_wealth_index_`idhs'", name(`dfn') text replace
+log using 		"log\1_wealth_index_`idhs'", name(`dfn') text replace
 
 /*
 ================================================================================
@@ -35,12 +36,7 @@ PENYIAPAN
 ================================================================================
 */
 
-clear all
-macro drop _all
 set maxvar 10000
-
-*direktori kerja
-loc dtadir		"dta"
 
 *set the date
 loc date = c(current_date)
@@ -59,7 +55,7 @@ loc mrc			"D:\PUSDATIN\DATA MIKRO\IDHS\2017\IDMR71DT\IDMR71FL.dta"
 loc hrc			"D:\PUSDATIN\DATA MIKRO\IDHS\2017\IDHR71DT\IDHR71FL.dta"
 
 *\dataset disimpan sebagai (nama)
-loc savenm		"`dtadir'\1-wealth-index-`idhs'.dta"
+loc savenm		"dta\1-wealth-index-`idhs'.dta"
 
 *membuat label
 lab def yatidak 0 "Tidak" 1 "Ya" 		//yatidak
@@ -79,9 +75,8 @@ Untuk membentuk variabel house, land
 Perempuan													[done]
 ******************************************************************
  */
-clear all							
-use caseid v001 v002 v003 v745a v745b ///
-	using "`irc'"
+clear all
+use caseid v001 v002 v003 v745a v745b using "`irc'"
 
 recode v745a (0 = 0) (1/3 = 1), gen(whouse)
 recode v745b (0 = 0) (1/3 = 1), gen(wland)
@@ -96,8 +91,7 @@ Laki-Laki													[done]
 ******************************************************************
  */
 clear all
-use mcaseid mv001 mv002 mv003 mv745a mv745b ///
-	using "`mrc'"
+use mcaseid mv001 mv002 mv003 mv745a mv745b using "`mrc'"
 
 rename mv001 v001
 rename mv002 v002
@@ -891,3 +885,7 @@ datasignature set, reset
 lab data "Perhitungan indeks kekayaan \ `time_date'"
 note: `idhs'-mortstudy-wealth.dta \ `tag'
 save `savenm', replace
+
+
+*close log-file
+log close _all

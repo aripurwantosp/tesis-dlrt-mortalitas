@@ -1,12 +1,12 @@
 log close _all
-loc logdir		"log"
-loc idhs 		"idhs17"
+clear all
+macro drop _all
+cls
 *dir & log file
 cd 				"D:\RESEARCH & WRITING\master thesis_child mortality\stata\"
-loc logdir		"log"
 loc idhs 		"idhs17"
 loc dfn 		"log_5_vars_community_`idhs'"
-log using 		"`logdir'\5_vars_community_`idhs'", name(`dfn') text replace
+log using 		"log\5_vars_community_`idhs'", name(`dfn') text replace
 
 /*
 ================================================================================
@@ -35,12 +35,7 @@ PENYIAPAN
 ================================================================================
 */
 
-clear all
-macro drop _all
 set maxvar 10000
-
-*direktori kerja
-loc dtadir		"dta"
 
 *set the date
 loc date = c(current_date)
@@ -50,13 +45,13 @@ loc tag "`dfn'.do Ari Prasojo `time_date'"
 
 *direktori dataset
 *\dataset rumah tangga
-loc hhdata		"`dtadir'\2-vars-household-`idhs'.dta"
+loc hhdata		"dta\2-vars-household-`idhs'.dta"
 
 *\dataset individu perempuan
-loc irdata		"`dtadir'\3-vars-women-`idhs'.dta"
+loc irdata		"dta\3-vars-women-`idhs'.dta"
 
 *\dataset disimpan sebagai (nama)
-loc savenm		"`dtadir'\5-vars-community-`idhs'.dta"
+loc savenm		"dta\5-vars-community-`idhs'.dta"
 
 
 
@@ -74,29 +69,21 @@ Variabel-variabel											[done]
 ******************************************************************
  */
 
-*\denominator (banyaknya ruta)
-bysort psu: gen nhh = _N
-lab var nhh "Banyaknya rumah tangga"
-
 *\% rumah tangga yang memiliki sumber air minum layak
-bysort psu: egen nimpdrinkwathh = sum(impdrinkwat)
-	gen phhimpdrinkwat = nimpdrinkwathh/nhh
+bysort psu: egen phhimpdrinkwat = mean(impdrinkwat)
 	lab var phhimpdrinkwat "% Rumah tangga dengan sumber air minum layak di komunitas"
 
 *\% rumah tangga yang memiliki sanitasi layak
-bysort psu: egen nimpsanhh = sum(impsan)
-	gen phhimpsan = nimpsanhh/nhh
+bysort psu: egen phhimpsan = mean(impsan)
 	lab var phhimpsan "% Rumah tangga dengan sanitasi layak di komunitas"
 
 *\% rumah tangga yang memiliki bahan bakar memasak aman/polusi rendah
-bysort psu: egen nimpcookflhh = sum(cookfldr)
-	gen phhimpcookfl = nimpcookflhh/nhh
+bysort psu: egen phhimpcookfl = mean(cookfldr)
 	lab var phhimpcookfl "% Rumah tangga dengan bahan bakar memasak aman di komunitas"
 
-*\% rumah tangga yang terdeprivasi lingkungan
-bysort psu: egen ndephh = sum(depriv)
-	gen phhdep = ndephh/nhh
-	lab var phhdep "% Rumah tangga yang mengalami deprivasi lingkungan di komunitas"
+*\ rata-rata skor deprivasi di tingkat komunitas
+bysort psu: egen phhdep = sum(deprivs)
+	lab var phhdep "Rata-rata skor deprivasi lingkungan di tingkat komunitas"
 
 
 /*
@@ -105,9 +92,9 @@ Simpan 														[done]
 ******************************************************************
 */
 
-keep psu-reside phhimpdrinkwat phhimpsan phhimpcookfl ndephh
+keep psu-reside phhimpdrinkwat phhimpsan phhimpcookfl phhdep
 duplicates drop psu, force
-summ(phhimpdrinkwat phhimpsan phhimpcookfl ndephh)
+summ(phhimpdrinkwat phhimpsan phhimpcookfl phhdep)
 
 quietly compress
 datasignature set, reset
@@ -132,13 +119,10 @@ Variabel-variabel											[done]
 ******************************************************************
 */
 
-*\denominator (banyaknya perempuan)
 gen psu = v001
-bysort psu: gen nw = _N
 
 *\% perempuan berpendidikan menengah ke atas
-bysort psu: egen neduc2 = sum(meduc2cs)
-	gen pweduc2 = neduc2/nw
+bysort psu: egen pweduc2 = mean(meduc2cs)
 	lab var pweduc2 "% Perempuan berpendidikan menengah ke atas di komunitas"
 
 *\rata-rata lama sekolah perempuan
@@ -147,9 +131,8 @@ bysort psu: egen mweducy = mean(meducy)
 	lab var mweducy "Rata-rata lama sekolah perempuan di komunitas"
 
 *\% perempuan yang menganggap jarak ke fasilitas kesehatan sulit
-bysort psu: egen nwdisthfac = sum(mdisthfac)
-	gen pwdisthfac = nwdisthfac/nw
-	lab var pwdisthfac "% Perempuan yang menyatakan bermasalah menjangkau jarak faskes"
+bysort psu: egen pwdisthfac = mean(mdisthfac)
+	lab var pwdisthfac "Masalah aksesibilitas ke faskes"
 
 *\kuintil
 xtile qpwdisthfac = pwdisthfac, nq(5)
@@ -166,7 +149,7 @@ xtile qpwdisthfac = pwdisthfac, nq(5)
 recode qpwdisthfac (1/2 = 0 "Rendah")								///
 				   (3/4 = 1 "Sedang")								///
 				   (5 = 2 "Tinggi"), gen(pwdisthfac3c)
-	lab var pwdisthfac3c "Masalah aksesibilitas ke faskes"
+	lab var pwdisthfac3c "Masalah aksesibilitas ke faskes (kategorik)"
 
 /*
 ******************************************************************
@@ -202,3 +185,7 @@ datasignature set, reset
 lab data "Variabel komunitas \ `time_date'"
 note: `idhs'-mortstudy-community.dta \ `tag'
 save "`savenm'", replace
+
+
+*close log-file
+log close _all

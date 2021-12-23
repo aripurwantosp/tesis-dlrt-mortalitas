@@ -1,11 +1,12 @@
 log close _all
+clear all
+macro drop _all
 cls
 *dir & log file
 cd 				"D:\RESEARCH & WRITING\master thesis_child mortality\stata\"
-loc logdir		"log"
 loc idhs 		"idhs17"
 loc dfn 		"log_8_data_model_`idhs'"
-log using 		"`logdir'\8_data_model_`idhs'", name(`dfn') text replace
+log using 		"log\8_data_model_`idhs'", name(`dfn') text replace
 
 /*
 ================================================================================
@@ -15,7 +16,7 @@ PENELITIAN TESIS
 DEPRIVASI LINGKUNGAN RUMAH TANGGA DAN KEMATIAN BAYI DAN ANAK DI INDONESIA
 
 SYNTAX:
-8a-MENYIAPKAN DATA UNTUK PEMODELAN
+8-MENYIAPKAN DATA UNTUK PEMODELAN
 
 PENULIS:
 ARI PURWANTO SARWO PRASOJO (2006500321)
@@ -34,13 +35,7 @@ PENYIAPAN
 ================================================================================
 */
 
-clear all
-macro drop _all
 set maxvar 10000
-
-*direktori kerja
-loc dtadir		"dta"
-*loc outdir		"output"
 
 *tag
 loc date = c(current_date)
@@ -49,8 +44,8 @@ loc time_date = "`date'" + "_" + "`time'"
 loc tag "`dfn'.do Ari Prasojo `time_date'"
 
 *data
-loc dta			"`dtadir'\6-chmort-`idhs'.dta"
-loc savenm		"`dtadir'\8-data-model-`idhs'.dta"
+loc dta			"dta\6-chmort-`idhs'.dta"
+loc savenm		"dta\8-data-model-`idhs'.dta"
 
 *set sampel
 loc sett  		"precsvy10==1 & nomisvaruse==1"
@@ -70,7 +65,7 @@ glo vars
 	u5death ageu5deathd
 	
 	/*var bebas*/
-	depriv depriv2c chsex bordin
+	deprivs depriv depriv2c chsex bordin
 	mageb pareduc wealth reside pwdisthfac
 	;
 #delimit cr
@@ -131,7 +126,7 @@ Ekspansi													[done]
 *\Diskritisasi
 egen survdis = cut(agenndeath), at(0 7 29) icodes
 	replace survdis = survdis + 1
-	lab var survdis "Interval umur"
+	lab var survdis "Umur (interval)"
 	lab def survdis 1 "0-6 hari"			///
 					2 "7-28 hari"			///
 					3 "29 hari-5 bulan" 	///
@@ -206,7 +201,7 @@ Ekspansi													[done]
 *\Diskritisasi
 egen survdis = cut(ageideathd), at(0 7 29 180 360) icodes
 	replace survdis = survdis + 1
-	lab var survdis "Interval umur"
+	lab var survdis "Umur (interval)"
 	lab def survdis 1 "0-6 hari"			///
 					2 "7-28 hari"			///
 					3 "29 hari-5 bulan" 	///
@@ -281,7 +276,7 @@ Ekspansi													[done]
 *\Diskritisasi umur
 egen survdis = cut(ageu5deathd), at(0 7 29 180 360 720 1800) icodes
 	replace survdis = survdis + 1
-	lab var survdis "Interval umur"
+	lab var survdis "Umur (interval)"
 	lab def survdis 1 "0-6 hari"			///
 					2 "7-28 hari"			///
 					3 "29 hari-5 bulan" 	///
@@ -335,3 +330,10 @@ save "`savenm'", replace
 erase "data-mdl-a.dta"
 erase "data-mdl-b.dta"
 erase "data-mdl-c.dta"
+
+drop agenndeath ageideathd ageu5deathd
+describe
+
+
+*close log-file
+log close _all

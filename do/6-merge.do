@@ -1,11 +1,12 @@
 log close _all
+clear all
+macro drop _all
 cls
 *dir & log file
 cd 				"D:\RESEARCH & WRITING\master thesis_child mortality\stata\"
-loc logdir		"log"
 loc idhs 		"idhs17"
 loc dfn 		"log_6_merge_`idhs'"
-log using 		"`logdir'\6_merge_`idhs'", name(`dfn') text replace
+log using 		"log\6_merge_`idhs'", name(`dfn') text replace
 
 /*
 ================================================================================
@@ -34,12 +35,8 @@ PENYIAPAN
 ================================================================================
 */
 
-clear all
-macro drop _all
 set maxvar 10000
 
-*direktori kerja
-loc dtadir		"dta"
 loc yearsvy		2017
 
 *set the date
@@ -49,7 +46,7 @@ loc time_date = "`date'" + "_" + "`time'"
 loc tag "`dfn'.do Ari Prasojo `time_date'"
 
 *\dataset disimpan sebagai (nama)
-loc savenm		"`dtadir'\6-chmort-`idhs'.dta"
+loc savenm		"dta\6-chmort-`idhs'.dta"
 
 
 
@@ -60,16 +57,21 @@ PROSES PENGGABUNGAN
 */
 
 *merge dataset
-use	"`dtadir'\4-vars-birth-`idhs'.dta"
-merge m:1 v001 v002 v003 using "`dtadir'\3-vars-women-`idhs'.dta", keep(match) keepus() nogen
-merge m:1 v001 v002 using "`dtadir'\2-vars-household-`idhs'.dta", keep(match) keepus() nogen
-merge m:1 psu using "`dtadir'\5-vars-community-`idhs'.dta", keep(match) keepus() nogen
+use	"dta\4-vars-birth-`idhs'.dta"
+merge m:1 v001 v002 v003 using "dta\3-vars-women-`idhs'.dta", keep(match) keepus() nogen
+merge m:1 v001 v002 using "dta\2-vars-household-`idhs'.dta", keep(match) keepus() nogen
+merge m:1 psu using "dta\5-vars-community-`idhs'.dta", keep(match) keepus() nogen
 
 gen ydhs = `yearsvy'
 	lab var ydhs "Tahun survei"
-
+	
 quietly compress
 datasignature set, reset
 lab data "Data merge\ `time_date'"
 note: `idhs'-mortstudy-mergedata.dta \ `tag'
 save "`savenm'", replace
+
+describe
+
+*close log-file
+log close _all

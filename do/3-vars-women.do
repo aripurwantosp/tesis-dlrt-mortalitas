@@ -1,11 +1,12 @@
 log close _all
+clear all
+macro drop _all
 cls
 *dir & log file
 cd 				"D:\RESEARCH & WRITING\master thesis_child mortality\stata\"
-loc logdir		"log"
 loc idhs 		"idhs17"
 loc dfn 		"log_3_vars_women_`idhs'"
-log using 		"`logdir'\3_vars_women_`idhs'", name(`dfn') text replace
+log using 		"log\3_vars_women_`idhs'", name(`dfn') text replace
 
 /*
 ================================================================================
@@ -34,12 +35,7 @@ PENYIAPAN
 ================================================================================
 */
 
-clear all
-macro drop _all
 set maxvar 10000
-
-*direktori kerja
-loc dtadir		"dta"
 
 *set the date
 loc date = c(current_date)
@@ -52,7 +48,7 @@ loc tag "`dfn'.do Ari Prasojo `time_date'"
 loc irc			"D:\PUSDATIN\DATA MIKRO\IDHS\2017\IDIR71DT\IDIR71FL.dta"
 
 *\dataset disimpan sebagai (nama)
-loc savenm		"`dtadir'\3-vars-women-`idhs'.dta"
+loc savenm		"dta\3-vars-women-`idhs'.dta"
 
 *read data
 use "`irc'"
@@ -296,3 +292,7 @@ datasignature set, reset
 lab data "Variabel perempuan \ `time_date'"
 note: `idhs'-mortstudy-women.dta \ `tag'
 save "`savenm'", replace
+
+
+*close log-file
+log close _all

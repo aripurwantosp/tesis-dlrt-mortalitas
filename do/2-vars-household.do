@@ -1,11 +1,12 @@
 log close _all
+clear all
+macro drop _all
 cls
 *dir & log file
 cd 				"D:\RESEARCH & WRITING\master thesis_child mortality\stata\"
-loc logdir		"log"
 loc idhs 		"idhs17"
 loc dfn 		"log_2_vars_household_`idhs'"
-log using 		"`logdir'\2_vars_household_`idhs'", name(`dfn') text replace
+log using 		"log\2_vars_household_`idhs'", name(`dfn') text replace
 
 /*
 ================================================================================
@@ -34,12 +35,7 @@ PENYIAPAN
 ================================================================================
 */
 
-clear all
-macro drop _all
 set maxvar 10000
-
-*direktori kerja
-loc dtadir		"dta"
 
 *set the date
 loc date = c(current_date)
@@ -52,10 +48,10 @@ loc tag "`dfn'.do Ari Prasojo `time_date'"
 loc hrc 		"D:\PUSDATIN\DATA MIKRO\IDHS\2017\IDHR71DT\IDHR71FL.dta"
 
 *\dataset indeks kekayaan
-loc wealthdata	"`dtadir'\1-wealth-index-`idhs'.dta"
+loc wealthdata	"dta\1-wealth-index-`idhs'.dta"
 
 *\dataset disimpan sebagai (nama)
-loc savenm		"`dtadir'\2-vars-household-`idhs'.dta"
+loc savenm		"dta\2-vars-household-`idhs'.dta"
 
 *merge dengan dataset indeks kekayaan
 *use v001 v002 hhweight hmweight wi_* wiq_* wid_* using "`wealthdata'"
@@ -365,8 +361,12 @@ recode nenvfac (3 = 0 "Tidak") (0/2 = 1 "Ya"), gen(depriv2c)
 	
 *\\3 kategori (tidak,rendah,tinggi)
 recode nenvfac (3 = 0 "Tidak") (2 = 1 "Rendah") (0/1 = 2 "Tinggi"), gen(depriv)
-	lab var depriv "Status deprivasi lingkungan rumah tangga (3 kategori)"
+	lab var depriv "Tingkat deprivasi lingkungan rumah tangga (kategorik)"
 	tab depriv, m
+	
+*\\skor 0-3 (tidak-tinggi)
+recode nenvfac (0 = 3) (1 = 2) (2 = 1) (3 = 0), gen(deprivs)
+	lab var deprivs "Tingkat deprivasi lingkungan rumah tangga"
 
 /*
 *\\Kontinyu dengan pca
@@ -450,3 +450,7 @@ datasignature set, reset
 lab data "Variabel level rumah tangga \ `time_date'"
 note: `idhs'-mortstudy-hh.dta \ `tag'
 save "`savenm'", replace
+
+
+*close log-file
+log close _all

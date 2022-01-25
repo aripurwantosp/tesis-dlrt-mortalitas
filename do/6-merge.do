@@ -13,7 +13,8 @@ log using 		"log\6_merge_`idhs'", name(`dfn') text replace
 ********************************************************************************
 PROJECT:
 PENELITIAN TESIS
-DEPRIVASI LINGKUNGAN RUMAH TANGGA DAN KEMATIAN BAYI DAN ANAK DI INDONESIA
+HUBUNGAN ANTARA DEPRIVASI LINGKUNGAN RUMAH TANGGA DENGAN KEMATIAN BAYI DAN ANAK
+DI INDONESIA: BUKTI DARI MODEL LOGISTIK MULTILEVEL HAZARD DISKRIT
 
 SYNTAX:
 6-MENGGABUNGKAN DATASET (1-5)
@@ -21,8 +22,8 @@ SYNTAX:
 PENULIS:
 ARI PURWANTO SARWO PRASOJO (2006500321)
 MAGISTER EKONOMI KEPENDUDUKAN DAN KETENAGAKERJAAN
-FEB, UNIVERSITAS INDONESIA
-2021
+FAKULTAS EKONOMI DAN BISNIS, UNIVERSITAS INDONESIA
+2022
 ********************************************************************************
 ================================================================================
 */

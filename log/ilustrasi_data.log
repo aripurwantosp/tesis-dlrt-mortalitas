@@ -1,0 +1,160 @@
+----------------------------------------------------------------------------------------------------------------------------------
+      name:  log_ilustrasi_data
+       log:  D:\RESEARCH & WRITING\master thesis_child mortality\stata\log\ilustrasi_data.log
+  log type:  text
+ opened on:  25 Jan 2022, 16:12:44
+
+. 
+. *direktori
+. cd "D:\RESEARCH & WRITING\master thesis_child mortality\stata\"
+D:\RESEARCH & WRITING\master thesis_child mortality\stata
+
+. 
+. loc idhs                "idhs17"
+
+. loc dta                 "dta\6-chmort-`idhs'.dta"
+
+. use "`dta'"
+(Data merge\ 25 Jan 2022_11:39:17)
+
+. 
+. *set sampel
+. loc sett  "precsvy10==1 & nomisvaruse==1"
+
+. 
+. *set sampel
+. gen nomisvaruse = .
+(86,265 missing values generated)
+
+.         replace nomisvaruse = 1 if !(chalive == 0 & missing(agedeath)) &        ///
+>                                                            !missing(depriv) &                                           ///
+>                                                            !missing(pareduc)       
+(80,458 real changes made)
+
+. keep if `sett'
+(51,457 observations deleted)
+
+. 
+. *cek missing
+. foreach p in $vars $id {
+  2.         nmissing `p'
+  3. }
+
+. 
+. keep if `sett'
+(0 observations deleted)
+
+. 
+. 
+. *\birth id
+. tostring(bidx), g(bidx_str)
+bidx_str generated as str1
+
+. tostring(v001), g(clust_str)
+clust_str generated as str4
+
+. tostring(v002), g(hid_str)
+hid_str generated as str2
+
+. tostring(v003), g(mid_str)
+mid_str generated as str2
+
+. gen birthid = clust_str + "_" + hid_str + "_" + mid_str + "_" + bidx_str
+
+. 
+.  
+. *\Diskritisasi
+. egen agedis = cut(ageideathd), at(0 7 29 180 360) icodes
+
+.         replace agedis = agedis + 1
+(34,808 real changes made)
+
+.         lab var agedis "Umur (periods)"
+
+.         lab def agedis 1 "0-6 hari"                     ///
+>                                         2 "7-28 hari"                   ///
+>                                         3 "29 hari-5 bulan"     ///
+>                                         4 "6-11 bulan"                  ///
+>                                         5 "12-23 bulan"                 ///
+>                                         6 "24-59 bulan"
+
+.         lab val agedis agedis
+
+.         *table agedis, c(min ageideathd max ageideathd)
+.         table agedis, stat(min ageideathd) stat(max ageideathd)
+
+--------------------------------------------------
+                  |  Minimum value   Maximum value
+------------------+-------------------------------
+Umur (periods)    |                               
+  0-6 hari        |              0               6
+  7-28 hari       |              7              28
+  29 hari-5 bulan |             29             150
+  6-11 bulan      |            180             359
+  Total           |              0             359
+--------------------------------------------------
+
+. 
+. keep if inlist(agedis,3,4)
+(641 observations deleted)
+
+. by agedis, sort: gen ids = _n
+
+. keep if ids==1
+(34,165 observations deleted)
+
+. gen id = _n
+
+. clonevar umur = ageideath
+
+. clonevar umurdis = agedis
+
+. gen death = ideath
+
+. 
+. list id umur umurdis death, noobs
+
+  +-------------------------------------+
+  | id   umur           umurdis   death |
+  |-------------------------------------|
+  |  1      5   29 hari-5 bulan       1 |
+  |  2     11        6-11 bulan       0 |
+  +-------------------------------------+
+
+. 
+. *\expand        
+. expand agedis
+(5 observations created)
+
+. bysort id: gen periods = _n
+
+. lab val periods agedis
+
+. replace death = 0 if ideath == 1 & agedis != periods
+(2 real changes made)
+
+. 
+. list id umur umurdis periods death, sepby(id) noobs
+
+  +-------------------------------------------------------+
+  | id   umur           umurdis           periods   death |
+  |-------------------------------------------------------|
+  |  1      5   29 hari-5 bulan          0-6 hari       0 |
+  |  1      5   29 hari-5 bulan         7-28 hari       0 |
+  |  1      5   29 hari-5 bulan   29 hari-5 bulan       1 |
+  |-------------------------------------------------------|
+  |  2     11        6-11 bulan          0-6 hari       0 |
+  |  2     11        6-11 bulan         7-28 hari       0 |
+  |  2     11        6-11 bulan   29 hari-5 bulan       0 |
+  |  2     11        6-11 bulan        6-11 bulan       0 |
+  +-------------------------------------------------------+
+
+. 
+. 
+. *close log-file
+. log close _all
+      name:  log_ilustrasi_data
+       log:  D:\RESEARCH & WRITING\master thesis_child mortality\stata\log\ilustrasi_data.log
+  log type:  text
+ closed on:  25 Jan 2022, 16:12:44
+----------------------------------------------------------------------------------------------------------------------------------

@@ -13,7 +13,8 @@ log using 		"log\9_risk_by_age_`idhs'", name(`dfn') text replace
 ********************************************************************************
 PROJECT:
 PENELITIAN TESIS
-DEPRIVASI LINGKUNGAN RUMAH TANGGA DAN KEMATIAN BAYI DAN ANAK DI INDONESIA
+HUBUNGAN ANTARA DEPRIVASI LINGKUNGAN RUMAH TANGGA DENGAN KEMATIAN BAYI DAN ANAK
+DI INDONESIA: BUKTI DARI MODEL LOGISTIK MULTILEVEL HAZARD DISKRIT
 
 SYNTAX:
 9-DESKRIPTIF HAZARD-RISK BERDASARKAN UMUR
@@ -21,8 +22,8 @@ SYNTAX:
 PENULIS:
 ARI PURWANTO SARWO PRASOJO (2006500321)
 MAGISTER EKONOMI KEPENDUDUKAN DAN KETENAGAKERJAAN
-FEB, UNIVERSITAS INDONESIA
-2021
+FAKULTAS EKONOMI DAN BISNIS, UNIVERSITAS INDONESIA
+2022
 ********************************************************************************
 ================================================================================
 */
@@ -50,10 +51,10 @@ HITUNG
 */
 
 *\Pendekatan logit	   
-logit u5death i.interval i.interval#depriv if data==3
-margins i.interval i.interval#depriv
+logit u5death i.periods i.periods#depriv if data==3
+margins i.periods i.periods#depriv
 marginsplot, noci															///
-	title("") ytitle("Hazard")												///
+	title("") ytitle("Hazard") xtitle("Periode umur")						///
 	ylab(0 "0" 0.005 "0.50" 0.01 "1.00" 0.015 "1.50" 0.02 "2.00")			///
 	xlab(1 "0-6 hari"   2 "7-28 hari"   3 "29 hari-5 bulan"					///
 		   4 "6-11 bulan" 5 "12-23 bulan" 6 "24-59 bulan", angle(45))		///
@@ -71,7 +72,7 @@ graph export ".\output\risk_by_age.png", replace
 *total
 keep if data == 3
 gen u5death100 = 100*u5death
-collapse (mean) u5death100, by(interval)
+collapse (mean) u5death100, by(periods)
 rename u5death100 Total
 save "risk-total.dta", replace
 
@@ -80,14 +81,14 @@ clear all
 use `dta'
 keep if data == 3
 gen u5death100 = 100*u5death
-collapse (mean) u5death100, by(interval depriv)
-reshape wide u5death100, i(interval) j(depriv)
+collapse (mean) u5death100, by(periods depriv)
+reshape wide u5death100, i(periods) j(depriv)
 rename u5death1000 Tidak
 rename u5death1001 Rendah
 rename u5death1002 Tinggi
 gen Rendah_Tidak = Rendah/Tidak
 gen Tinggi_Tidak = Tinggi/Tidak
-merge m:1 interval using "risk-total.dta", keep(match) keepus() nogen
+merge m:1 periods using "risk-total.dta", keep(match) keepus() nogen
 export excel ".\output\risk_by_age.xls", firstrow(variables) replace
 erase "risk-total.dta"
 

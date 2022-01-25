@@ -2,7 +2,7 @@
       name:  log_2_vars_household_idhs17
        log:  D:\RESEARCH & WRITING\master thesis_child mortality\stata\log\2_vars_household_idhs17.log
   log type:  text
- opened on:  15 Dec 2021, 16:31:44
+ opened on:  25 Jan 2022, 10:35:26
 
 . 
 . /*
@@ -10,7 +10,8 @@
 > ********************************************************************************
 > PROJECT:
 > PENELITIAN TESIS
-> DEPRIVASI LINGKUNGAN RUMAH TANGGA DAN KEMATIAN BAYI DAN ANAK DI INDONESIA
+> HUBUNGAN ANTARA DEPRIVASI LINGKUNGAN RUMAH TANGGA DENGAN KEMATIAN BAYI DAN ANAK
+> DI INDONESIA: BUKTI DARI MODEL LOGISTIK MULTILEVEL HAZARD DISKRIT
 > 
 > SYNTAX:
 > 2-MEMBENTUK VARIABEL DI TINGKAT RUMAH TANGGA
@@ -18,8 +19,8 @@
 > PENULIS:
 > ARI PURWANTO SARWO PRASOJO (2006500321)
 > MAGISTER EKONOMI KEPENDUDUKAN DAN KETENAGAKERJAAN
-> FEB, UNIVERSITAS INDONESIA
-> 2021
+> FAKULTAS EKONOMI DAN BISNIS, UNIVERSITAS INDONESIA
+> 2022
 > ********************************************************************************
 > ================================================================================
 > */
@@ -32,16 +33,8 @@
 > ================================================================================
 > */
 . 
-. clear all
-
-. macro drop _all
-
 . set maxvar 10000
 
-
-. 
-. *direktori kerja
-. loc dtadir              "dta"
 
 . 
 . *set the date
@@ -60,18 +53,18 @@
 
 . 
 . *\dataset indeks kekayaan
-. loc wealthdata  "`dtadir'\1-wealth-index-`idhs'.dta"
+. loc wealthdata  "dta\1-wealth-index-`idhs'.dta"
 
 . 
 . *\dataset disimpan sebagai (nama)
-. loc savenm              "`dtadir'\2-vars-household-`idhs'.dta"
+. loc savenm              "dta\2-vars-household-`idhs'.dta"
 
 . 
 . *merge dengan dataset indeks kekayaan
 . *use v001 v002 hhweight hmweight wi_* wiq_* wid_* using "`wealthdata'"
 . use v001 v002 hhweight hmweight drinkwat_* toiletfac_* cookfuel_*               ///
 >         wi_* wiq_* wid_* using "`wealthdata'"
-(Perhitungan indeks kekayaan \ 15 Dec 2021_16:30:04)
+(Perhitungan indeks kekayaan \ 25 Jan 2022_10:27:07)
 
 . 
 . rename v001 hv001
@@ -99,110 +92,13 @@
 > ================================================================================
 > */
 . 
-. *\PSU                                                                                                           [done]
+. *\PSU, proksi komunitas                                                                         [done]
 . gen psu = hv021
 
 .         lab var psu "Primary sampling unit (proksi komunitas)"
 
-. 
-. *\Geografi                                                                                                      [done]
-. *\\Provinsi
-. gen prov = hv024
-
-.         lab var prov "Provinsi"
-
-.         lab def prov 11 "Aceh" 12 "Sumatera Utara"                                                      ///
->                                  13 "Sumatera Barat" 14 "Riau"                                                  ///
->                                  15 "Jambi" 16 "Sumatera Selatan"                                               ///
->                                  17 "Bengkulu" 18 "Lampung"                                                     ///
->                                  19 "Bangka Belitung" 21 "Kepulauan Riau"                               ///
->                                  31 "DKI Jakarta" 32 "Jawa Barat"                                               ///
->                                  33 "Jawa Tengah" 34 "DI Yogyakarta"                                    ///
->                                  35 "Jawa Timur" 36 "Banten"                                                    ///
->                                  51 "Bali" 52 "Nusa Tenggara Barat"                                     ///
->                                  53 "Nusa Tenggara Timur" 61 "Kalimantan Barat"                 ///
->                                  62 "Kalimantan Tengah" 63 "Kalimantan Selatan"                 ///
->                                  64 "Kalimantan Timur" 65 "Kalimantan Utara"                    ///
->                                  71 "Sulawesi Utara" 72 "Sulawesi Tengah"                               ///
->                                  73 "Sulawesi Selatan" 74 "Sulawesi Tenggara"                   ///
->                                  75 "Gorontalo" 76 "Sulawesi Barat"                                             ///
->                                  81 "Maluku" 82 "Maluku Utara"                                                  ///
->                                  91 "Papua Barat" 94 "Papua", replace
-
-.         lab val prov prov
-
-.         tab prov, m
-
-           Provinsi |      Freq.     Percent        Cum.
---------------------+-----------------------------------
-               Aceh |      2,239        4.67        4.67
-     Sumatera Utara |      2,347        4.89        9.56
-     Sumatera Barat |      1,099        2.29       11.85
-               Riau |        977        2.04       13.89
-              Jambi |        685        1.43       15.32
-   Sumatera Selatan |      1,082        2.26       17.57
-           Bengkulu |        817        1.70       19.28
-            Lampung |      1,283        2.67       21.95
-    Bangka Belitung |        791        1.65       23.60
-     Kepulauan Riau |        957        2.00       25.60
-        DKI Jakarta |      1,594        3.32       28.92
-         Jawa Barat |      4,886       10.19       39.11
-        Jawa Tengah |      3,747        7.81       46.92
-      DI Yogyakarta |        733        1.53       48.45
-         Jawa Timur |      4,117        8.58       57.03
-             Banten |      1,516        3.16       60.19
-               Bali |        796        1.66       61.85
-Nusa Tenggara Barat |      1,388        2.89       64.75
-Nusa Tenggara Timur |      2,123        4.43       69.17
-   Kalimantan Barat |        905        1.89       71.06
-  Kalimantan Tengah |        628        1.31       72.37
- Kalimantan Selatan |        829        1.73       74.10
-   Kalimantan Timur |      1,213        2.53       76.63
-   Kalimantan Utara |        582        1.21       77.84
-     Sulawesi Utara |        637        1.33       79.17
-    Sulawesi Tengah |      1,179        2.46       81.63
-   Sulawesi Selatan |      1,694        3.53       85.16
-  Sulawesi Tenggara |      1,367        2.85       88.01
-          Gorontalo |        590        1.23       89.24
-     Sulawesi Barat |      1,492        3.11       92.35
-             Maluku |      1,637        3.41       95.76
-       Maluku Utara |        953        1.99       97.75
-        Papua Barat |        496        1.03       98.78
-              Papua |        584        1.22      100.00
---------------------+-----------------------------------
-              Total |     47,963      100.00
-
 .         
-. *\\Region (7 kategori)
-. recode prov (31/36 = 1 "Jawa")                                                                                  ///
->                         (11/21 = 2 "Sumatera")                                                                          ///
->                         (51/53 = 3 "Bali & Nusa Tenggara")                                                      ///
->                         (61/65 = 4 "Kalimantan")                                                                        ///
->                         (71/76 = 5 "Sulawesi")                                                                          ///
->                         (81 82 = 6 "Maluku")                                                                            ///
->                         (91 94 = 7 "Papua"),                                                                            ///
->                         gen(reg7c)
-(47963 differences between prov and reg7c)
-
-.         lab var reg7c "Regional tempat tinggal"
-
-.         tab reg7c, m
-
-     Regional tempat |
-             tinggal |      Freq.     Percent        Cum.
----------------------+-----------------------------------
-                Jawa |     16,593       34.60       34.60
-            Sumatera |     12,277       25.60       60.19
-Bali & Nusa Tenggara |      4,307        8.98       69.17
-          Kalimantan |      4,157        8.67       77.84
-            Sulawesi |      6,959       14.51       92.35
-              Maluku |      2,590        5.40       97.75
-               Papua |      1,080        2.25      100.00
----------------------+-----------------------------------
-               Total |     47,963      100.00
-
-.         
-. *\\Wilayah tempat tinggal (kota/desa)
+. *\Wilayah tempat tinggal (kota/desa)
 . recode hv025 (2 = 0 "Perdesaan") (1 = 1 "Perkotaan"), gen(reside)
 (23403 differences between hv025 and reside)
 
@@ -299,13 +195,13 @@ Sungai/dam/danau/kolam/aliran/saluran/i |      1,104        2.30       59.66
 . clonevar nondrinkwat = hv202
 (30,576 missing values generated)
 
-.         lab var nondrinkwat "Sumber air utama selain untuk minum"
+.         lab var nondrinkwat "Sumber utama air selain untuk minum"
 
 .         lab val nondrinkwat drinkwat
 
 .         tab nondrinkwat, m
 
-    Sumber air utama selain untuk minum |      Freq.     Percent        Cum.
+    Sumber utama air selain untuk minum |      Freq.     Percent        Cum.
 ----------------------------------------+-----------------------------------
            Ledeng sampai ke dalam rumah |      4,603        9.60        9.60
                Ledeng sampai ke halaman |        547        1.14       10.74
@@ -533,7 +429,7 @@ Tempat terbuka/sembarang |      4,787        9.98        9.98
                    Total |     47,963      100.00
 
 . 
-. *\\2 kategori (layak/ tidak layak)
+. *\\2 kategori (layak/tidak layak)
 . recode sanldr (0/1 = 0 "Tidak layak")                                                                   ///
 >                           (2 = 1 "Layak"),                                                                                      
 > ///
@@ -775,35 +671,6 @@ Padat/minyak tanah/lainnya |     15,605       32.54       32.54
       Total |     47,963      100.00
 
 . 
-. *\\3 kategori (0-1,2,3)
-. recode nenvfac (0 1 = 1), gen(nenvfac1)
-(1562 differences between nenvfac and nenvfac1)
-
-.         lab var nenvfac1 "Banyaknya fasilitas (sumber air, sanitasi, bahan bakar) layak"
-
-.         lab def nenvfac1 1 "0-1" 2 "2" 3 "3", replace
-
-.         lab val nenvfac1 nenvfac1
-
-.         tab nenvfac1, m
-
-  Banyaknya |
-  fasilitas |
-    (sumber |
-       air, |
-  sanitasi, |
-      bahan |
-     bakar) |
-      layak |      Freq.     Percent        Cum.
-------------+-----------------------------------
-        0-1 |      7,614       15.87       15.87
-          2 |     14,112       29.42       45.30
-          3 |     26,218       54.66       99.96
-          . |         19        0.04      100.00
-------------+-----------------------------------
-      Total |     47,963      100.00
-
-. 
 . *\\Banyaknya fasilitas lingkungan yang layak, DHS                       [done]
 . gen nenvfacdhs = impdrinkwatdhs + impsandhs + impcookfldhs
 (19 missing values generated)
@@ -825,41 +692,26 @@ Padat/minyak tanah/lainnya |     15,605       32.54       32.54
 . 
 . *\Deprivasi lingkungan rumah tangga                                                     [done]
 . 
-. *\\2 kategori (tidak/ya)
-. recode nenvfac (3 = 0 "Tidak") (0/2 = 1 "Ya"), gen(depriv2c)
-(41892 differences between nenvfac and depriv2c)
-
-.         lab var depriv "Status deprivasi lingkungan rumah tangga"
-
-.         tab depriv2c, m
-
-     Status |
-  deprivasi |
- lingkungan |
-      rumah |
-     tangga |      Freq.     Percent        Cum.
-------------+-----------------------------------
-      Tidak |     26,218       54.66       54.66
-         Ya |     21,726       45.30       99.96
-          . |         19        0.04      100.00
-------------+-----------------------------------
-      Total |     47,963      100.00
-
+. /*
+> *\\2 kategori (tidak/ya)
+> recode nenvfac (3 = 0 "Tidak") (0/2 = 1 "Ya"), gen(depriv2c)
+>         lab var depriv "Status deprivasi lingkungan rumah tangga"
+>         tab depriv2c, m
+> */
 .         
 . *\\3 kategori (tidak,rendah,tinggi)
 . recode nenvfac (3 = 0 "Tidak") (2 = 1 "Rendah") (0/1 = 2 "Tinggi"), gen(depriv)
 (47944 differences between nenvfac and depriv)
 
-.         lab var depriv "Status deprivasi lingkungan rumah tangga (3 kategori)"
+.         lab var depriv "Tingkat deprivasi lingkungan rumah tangga"
 
 .         tab depriv, m
 
-     Status |
+    Tingkat |
   deprivasi |
  lingkungan |
       rumah |
-  tangga (3 |
-  kategori) |      Freq.     Percent        Cum.
+     tangga |      Freq.     Percent        Cum.
 ------------+-----------------------------------
       Tidak |     26,218       54.66       54.66
      Rendah |     14,112       29.42       84.09
@@ -868,40 +720,7 @@ Padat/minyak tanah/lainnya |     15,605       32.54       32.54
 ------------+-----------------------------------
       Total |     47,963      100.00
 
-. 
-. /*
-> *\\Kontinyu dengan pca
-> 
-> *\\\pca
-> pca impdrinkwat impsan cookfldr
-> *screeplot, yline(1) ci(het)
-> predict depc1 depc2, score
-> matrix eig = e(Ev)
-> scalar eig1p = eig[1,1]
-> scalar eig2p = eig[1,2]
-> scalar w1p = eig1p/(eig1p+eig2p)
-> scalar w2p = eig2p/(eig1p+eig2p)
-> gen deprivpc = w1p*depc1 + w2p*depc2
-> *histogram deprivpc, density normal
-> 
-> *\\\polychoric pca
-> polychoricpca impdrinkwat impsan cookfldr, score(deppcpol) nscore(2)
-> scalar eig1 = r(lambda1)
-> scalar eig2 = r(lambda2)
-> scalar w1 = eig1/(eig1+eig2)
-> scalar w2 = eig2/(eig1+eig2)
-> gen deprivpcpol = w1*deppcpol1 + w2*deppcpol2
-> *histogram deprivpcpol, density normal
-> 
-> *\\\pca fasilitas
-> glo depindic "drinkwat_* toiletfac_* cookfuel_*"
-> pca $depindic
-> predict deprivc, score
-> *histogram deprivc, density normal
->  */
-. 
-.         
-.         
+.                 
 . /*
 > ******************************************************************
 > Status ekonomi/kekayaan/wealth                                                          [done]
@@ -911,9 +730,10 @@ Padat/minyak tanah/lainnya |     15,605       32.54       32.54
 . *\indeks kekayaan, tereduksi                                                            [done]
 . /*
 > tanpa komponen air,sanitasi,bahan bakar
+> miskin(40%), menengah(40%), kaya(20%)
 > */
 . 
-. *\\gabungan
+. *\\indeks gabungan/kombinasi desa/kota
 . recode wiq_reduce_combine (1/2 = 0 "Miskin")                                                    ///
 >                                                   (3/4 = 1 "Menengah")                                                  ///
 >                                                   (5 = 2 "Kaya"),                                                               
@@ -937,17 +757,6 @@ Padat/minyak tanah/lainnya |     15,605       32.54       32.54
       Total |     47,963      100.00
 
 . 
-. /*
-> *\\kota-desa
-> recode wiq_reduce_urbrur  (1/2 = 0 "Miskin")                                                    ///
->                                                   (3/4 = 1 "Menengah")                                                  ///
->                                                   (5 = 2 "Kaya"),                                                               
-> ///
->                                                   gen(wealth1)
->         lab var wealth1 "Indeks kekayaan rumah tangga (kota-desa)"
->         tab wealth1, m
-> */
-. 
 . 
 . 
 . /*
@@ -970,24 +779,21 @@ Padat/minyak tanah/lainnya |     15,605       32.54       32.54
 . quietly compress
 
 . datasignature set, reset
-  47963:44(121907):1710114387:2655324197       (data signature reset)
+  47963:40(81505):2961400647:775597007       (data signature reset)
 
 . lab data "Variabel level rumah tangga \ `time_date'"
 
 . note: `idhs'-mortstudy-hh.dta \ `tag'
 
 . save "`savenm'", replace
-(file dta\2-vars-household-.dta not found)
-file dta\2-vars-household-.dta saved
+file dta\2-vars-household-idhs17.dta saved
 
 . 
-end of do-file
-
-. do "D:\RESEARCH & WRITING\master thesis_child mortality\stata\do\3-vars-women.do"
-
+. 
+. *close log-file
 . log close _all
       name:  log_2_vars_household_idhs17
        log:  D:\RESEARCH & WRITING\master thesis_child mortality\stata\log\2_vars_household_idhs17.log
   log type:  text
- closed on:  15 Dec 2021, 16:32:09
+ closed on:  25 Jan 2022, 10:35:29
 ----------------------------------------------------------------------------------------------------------------------------------

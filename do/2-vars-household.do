@@ -13,7 +13,8 @@ log using 		"log\2_vars_household_`idhs'", name(`dfn') text replace
 ********************************************************************************
 PROJECT:
 PENELITIAN TESIS
-DEPRIVASI LINGKUNGAN RUMAH TANGGA DAN KEMATIAN BAYI DAN ANAK DI INDONESIA
+HUBUNGAN ANTARA DEPRIVASI LINGKUNGAN RUMAH TANGGA DENGAN KEMATIAN BAYI DAN ANAK
+DI INDONESIA: BUKTI DARI MODEL LOGISTIK MULTILEVEL HAZARD DISKRIT
 
 SYNTAX:
 2-MEMBENTUK VARIABEL DI TINGKAT RUMAH TANGGA
@@ -21,8 +22,8 @@ SYNTAX:
 PENULIS:
 ARI PURWANTO SARWO PRASOJO (2006500321)
 MAGISTER EKONOMI KEPENDUDUKAN DAN KETENAGAKERJAAN
-FEB, UNIVERSITAS INDONESIA
-2021
+FAKULTAS EKONOMI DAN BISNIS, UNIVERSITAS INDONESIA
+2022
 ********************************************************************************
 ================================================================================
 */
@@ -73,47 +74,11 @@ VARIABEL-VARIABEL DASAR
 ================================================================================
 */
 
-*\PSU														[done]
+*\PSU, proksi komunitas										[done]
 gen psu = hv021
 	lab var psu "Primary sampling unit (proksi komunitas)"
-
-*\Geografi													[done]
-*\\Provinsi
-gen prov = hv024
-	lab var prov "Provinsi"
-	lab def prov 11 "Aceh" 12 "Sumatera Utara"							///
-				 13 "Sumatera Barat" 14 "Riau"							///
-				 15 "Jambi" 16 "Sumatera Selatan" 						///
-				 17 "Bengkulu" 18 "Lampung" 							///
-				 19 "Bangka Belitung" 21 "Kepulauan Riau"				///
-				 31 "DKI Jakarta" 32 "Jawa Barat" 						///
-				 33 "Jawa Tengah" 34 "DI Yogyakarta"					///
-				 35 "Jawa Timur" 36 "Banten"							///
-				 51 "Bali" 52 "Nusa Tenggara Barat" 					///
-				 53 "Nusa Tenggara Timur" 61 "Kalimantan Barat"			///
-				 62 "Kalimantan Tengah" 63 "Kalimantan Selatan" 		///
-				 64 "Kalimantan Timur" 65 "Kalimantan Utara"    		///
-				 71 "Sulawesi Utara" 72 "Sulawesi Tengah"				///
-				 73 "Sulawesi Selatan" 74 "Sulawesi Tenggara"			///
-				 75 "Gorontalo"	76 "Sulawesi Barat"						///
-				 81 "Maluku" 82 "Maluku Utara"							///
-				 91 "Papua Barat" 94 "Papua", replace
-	lab val prov prov
-	tab prov, m
 	
-*\\Region (7 kategori)
-recode prov (31/36 = 1 "Jawa")											///
-			(11/21 = 2 "Sumatera")										///
-			(51/53 = 3 "Bali & Nusa Tenggara")							///
-			(61/65 = 4 "Kalimantan")									///
-			(71/76 = 5 "Sulawesi")										///
-			(81 82 = 6 "Maluku")										///
-			(91 94 = 7 "Papua"),										///
-			gen(reg7c)
-	lab var reg7c "Regional tempat tinggal"
-	tab reg7c, m
-	
-*\\Wilayah tempat tinggal (kota/desa)
+*\Wilayah tempat tinggal (kota/desa)
 recode hv025 (2 = 0 "Perdesaan") (1 = 1 "Perkotaan"), gen(reside)
 	lab var reside "Wilayah tempat tinggal"
 	tab reside, m
@@ -160,7 +125,7 @@ clonevar drinkwat = hv201
 
 *\Sumber utama air selain untuk minum						[done]
 clonevar nondrinkwat = hv202
-	lab var nondrinkwat "Sumber air utama selain untuk minum"
+	lab var nondrinkwat "Sumber utama air selain untuk minum"
 	lab val nondrinkwat drinkwat
 	tab nondrinkwat, m
 
@@ -251,7 +216,7 @@ recode toiletfac (31 = 0 "Tempat terbuka/sembarang")					///
 	lab var sanldr "Level/kategori fasilitas toilet/sanitasi"
 	tab sanldr, m
 
-*\\2 kategori (layak/ tidak layak)
+*\\2 kategori (layak/tidak layak)
 recode sanldr (0/1 = 0 "Tidak layak")									///
 			  (2 = 1 "Layak"),											///
 			  gen(impsan)
@@ -340,13 +305,6 @@ gen nenvfac = impdrinkwat + impsan + cookfldr
 	lab var nenvfac "Banyaknya fasilitas (sumber air, sanitasi, bahan bakar) layak"
 	tab nenvfac, m
 
-*\\3 kategori (0-1,2,3)
-recode nenvfac (0 1 = 1), gen(nenvfac1)
-	lab var nenvfac1 "Banyaknya fasilitas (sumber air, sanitasi, bahan bakar) layak"
-	lab def nenvfac1 1 "0-1" 2 "2" 3 "3", replace
-	lab val nenvfac1 nenvfac1
-	tab nenvfac1, m
-
 *\\Banyaknya fasilitas lingkungan yang layak, DHS			[done]
 gen nenvfacdhs = impdrinkwatdhs + impsandhs + impcookfldhs
 	lab var nenvfac "Banyaknya fasilitas (sumber air, sanitasi, bahan bakar) layak"
@@ -354,53 +312,18 @@ gen nenvfacdhs = impdrinkwatdhs + impsandhs + impcookfldhs
 
 *\Deprivasi lingkungan rumah tangga							[done]
 
+/*
 *\\2 kategori (tidak/ya)
 recode nenvfac (3 = 0 "Tidak") (0/2 = 1 "Ya"), gen(depriv2c)
 	lab var depriv "Status deprivasi lingkungan rumah tangga"
 	tab depriv2c, m
+*/
 	
 *\\3 kategori (tidak,rendah,tinggi)
 recode nenvfac (3 = 0 "Tidak") (2 = 1 "Rendah") (0/1 = 2 "Tinggi"), gen(depriv)
-	lab var depriv "Tingkat deprivasi lingkungan rumah tangga (kategorik)"
+	lab var depriv "Tingkat deprivasi lingkungan rumah tangga"
 	tab depriv, m
-	
-*\\skor 0-3 (tidak-tinggi)
-recode nenvfac (0 = 3) (1 = 2) (2 = 1) (3 = 0), gen(deprivs)
-	lab var deprivs "Tingkat deprivasi lingkungan rumah tangga"
-
-/*
-*\\Kontinyu dengan pca
-
-*\\\pca
-pca impdrinkwat impsan cookfldr
-*screeplot, yline(1) ci(het)
-predict depc1 depc2, score
-matrix eig = e(Ev)
-scalar eig1p = eig[1,1]
-scalar eig2p = eig[1,2]
-scalar w1p = eig1p/(eig1p+eig2p)
-scalar w2p = eig2p/(eig1p+eig2p)
-gen deprivpc = w1p*depc1 + w2p*depc2
-*histogram deprivpc, density normal
-
-*\\\polychoric pca
-polychoricpca impdrinkwat impsan cookfldr, score(deppcpol) nscore(2)
-scalar eig1 = r(lambda1)
-scalar eig2 = r(lambda2)
-scalar w1 = eig1/(eig1+eig2)
-scalar w2 = eig2/(eig1+eig2)
-gen deprivpcpol = w1*deppcpol1 + w2*deppcpol2
-*histogram deprivpcpol, density normal
-
-*\\\pca fasilitas
-glo depindic "drinkwat_* toiletfac_* cookfuel_*"
-pca $depindic
-predict deprivc, score
-*histogram deprivc, density normal
- */
-
-	
-	
+		
 /*
 ******************************************************************
 Status ekonomi/kekayaan/wealth								[done]
@@ -410,25 +333,16 @@ Status ekonomi/kekayaan/wealth								[done]
 *\indeks kekayaan, tereduksi								[done]
 /*
 tanpa komponen air,sanitasi,bahan bakar
+miskin(40%), menengah(40%), kaya(20%)
 */
 
-*\\gabungan
+*\\indeks gabungan/kombinasi desa/kota
 recode wiq_reduce_combine (1/2 = 0 "Miskin")							///
 						  (3/4 = 1 "Menengah")							///
 						  (5 = 2 "Kaya"),								///
 						  gen(wealth)
 	lab var wealth "Indeks kekayaan rumah tangga"
 	tab wealth, m
-
-/*
-*\\kota-desa
-recode wiq_reduce_urbrur  (1/2 = 0 "Miskin")							///
-						  (3/4 = 1 "Menengah")							///
-						  (5 = 2 "Kaya"),								///
-						  gen(wealth1)
-	lab var wealth1 "Indeks kekayaan rumah tangga (kota-desa)"
-	tab wealth1, m
-*/
 
 
 

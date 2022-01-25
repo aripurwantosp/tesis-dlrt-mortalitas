@@ -2,7 +2,7 @@
       name:  log_9_risk_by_age_idhs17
        log:  D:\RESEARCH & WRITING\master thesis_child mortality\stata\log\9_risk_by_age_idhs17.log
   log type:  text
- opened on:  15 Dec 2021, 16:38:32
+ opened on:  25 Jan 2022, 15:41:33
 
 . 
 . /*
@@ -10,7 +10,8 @@
 > ********************************************************************************
 > PROJECT:
 > PENELITIAN TESIS
-> DEPRIVASI LINGKUNGAN RUMAH TANGGA DAN KEMATIAN BAYI DAN ANAK DI INDONESIA
+> HUBUNGAN ANTARA DEPRIVASI LINGKUNGAN RUMAH TANGGA DENGAN KEMATIAN BAYI DAN ANAK
+> DI INDONESIA: BUKTI DARI MODEL LOGISTIK MULTILEVEL HAZARD DISKRIT
 > 
 > SYNTAX:
 > 9-DESKRIPTIF HAZARD-RISK BERDASARKAN UMUR
@@ -18,8 +19,8 @@
 > PENULIS:
 > ARI PURWANTO SARWO PRASOJO (2006500321)
 > MAGISTER EKONOMI KEPENDUDUKAN DAN KETENAGAKERJAAN
-> FEB, UNIVERSITAS INDONESIA
-> 2021
+> FAKULTAS EKONOMI DAN BISNIS, UNIVERSITAS INDONESIA
+> 2022
 > ********************************************************************************
 > ================================================================================
 > */
@@ -32,41 +33,27 @@
 > ================================================================================
 > */
 . 
-. clear all
-
-. macro drop _all
-
 . set maxvar 10000
 
 
 . 
-. *direktori kerja
-. loc dtadir              "dta"
-
-. *loc outdir             "output"
-. 
 . *baca data
-. loc dta                 "`dtadir'\8-data-model-`idhs'.dta"
+. loc dta                 "dta\8-data-model-`idhs'.dta"
 
 . use `dta'
-(Dataset pemodelan \ 15 Dec 2021_16:38:05)
+(Dataset pemodelan \ 25 Jan 2022_15:37:51)
 
 . 
 . 
 . 
 . /*
 > ================================================================================
-> CALCULATE                                                                                                       
+> HITUNG                                                                                          
 > ================================================================================
 > */
 . 
-. /*
-> ******************************************************************
-> Logit Approach                                                                                          [done]
-> ******************************************************************
-> */
-.                    
-. logit u5death i.interval i.interval#depriv if data==3
+. *\Pendekatan logit         
+. logit u5death i.periods i.periods#depriv if data==3
 
 Iteration 0:   log likelihood = -7440.4865  
 Iteration 1:   log likelihood = -7306.3265  
@@ -83,14 +70,14 @@ Log likelihood = -7154.0736                            Pseudo R2     =  0.0385
 -----------------------------------------------------------------------------------------
                 u5death | Coefficient  Std. err.      z    P>|z|     [95% conf. interval]
 ------------------------+----------------------------------------------------------------
-               interval |
+                periods |
              7-28 hari  |  -1.361672   .1462426    -9.31   0.000    -1.648303   -1.075042
        29 hari-5 bulan  |  -.9685523   .1262231    -7.67   0.000    -1.215945   -.7211596
             6-11 bulan  |  -1.539955   .1576272    -9.77   0.000    -1.848899   -1.231012
            12-23 bulan  |  -1.818825   .1773846   -10.25   0.000    -2.166493   -1.471158
            24-59 bulan  |   -1.59857   .1617947    -9.88   0.000    -1.915682   -1.281458
                         |
-        interval#depriv |
+         periods#depriv |
        0-6 hari#Rendah  |   .2832729   .1026878     2.76   0.006     .0820085    .4845373
        0-6 hari#Tinggi  |   .3941919   .1164468     3.39   0.001     .1659604    .6224235
       7-28 hari#Rendah  |   .2065038   .2067509     1.00   0.318    -.1987205     .611728
@@ -107,7 +94,7 @@ Log likelihood = -7154.0736                            Pseudo R2     =  0.0385
                   _cons |  -4.378829   .0662064   -66.14   0.000    -4.508591   -4.249067
 -----------------------------------------------------------------------------------------
 
-. margins i.interval i.interval#depriv
+. margins i.periods i.periods#depriv
 
 Predictive margins                                     Number of obs = 204,706
 Model VCE: OIM
@@ -118,7 +105,7 @@ Expression: Pr(u5death), predict()
                         |            Delta-method
                         |     Margin   std. err.      z    P>|z|     [95% conf. interval]
 ------------------------+----------------------------------------------------------------
-               interval |
+                periods |
               0-6 hari  |   .0145546   .0006416    22.69   0.000     .0132972     .015812
              7-28 hari  |   .0039044   .0003366    11.60   0.000     .0032447    .0045641
        29 hari-5 bulan  |   .0066997   .0004411    15.19   0.000     .0058352    .0075642
@@ -126,7 +113,7 @@ Expression: Pr(u5death), predict()
            12-23 bulan  |   .0031993   .0003073    10.41   0.000     .0025971    .0038015
            24-59 bulan  |   .0029403   .0002951     9.96   0.000      .002362    .0035186
                         |
-        interval#depriv |
+         periods#depriv |
         0-6 hari#Tidak  |   .0123847   .0008098    15.29   0.000     .0107976    .0139719
        0-6 hari#Rendah  |   .0163739   .0012642    12.95   0.000     .0138961    .0188518
        0-6 hari#Tinggi  |   .0182596   .0017172    10.63   0.000     .0148939    .0216253
@@ -149,9 +136,9 @@ Expression: Pr(u5death), predict()
 
 . marginsplot, noci                                                                                                               
 >         ///
->         title("") ytitle("Hazard")                                                                                              
-> ///
->         xlabel(1 "0-6 hari"   2 "7-28 hari"   3 "29 hari-5 bulan"                               ///
+>         title("") ytitle("Hazard") xtitle("Periode umur")                                               ///
+>         ylab(0 "0" 0.005 "0.50" 0.01 "1.00" 0.015 "1.50" 0.02 "2.00")                   ///
+>         xlab(1 "0-6 hari"   2 "7-28 hari"   3 "29 hari-5 bulan"                                 ///
 >                    4 "6-11 bulan" 5 "12-23 bulan" 6 "24-59 bulan", angle(45))           ///
 >         legend(order (1 2 3 4)                                                                                                  
 > ///
@@ -164,86 +151,86 @@ Expression: Pr(u5death), predict()
 > ///
 >         scheme(gg_tableau)
 
-Variables that uniquely identify margins: interval depriv
+Variables that uniquely identify margins: periods depriv
 
 . graph export ".\output\risk_by_age.png", replace
+(file .\output\risk_by_age.png not found)
 file .\output\risk_by_age.png saved as PNG format
 
 . 
 . 
-. 
-. /*
-> /*
-> ******************************************************************
-> Twoway Table Approach                                                                           [done]
-> ******************************************************************
-> */
-> 
-> *\Umum
-> egen hazard = mean(100*u5death), by(data interval)
-> egen tag = tag(data interval)
-> twoway connected hazard interval if data==3,sort        ///
->         xtitle("Interval umur") ytitle("Hazard (%)")                                                    ///
->         xlabel(1 "0-6 hari"   2 "7-28 hari"   3 "29 hari-5 bulan"                       ///
->                    4 "6-11 bulan" 5 "12-23 bulan" 6 "24-59 bulan", angle(45))           ///
->         scheme(white_tableau)
-> graph export ".\output\risk_by_age.png", replace
-> 
-> 
-> *\Berdasarkan Status Deprivasi  
-> drop hazard tag
-> egen hazard = mean(100*u5death), by(data depriv interval)
-> egen tag = tag(data depriv interval)
-> line hazard interval if data==3 & depriv==0, sort               ///
->         || line hazard interval if data==3 & depriv==1, sort    ///
->         || line hazard interval if data==3 & depriv==2, sort    ///
->         xtitle("Interval umur") ytitle("Hazard (%)")                                                ///
->         xlabel(1 "0-6 hari"   2 "7-28 hari"   3 "29 hari-5 bulan"                       ///
->                    4 "6-11 bulan" 5 "12-23 bulan" 6 "24-59 bulan", angle(45))           ///
->         legend(order(1 "Tidak" 2 "Rendah" 3 "Tinggi") position(6) rows(1))              ///
->         scheme(white_tableau)
-> graph export ".\output\risk_by_age_depriv.png", replace
-> */
-. 
-. 
 . *\Tabel
+. *total
+. keep if data == 3
+(206,323 observations deleted)
+
 . gen u5death100 = 100*u5death
 
-. quietly collect: table (interval) (depriv) if data==3, stat(mean u5death100)
+. collapse (mean) u5death100, by(periods)
 
-. collect style cell, font( Times New Roman, size(8) )
+. rename u5death100 Total
 
-. collect style cell border_block, border(right, pattern(nil))
-
-. collect style cell result[mean], nformat(%6,3fc)
-
-. collect preview
-
-------------------------------------------------------------------------------
-                      Status deprivasi lingkungan rumah tangga (3 kategori)   
-                          Tidak          Rendah          Tinggi          Total
-------------------------------------------------------------------------------
-Interval umur                                                                 
-  0-6 hari                1,238           1,637           1,826          1,457
-  7-28 hari               0,320           0,393           0,603          0,391
-  29 hari-5 bulan         0,474           0,810           1,045          0,670
-  6-11 bulan              0,268           0,490           0,698          0,407
-  12-23 bulan             0,203           0,369           0,600          0,320
-  24-59 bulan             0,253           0,330           0,362          0,294
-  Total                   0,462           0,677           0,863          0,594
-------------------------------------------------------------------------------
-
-. collect export ".\output\risk_by_age.xls", as(xls) replace
-(collection Table exported to file .\output\risk_by_age.xls)
+. save "risk-total.dta", replace
+(file risk-total.dta not found)
+file risk-total.dta saved
 
 . 
-end of do-file
+. *by depriv
+. clear all
 
-. do "D:\RESEARCH & WRITING\master thesis_child mortality\stata\do\10-modeling.do"
+. use `dta'
+(Dataset pemodelan \ 25 Jan 2022_15:37:51)
 
+. keep if data == 3
+(206,323 observations deleted)
+
+. gen u5death100 = 100*u5death
+
+. collapse (mean) u5death100, by(periods depriv)
+
+. reshape wide u5death100, i(periods) j(depriv)
+(j = 0 1 2)
+
+Data                               Long   ->   Wide
+-----------------------------------------------------------------------------
+Number of observations               18   ->   6           
+Number of variables                   3   ->   4           
+j variable (3 values)            depriv   ->   (dropped)
+xij variables:
+                             u5death100   ->   u5death1000 u5death1001 u5death1002
+-----------------------------------------------------------------------------
+
+. rename u5death1000 Tidak
+
+. rename u5death1001 Rendah
+
+. rename u5death1002 Tinggi
+
+. gen Rendah_Tidak = Rendah/Tidak
+
+. gen Tinggi_Tidak = Tinggi/Tidak
+
+. merge m:1 periods using "risk-total.dta", keep(match) keepus() nogen
+(label agedis already defined)
+
+    Result                      Number of obs
+    -----------------------------------------
+    Not matched                             0
+    Matched                                 6  
+    -----------------------------------------
+
+. export excel ".\output\risk_by_age.xls", firstrow(variables) replace
+file .\output\risk_by_age.xls saved
+
+. erase "risk-total.dta"
+
+. 
+. 
+. 
+. *close log-file
 . log close _all
       name:  log_9_risk_by_age_idhs17
        log:  D:\RESEARCH & WRITING\master thesis_child mortality\stata\log\9_risk_by_age_idhs17.log
   log type:  text
- closed on:  15 Dec 2021, 16:39:37
+ closed on:  25 Jan 2022, 15:41:58
 ----------------------------------------------------------------------------------------------------------------------------------

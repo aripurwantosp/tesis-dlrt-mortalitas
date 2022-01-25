@@ -13,7 +13,8 @@ log using 		"log\7_descriptive_`idhs'", name(`dfn') text replace
 ********************************************************************************
 PROJECT:
 PENELITIAN TESIS
-DEPRIVASI LINGKUNGAN RUMAH TANGGA DAN KEMATIAN BAYI DAN ANAK DI INDONESIA
+HUBUNGAN ANTARA DEPRIVASI LINGKUNGAN RUMAH TANGGA DENGAN KEMATIAN BAYI DAN ANAK
+DI INDONESIA: BUKTI DARI MODEL LOGISTIK MULTILEVEL HAZARD DISKRIT
 
 SYNTAX:
 7-ANALISIS DESKRIPTIF
@@ -21,8 +22,8 @@ SYNTAX:
 PENULIS:
 ARI PURWANTO SARWO PRASOJO (2006500321)
 MAGISTER EKONOMI KEPENDUDUKAN DAN KETENAGAKERJAAN
-FEB, UNIVERSITAS INDONESIA
-2021
+FAKULTAS EKONOMI DAN BISNIS, UNIVERSITAS INDONESIA
+2022
 ********************************************************************************
 ================================================================================
 */
@@ -58,7 +59,7 @@ use "dta\6-chmort-`idhs'.dta"
 gen nomisvaruse = .
 	replace nomisvaruse = 1 if !(chalive == 0 & missing(agedeath)) &	///
 							   !missing(depriv) &						///
-							   !missing(peduc)	   
+							   !missing(pareduc)	   
 loc sett  "precsvy10==1 & nomisvaruse==1"
 keep if `sett'
 
@@ -66,7 +67,7 @@ keep if `sett'
 #delimit ;
 glo vars
 	/*var bebas utama, lingkungan*/
-	depriv depriv2c
+	depriv
 	impdrinkwat impsan cookfldr
 	/*antara*/
 	chsex bordin mageb
@@ -99,14 +100,14 @@ Gambaran umum sampel										[done]
 ******************************************************************
 */
 
-*\unweighted
+*\Unweighted
 #delimit ;
 quietly collect: table, 
 				 stat(fvfrequency chalive nndeath ideath u5death $vars)
 				 stat(fvpercent chalive nndeath ideath u5death $vars)
-				 stat(mean deprivs pwdisthfac)
-				 stat(median deprivs pwdisthfac)
-				 stat(sd deprivs pwdisthfac)
+				 stat(mean pwdisthfac)
+				 stat(median pwdisthfac)
+				 stat(sd pwdisthfac)
 				 ;
 #delimit cr
 quietly collect layout (colname) (result)
@@ -119,20 +120,22 @@ collect label levels result fvfrequency "n" fvpercent "%" sd "SD", modify
 collect preview
 collect export ".\output\univar.xls", as(xls) sheet(uw) replace
 
-*\weighted
+/*
+*\Weighted
 #delimit ;
 quietly collect: table [iw=wweight], 
 				 stat(fvfrequency chalive nndeath ideath u5death $vars)
 				 stat(fvpercent chalive nndeath ideath u5death $vars)
-				 stat(mean deprivs pwdisthfac)
-				 stat(median deprivs pwdisthfac)
-				 stat(sd deprivs pwdisthfac)
+				 stat(mean pwdisthfac)
+				 stat(median pwdisthfac)
+				 stat(sd pwdisthfac)
 				 ;
 #delimit cr
 collect style use univar, replace layout
 collect label levels result fvfrequency "n" fvpercent "%" sd "SD", modify
 collect preview
 collect export ".\output\univar.xls", as(xls) sheet(w) modify
+*/
   
 /*
 ******************************************************************
@@ -141,15 +144,22 @@ Karakteristik sosial ekonomi dan status deprivasi			[done]
 */
 
 *\Tabulasi silang
-tabmult [aw=wweight],													///
-		cat(meduc4c peduc4c pareduc wealth reside)						///
-		by(impdrinkwat impsan cookfldr depriv2c depriv) row				///
-		save(output\desc_soc_depriv.xls) sheet(persen_w) replace
+*\\Unweighted
+tabmult, cat(meduc4c peduc4c pareduc wealth reside)						///
+		 by(impdrinkwat impsan cookfldr depriv) row						///
+		 save(output\desc_soc_depriv.xls) sheet(persen) replace
 
+tabmult, cat(meduc4c peduc4c pareduc wealth reside)						///
+		 by(impdrinkwat impsan cookfldr depriv)							///
+		 save(output\desc_soc_depriv.xls) sheet(absolut) append
+
+/*
+*\\Weighted
 tabmult [aw=wweight],													///
 		cat(meduc4c peduc4c pareduc wealth reside)						///
-		by(impdrinkwat impsan cookfldr depriv2c depriv)					///
-		save(output\desc_soc_depriv.xls) sheet(absolut) append
+		by(impdrinkwat impsan cookfldr depriv) row						///
+		save(output\desc_soc_depriv.xls) sheet(persen_w) append
+*/
 
 *\Two-way pearson chi-squared
 #delimit ;
@@ -171,18 +181,12 @@ quietly collect: table (command) (result),
 				 command(r(chi2) r(r): tab pareduc cookfldr, row chi2)
 				 command(r(chi2) r(r): tab wealth cookfldr, row chi2)
 				 command(r(chi2) r(r): tab reside cookfldr, row chi2)
-				 
-				 command(r(chi2) r(r): tab meduc4c depriv2c, row chi2)
-				 command(r(chi2) r(r): tab peduc4c depriv2c, row chi2)
-				 command(r(chi2) r(r): tab pareduc depriv2c, row chi2)
-				 command(r(chi2) r(r): tab wealth depriv2c, row chi2)
-				 command(r(chi2) r(r): tab reside depriv2c, row chi2)
-				 
-				 command(r(chi2) r(r): tab meduc4c depriv2c, row chi2)
-				 command(r(chi2) r(r): tab peduc4c depriv2c, row chi2)
-				 command(r(chi2) r(r): tab pareduc depriv2c, row chi2)
-				 command(r(chi2) r(r): tab wealth depriv2c, row chi2)
-				 command(r(chi2) r(r): tab reside depriv2c, row chi2)
+				 				 
+				 command(r(chi2) r(r): tab meduc4c depriv, row chi2)
+				 command(r(chi2) r(r): tab peduc4c depriv, row chi2)
+				 command(r(chi2) r(r): tab pareduc depriv, row chi2)
+				 command(r(chi2) r(r): tab wealth depriv, row chi2)
+				 command(r(chi2) r(r): tab reside depriv, row chi2)
 	;
 #delimit cr
 collect style row stack, nodelimiter nospacer indent length(.) wrapon(word)	///
@@ -198,7 +202,7 @@ collect export ".\output\pearson-chi2.xls", as(xls) sheet(sosek-depriv) replace
 #delimit ;
 quietly collect: table (rowname) (colname),
 				 command(r(Rho): spearman meduc4c peduc4c pareduc wealth reside
-							     impdrinkwat impsan cookfldr deprivs depriv)
+							     impdrinkwat impsan cookfldr depriv)
 	;
 #delimit cr
 collect style row stack, nodelimiter nospacer indent length(.) wrapon(word)	///
@@ -217,29 +221,33 @@ Kecenderungan kematian anak menurut kovariat				[done]
 */
 
 *\Tabulasi silang
-*Unweight
-tabmult, cat(depriv depriv2c chsex bordin mageb pareduc wealth reside	///
-			pwdisthfac3c)												///
+*Unweighted
+tabmult, cat(depriv impdrinkwat impsan cookfldr							///
+		     chsex bordin mageb pareduc wealth reside					///
+			 pwdisthfac3c)												///
 		by(nndeath ideath u5death) row									///
 		save(output\desc_2way_death.xls) sheet(persen) replace
 
-tabmult, cat(depriv depriv2c chsex bordin mageb pareduc wealth reside	///
-			pwdisthfac3c)												///
+tabmult, cat(depriv impdrinkwat impsan cookfldr							///
+		     chsex bordin mageb pareduc wealth reside					///
+			 pwdisthfac3c)												///
 		by(nndeath ideath u5death)										///
 		save(output\desc_2way_death.xls) sheet(absolut) append
 		
-*Weight
+/*
+*Weighted
 tabmult [aw=wweight], 													///
-		cat(depriv depriv2c chsex bordin mageb pareduc wealth reside	///
-			pwdisthfac3c)												///
+		cat(depriv depriv2c impdrinkwat impsan cookfldr					///
+		     chsex bordin mageb pareduc wealth reside					///
+			 pwdisthfac3c)												///
 		by(nndeath ideath u5death) row									///
 		save(output\desc_2way_death.xls) sheet(persen_w) append
+*/
 
 *\Two-way pearson chi-squared
 #delimit ;
 quietly collect: table (command) (result),
 				 command(r(chi2) r(r): tab depriv nndeath, row chi2)
-				 command(r(chi2) r(r): tab depriv2c nndeath, row chi2)
 				 command(r(chi2) r(r): tab impdrinkwat nndeath, row chi2)
 				 command(r(chi2) r(r): tab impsan nndeath, row chi2)
 				 command(r(chi2) r(r): tab cookfldr nndeath, row chi2)
@@ -254,7 +262,6 @@ quietly collect: table (command) (result),
 				 command(r(chi2) r(r): tab pwdisthfac3c nndeath, row chi2)
 				 
 				 command(r(chi2) r(r): tab depriv ideath, row chi2)
-				 command(r(chi2) r(r): tab depriv2c ideath, row chi2)
 				 command(r(chi2) r(r): tab impdrinkwat ideath, row chi2)
 				 command(r(chi2) r(r): tab impsan ideath, row chi2)
 				 command(r(chi2) r(r): tab cookfldr ideath, row chi2)
@@ -269,7 +276,6 @@ quietly collect: table (command) (result),
 				 command(r(chi2) r(r): tab pwdisthfac3c ideath, row chi2)
 				 
 				 command(r(chi2) r(r): tab depriv u5death, row chi2)
-				 command(r(chi2) r(r): tab depriv2c u5death, row chi2)
 				 command(r(chi2) r(r): tab impdrinkwat u5death, row chi2)
 				 command(r(chi2) r(r): tab impsan u5death, row chi2)
 				 command(r(chi2) r(r): tab cookfldr u5death, row chi2)
@@ -292,7 +298,7 @@ collect export ".\output\pearson-chi2.xls", as(xls) sheet(kovar-death) modify
 *\Spearman corr
 #delimit ;
 quietly collect: table (rowname) (colname),
-				 command(r(Rho): spearman $vars deprivs pwdisthfac
+				 command(r(Rho): spearman $vars pwdisthfac
 								 nndeath ideath u5death)
 	;
 #delimit cr

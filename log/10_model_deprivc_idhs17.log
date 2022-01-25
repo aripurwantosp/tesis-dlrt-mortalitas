@@ -1,0 +1,2230 @@
+----------------------------------------------------------------------------------------------------------------------------------
+      name:  log_10_model_deprivc_idhs17
+       log:  D:\RESEARCH & WRITING\master thesis_child mortality\stata\log\10_model_deprivc_idhs17.log
+  log type:  text
+ opened on:  25 Jan 2022, 15:57:16
+
+. 
+. 
+. 
+. /*
+> ================================================================================
+> ********************************************************************************
+> PROJECT:
+> PENELITIAN TESIS
+> HUBUNGAN ANTARA DEPRIVASI LINGKUNGAN RUMAH TANGGA DENGAN KEMATIAN BAYI DAN ANAK
+> DI INDONESIA: BUKTI DARI MODEL LOGISTIK MULTILEVEL HAZARD DISKRIT
+> 
+> SYNTAX:
+> 10-LOGISTIK MULTILEVEL HAZARD DISKRIT
+> 
+> PENULIS:
+> ARI PURWANTO SARWO PRASOJO (2006500321)
+> MAGISTER EKONOMI KEPENDUDUKAN DAN KETENAGAKERJAAN
+> FAKULTAS EKONOMI DAN BISNIS, UNIVERSITAS INDONESIA
+> 2022
+> ********************************************************************************
+> ================================================================================
+> */
+. 
+. 
+. 
+. /*
+> ================================================================================
+> PENYIAPAN
+> ================================================================================
+> */
+. 
+. set maxvar 10000
+
+
+. 
+. *baca data
+. loc dta                 "dta\8-data-model-`idhs'.dta"
+
+. use `dta'
+(Dataset pemodelan \ 25 Jan 2022_15:37:51)
+
+. 
+. *Fungsi/perintah untuk menghitung signifikansi (p-value) efek random
+. *-Dipanggil setelah perintah melogit
+. *-Diadaptasi dari Rabe-Hesketh & Skrondal (2012)
+. program resignif
+  1.         display in smcl as text ///
+>                 char(10) "P-value of random effect through ln transformation" char(10)
+  2.         
+.         *-simpan & hitung
+.         scalar sigmau2 = _b[/:var(_cons[psu])]
+  3.         scalar sesigmau2 = _se[/:var(_cons[psu])]
+  4.         scalar lnsigmau2 = ln(sigmau2)
+  5.         scalar selnsigmau2 = 1/sigmau2*sesigmau2
+  6.         scalar kl = lnsigmau2 + invnormal(0.025)*selnsigmau2
+  7.         scalar ku = lnsigmau2 + invnormal(0.975)*selnsigmau2
+  8.         scalar tau = 0.001
+  9.         scalar z = (lnsigmau2-ln(tau))/selnsigmau2
+ 10.         scalar pval = 1-normal(z)
+ 11.         
+.         *-menampilkan hasil
+.         display in smcl as text "ln(var(_cons[psu]))" char(9) char(9)   ///
+>                 "= " as result %9.7f lnsigmau2
+ 12.         display in smcl as text "Std. err ln(var(_cons[psu]))" char(9)  ///
+>                 "= " as result %9.7f selnsigmau2
+ 13.         display in smcl as text "95% CI ln(var(_cons[psu]))" char(9)    ///
+>                 "= [" as result %9.7f kl "; " ku "]"
+ 14.         display in smcl as text "P-value H1: sigmau2 > tau" char(9)     ///
+>                 "= " as result %9.7f pval
+ 15.         display in smcl as text "95% CI var(_cons[psu])" char(9) char(9)        ///
+>                 "= [" as result %9.7f exp(kl) "; " exp(ku) "]"
+ 16.         display in smcl as text "note: tau is assumed close to zero, " as result tau
+ 17. end
+
+. 
+. *Fungsi untuk menghitung signifikansi (p-value) ICC
+. *-Dipanggil setelah perintah melogit
+. *-Diadaptasi dari stata manual "estat icc"
+. program iccsignif
+  1.         *-icc
+.         estat icc
+  2.         *-simpan & hitung
+.         scalar icc = r(icc2)
+  3.         scalar seicc = r(se2)
+  4.         scalar icclogit = ln(icc/(1-icc))
+  5.         scalar seicclogit = seicc/(icc*(1-icc))
+  6.         scalar kl = icclogit + invnormal(0.025)*seicclogit
+  7.         scalar ku = icclogit + invnormal(0.975)*seicclogit
+  8.         scalar tau = 0.001
+  9.         scalar pval = 2*(1-normal(abs(icclogit/seicclogit)))
+ 10.         
+.         *-menampilkan hasil
+.         display in smcl as text "logit(ICC)" char(9) char(9)    ///
+>                 "= " as result %9.7f icclogit
+ 11.         display in smcl as text "Std. err logit(ICC)" char(9)   ///
+>                 "= " as result %9.7f seicclogit
+ 12.         display in smcl as text "95% CI logit(ICC)" char(9)             ///
+>                 "= [" as result %9.7f kl "; " ku "]"
+ 13.         display in smcl as text "P-value H1: ICC > tau" char(9) ///
+>                 "= " as result %9.7f pval
+ 14.         display in smcl as text "95% CI ICC" char(9) char(9)            ///
+>                 "= [" as result %9.7f 1/(1+exp(-kl)) "; " 1/(1+exp(-ku)) "]"
+ 15.         display in smcl as text "note: tau is assumed close to zero, " as result tau
+ 16. end
+
+. 
+. 
+. /*
+> ================================================================================
+> A. NNDEATH                                                                                                      
+> ================================================================================
+> */
+. 
+. collect clear
+
+. 
+. #delimit ;
+delimiter now ;
+. // Model 1 - baseline hazard;
+> collect, tag(model[A. Neonatal] nmodel[Model 1]):
+>  melogit nndeath i.periods
+>              if data == 1 || psu:, or;
+
+Fitting fixed-effects model:
+
+Iteration 0:   log likelihood = -7599.5095  
+Iteration 1:   log likelihood = -3640.3663  
+Iteration 2:   log likelihood = -3563.0611  
+Iteration 3:   log likelihood = -3524.3192  
+Iteration 4:   log likelihood = -3524.2189  
+Iteration 5:   log likelihood = -3524.2189  
+
+Refining starting values:
+
+Grid node 0:   log likelihood =  -3574.025
+
+Fitting full model:
+
+Iteration 0:   log likelihood =  -3574.025  (not concave)
+Iteration 1:   log likelihood = -3521.7959  
+Iteration 2:   log likelihood = -3513.8133  
+Iteration 3:   log likelihood = -3513.7792  
+Iteration 4:   log likelihood = -3513.7792  
+
+Mixed-effects logistic regression               Number of obs     =     69,109
+Group variable: psu                             Number of groups  =      1,970
+
+                                                Obs per group:
+                                                              min =          6
+                                                              avg =       35.1
+                                                              max =        107
+
+Integration method: mvaghermite                 Integration pts.  =          7
+
+                                                Wald chi2(1)      =     184.41
+Log likelihood = -3513.7792                     Prob > chi2       =     0.0000
+------------------------------------------------------------------------------
+     nndeath | Odds ratio   Std. err.      z    P>|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+     periods |
+  7-28 hari  |   .2657685   .0259339   -13.58   0.000     .2195042    .3217839
+       _cons |   .0120483   .0008289   -64.23   0.000     .0105285    .0137875
+-------------+----------------------------------------------------------------
+psu          |
+   var(_cons)|   .4044881   .1017579                        .24704     .662284
+------------------------------------------------------------------------------
+Note: Estimates are transformed only in the first equation to odds ratios.
+Note: _cons estimates baseline odds (conditional on zero random effects).
+LR test vs. logistic model: chibar2(01) = 20.88       Prob >= chibar2 = 0.0000
+
+. resignif;
+
+P-value of random effect through ln transformation
+
+ln(var(_cons[psu]))             = -0.9051329
+Std. err ln(var(_cons[psu]))    = 0.2515720
+95% CI ln(var(_cons[psu]))      = [-1.40e+00; -.41206076]
+P-value H1: sigmau2 > tau       = 0.0000000
+95% CI var(_cons[psu])          = [0.2470400; .66228403]
+note: tau is assumed close to zero, .001
+
+. iccsignif;
+
+Residual intraclass correlation
+
+------------------------------------------------------------------------------
+                       Level |        ICC   Std. err.     [95% conf. interval]
+-----------------------------+------------------------------------------------
+                         psu |   .1094881   .0245284      .0698463    .1675755
+------------------------------------------------------------------------------
+logit(ICC)              = -2.10e+00
+Std. err logit(ICC)     = 0.2515720
+95% CI logit(ICC)       = [-2.59e+00; -1.6029082]
+P-value H1: ICC > tau   = 0.0000000
+95% CI ICC              = [0.0698463; .16757554]
+note: tau is assumed close to zero, .001
+
+. // Model 2 - tanpa kontrol;
+> collect, tag(model[A. Neonatal] nmodel[Model 2]):
+>  melogit nndeath i.periods i.depriv
+>                  if data == 1 || psu:, or;
+
+Fitting fixed-effects model:
+
+Iteration 0:   log likelihood = -7598.7303  
+Iteration 1:   log likelihood =  -3633.593  
+Iteration 2:   log likelihood = -3557.6691  
+Iteration 3:   log likelihood = -3513.9537  
+Iteration 4:   log likelihood = -3513.7512  
+Iteration 5:   log likelihood = -3513.7511  
+
+Refining starting values:
+
+Grid node 0:   log likelihood = -3564.8565
+
+Fitting full model:
+
+Iteration 0:   log likelihood = -3564.8565  (not concave)
+Iteration 1:   log likelihood = -3512.3159  
+Iteration 2:   log likelihood = -3504.9871  
+Iteration 3:   log likelihood = -3504.9584  
+Iteration 4:   log likelihood = -3504.9584  
+
+Mixed-effects logistic regression               Number of obs     =     69,109
+Group variable: psu                             Number of groups  =      1,970
+
+                                                Obs per group:
+                                                              min =          6
+                                                              avg =       35.1
+                                                              max =        107
+
+Integration method: mvaghermite                 Integration pts.  =          7
+
+                                                Wald chi2(3)      =     202.26
+Log likelihood = -3504.9584                     Prob > chi2       =     0.0000
+------------------------------------------------------------------------------
+     nndeath | Odds ratio   Std. err.      z    P>|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+     periods |
+  7-28 hari  |   .2657592    .025933   -13.58   0.000     .2194965    .3217727
+             |
+      depriv |
+     Rendah  |   1.299412   .1232464     2.76   0.006     1.078977    1.564882
+     Tinggi  |   1.542859   .1659988     4.03   0.000     1.249523    1.905059
+             |
+       _cons |   .0103899    .000841   -56.42   0.000     .0088656    .0121761
+-------------+----------------------------------------------------------------
+psu          |
+   var(_cons)|   .3714588   .1008562                      .2181714    .6324462
+------------------------------------------------------------------------------
+Note: Estimates are transformed only in the first equation to odds ratios.
+Note: _cons estimates baseline odds (conditional on zero random effects).
+LR test vs. logistic model: chibar2(01) = 17.59       Prob >= chibar2 = 0.0000
+
+. resignif;
+
+P-value of random effect through ln transformation
+
+ln(var(_cons[psu]))             = -0.9903173
+Std. err ln(var(_cons[psu]))    = 0.2715138
+95% CI ln(var(_cons[psu]))      = [-1.52e+00; -.45816005]
+P-value H1: sigmau2 > tau       = 0.0000000
+95% CI var(_cons[psu])          = [0.2181714; .63244625]
+note: tau is assumed close to zero, .001
+
+. iccsignif;
+
+Residual intraclass correlation
+
+------------------------------------------------------------------------------
+                       Level |        ICC   Std. err.     [95% conf. interval]
+-----------------------------+------------------------------------------------
+                         psu |   .1014547   .0247516      .0621918    .1612431
+------------------------------------------------------------------------------
+logit(ICC)              = -2.18e+00
+Std. err logit(ICC)     = 0.2715138
+95% CI logit(ICC)       = [-2.71e+00; -1.6490075]
+P-value H1: ICC > tau   = 0.0000000
+95% CI ICC              = [0.0621918; .16124313]
+note: tau is assumed close to zero, .001
+
+. // Model 3 - kontrol: sosek;
+> collect, tag(model[A. Neonatal] nmodel[Model 3]):
+>  melogit nndeath i.periods i.depriv
+>                  b3.pareduc b2.wealth b1.reside pwdisthfac
+>                  if data == 1 || psu:, or;
+
+Fitting fixed-effects model:
+
+Iteration 0:   log likelihood =  -7598.308  
+Iteration 1:   log likelihood =  -3629.937  
+Iteration 2:   log likelihood = -3554.9312  
+Iteration 3:   log likelihood = -3508.4816  
+Iteration 4:   log likelihood = -3508.2083  
+Iteration 5:   log likelihood = -3508.2082  
+
+Refining starting values:
+
+Grid node 0:   log likelihood = -3560.7394
+
+Fitting full model:
+
+Iteration 0:   log likelihood = -3560.7394  (not concave)
+Iteration 1:   log likelihood = -3508.6205  
+Iteration 2:   log likelihood = -3500.4186  
+Iteration 3:   log likelihood = -3500.3647  
+Iteration 4:   log likelihood = -3500.3647  
+
+Mixed-effects logistic regression               Number of obs     =     69,109
+Group variable: psu                             Number of groups  =      1,970
+
+                                                Obs per group:
+                                                              min =          6
+                                                              avg =       35.1
+                                                              max =        107
+
+Integration method: mvaghermite                 Integration pts.  =          7
+
+                                                Wald chi2(10)     =     211.70
+Log likelihood = -3500.3647                     Prob > chi2       =     0.0000
+------------------------------------------------------------------------------
+     nndeath | Odds ratio   Std. err.      z    P>|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+     periods |
+  7-28 hari  |   .2657858   .0259351   -13.58   0.000     .2195191    .3218039
+             |
+      depriv |
+     Rendah  |   1.233923   .1283585     2.02   0.043     1.006334    1.512983
+     Tinggi  |   1.383089   .1815065     2.47   0.013     1.069411    1.788775
+             |
+     pareduc |
+     Rendah  |   1.249822   .1400558     1.99   0.047     1.003372    1.556806
+ Ibu < ayah  |   1.108594   .1478255     0.77   0.439     .8536288    1.439714
+ Ibu > ayah  |   1.119799   .1467515     0.86   0.388     .8661415    1.447743
+             |
+      wealth |
+     Miskin  |   1.154459   .1687486     0.98   0.326     .8668768    1.537445
+   Menengah  |   1.112921   .1481238     0.80   0.421     .8573814    1.444624
+             |
+      reside |
+  Perdesaan  |   .8715752    .085306    -1.40   0.160     .7194372    1.055885
+             |
+  pwdisthfac |   1.499068   .4421255     1.37   0.170     .8409562    2.672202
+       _cons |   .0092582     .00116   -37.37   0.000     .0072424    .0118352
+-------------+----------------------------------------------------------------
+psu          |
+   var(_cons)|   .3486753   .0998409                      .1989231    .6111634
+------------------------------------------------------------------------------
+Note: Estimates are transformed only in the first equation to odds ratios.
+Note: _cons estimates baseline odds (conditional on zero random effects).
+LR test vs. logistic model: chibar2(01) = 15.69       Prob >= chibar2 = 0.0000
+
+. resignif;
+
+P-value of random effect through ln transformation
+
+ln(var(_cons[psu]))             = -1.05e+00
+Std. err ln(var(_cons[psu]))    = 0.2863436
+95% CI ln(var(_cons[psu]))      = [-1.61e+00; -.492391]
+P-value H1: sigmau2 > tau       = 0.0000000
+95% CI var(_cons[psu])          = [0.1989231; .61116335]
+note: tau is assumed close to zero, .001
+
+. iccsignif;
+
+Residual intraclass correlation
+
+------------------------------------------------------------------------------
+                       Level |        ICC   Std. err.     [95% conf. interval]
+-----------------------------+------------------------------------------------
+                         psu |   .0958283   .0248103      .0570178    .1566671
+------------------------------------------------------------------------------
+logit(ICC)              = -2.24e+00
+Std. err logit(ICC)     = 0.2863436
+95% CI logit(ICC)       = [-2.81e+00; -1.6832385]
+P-value H1: ICC > tau   = 0.0000000
+95% CI ICC              = [0.0570178; .15666712]
+note: tau is assumed close to zero, .001
+
+. // Model 4 - kontrol: full;
+> collect, tag(model[A. Neonatal] nmodel[Model 4]):
+>  melogit nndeath i.periods i.depriv
+>                  b3.pareduc b2.wealth b1.reside pwdisthfac
+>                  i.chsex b1.bordin b1.mageb
+>                  if data == 1 || psu:, or;
+
+Fitting fixed-effects model:
+
+Iteration 0:   log likelihood = -7595.0065  
+Iteration 1:   log likelihood =  -3602.058  
+Iteration 2:   log likelihood =  -3535.844  
+Iteration 3:   log likelihood = -3470.3132  
+Iteration 4:   log likelihood =  -3469.771  
+Iteration 5:   log likelihood = -3469.7707  
+
+Refining starting values:
+
+Grid node 0:   log likelihood = -3522.8554
+
+Fitting full model:
+
+Iteration 0:   log likelihood = -3522.8554  (not concave)
+Iteration 1:   log likelihood = -3471.2466  
+Iteration 2:   log likelihood = -3462.6353  
+Iteration 3:   log likelihood = -3462.5698  
+Iteration 4:   log likelihood = -3462.5697  
+
+Mixed-effects logistic regression               Number of obs     =     69,109
+Group variable: psu                             Number of groups  =      1,970
+
+                                                Obs per group:
+                                                              min =          6
+                                                              avg =       35.1
+                                                              max =        107
+
+Integration method: mvaghermite                 Integration pts.  =          7
+
+                                                Wald chi2(18)     =     294.49
+Log likelihood = -3462.5697                     Prob > chi2       =     0.0000
+-------------------------------------------------------------------------------------
+            nndeath | Odds ratio   Std. err.      z    P>|z|     [95% conf. interval]
+--------------------+----------------------------------------------------------------
+            periods |
+         7-28 hari  |   .2660055   .0259717   -13.56   0.000     .2196761    .3221057
+                    |
+             depriv |
+            Rendah  |   1.200861    .125459     1.75   0.080     .9785079    1.473742
+            Tinggi  |   1.319067   .1742976     2.10   0.036     1.018103    1.709001
+                    |
+            pareduc |
+            Rendah  |   1.236062     .14223     1.84   0.066     .9864948    1.548765
+        Ibu < ayah  |   1.105108   .1490685     0.74   0.459     .8483712     1.43954
+        Ibu > ayah  |   1.124086   .1477301     0.89   0.373     .8688252    1.454342
+                    |
+             wealth |
+            Miskin  |   1.130457   .1663397     0.83   0.405     .8472373    1.508353
+          Menengah  |   1.115398   .1489017     0.82   0.413     .8586126    1.448979
+                    |
+             reside |
+         Perdesaan  |   .8761429   .0858196    -1.35   0.177        .7231    1.061577
+                    |
+         pwdisthfac |   1.405144   .4143902     1.15   0.249     .7883033    2.504656
+                    |
+              chsex |
+         Laki-laki  |   1.214922   .0981183     2.41   0.016     1.037062    1.423286
+                    |
+             bordin |
+           Pertama  |   1.517278   .1857358     3.41   0.001      1.19362    1.928697
+   2 dan <24 bulan  |   1.702333   .3714667     2.44   0.015      1.10995    2.610872
+>=3 dan >=24 bulan  |   1.165992   .1466826     1.22   0.222     .9112001    1.492029
+ >=3 dan <24 bulan  |   2.599849   .4230345     5.87   0.000     1.889926    3.576444
+                    |
+              mageb |
+               <20  |   1.454829   .2017613     2.70   0.007     1.108572    1.909237
+             30-39  |   1.213643   .1267121     1.85   0.064     .9890538     1.48923
+             40-49  |   2.508539    .454777     5.07   0.000     1.758349    3.578792
+                    |
+              _cons |   .0056423   .0009143   -31.95   0.000     .0041069    .0077516
+--------------------+----------------------------------------------------------------
+psu                 |
+          var(_cons)|   .3334504   .0991973                      .1861271     .597383
+-------------------------------------------------------------------------------------
+Note: Estimates are transformed only in the first equation to odds ratios.
+Note: _cons estimates baseline odds (conditional on zero random effects).
+LR test vs. logistic model: chibar2(01) = 14.40       Prob >= chibar2 = 0.0001
+
+.                  estimate store mdl_a4;
+
+. resignif;
+
+P-value of random effect through ln transformation
+
+ln(var(_cons[psu]))             = -1.10e+00
+Std. err ln(var(_cons[psu]))    = 0.2974873
+95% CI ln(var(_cons[psu]))      = [-1.68e+00; -.51519678]
+P-value H1: sigmau2 > tau       = 0.0000000
+95% CI var(_cons[psu])          = [0.1861271; .59738303]
+note: tau is assumed close to zero, .001
+
+. iccsignif;
+
+Residual intraclass correlation
+
+------------------------------------------------------------------------------
+                       Level |        ICC   Std. err.     [95% conf. interval]
+-----------------------------+------------------------------------------------
+                         psu |    .092029   .0248579      .0535464    .1536775
+------------------------------------------------------------------------------
+logit(ICC)              = -2.29e+00
+Std. err logit(ICC)     = 0.2974873
+95% CI logit(ICC)       = [-2.87e+00; -1.7060443]
+P-value H1: ICC > tau   = 0.0000000
+95% CI ICC              = [0.0535464; .1536775]
+note: tau is assumed close to zero, .001
+
+. // Model 5 - interaksi periode umur;
+> collect, tag(model[A. Neonatal] nmodel[Model 5]):
+>  melogit nndeath i.periods i.periods#i.depriv
+>                  b3.pareduc b2.wealth b1.reside pwdisthfac
+>                  i.chsex b1.bordin b1.mageb
+>                  if data == 1 || psu:, or;
+
+Fitting fixed-effects model:
+
+Iteration 0:   log likelihood = -7594.8393  
+Iteration 1:   log likelihood = -3601.0043  
+Iteration 2:   log likelihood = -3533.1265  
+Iteration 3:   log likelihood = -3469.5359  
+Iteration 4:   log likelihood = -3468.9831  
+Iteration 5:   log likelihood = -3468.9828  
+
+Refining starting values:
+
+Grid node 0:   log likelihood = -3522.0563
+
+Fitting full model:
+
+Iteration 0:   log likelihood = -3522.0563  (not concave)
+Iteration 1:   log likelihood = -3470.4542  
+Iteration 2:   log likelihood = -3461.8451  
+Iteration 3:   log likelihood = -3461.7795  
+Iteration 4:   log likelihood = -3461.7794  
+
+Mixed-effects logistic regression               Number of obs     =     69,109
+Group variable: psu                             Number of groups  =      1,970
+
+                                                Obs per group:
+                                                              min =          6
+                                                              avg =       35.1
+                                                              max =        107
+
+Integration method: mvaghermite                 Integration pts.  =          7
+
+                                                Wald chi2(20)     =     291.96
+Log likelihood = -3461.7794                     Prob > chi2       =     0.0000
+-------------------------------------------------------------------------------------
+            nndeath | Odds ratio   Std. err.      z    P>|z|     [95% conf. interval]
+--------------------+----------------------------------------------------------------
+            periods |
+         7-28 hari  |   .2567965   .0376099    -9.28   0.000     .1927187    .3421797
+                    |
+     periods#depriv |
+   0-6 hari#Rendah  |   1.219581   .1392609     1.74   0.082     .9750212    1.525482
+   0-6 hari#Tinggi  |   1.248146   .1794408     1.54   0.123     .9416549    1.654395
+  7-28 hari#Rendah  |   1.129164    .240158     0.57   0.568     .7442485    1.713153
+  7-28 hari#Tinggi  |   1.592051   .3632611     2.04   0.042     1.017974    2.489873
+                    |
+            pareduc |
+            Rendah  |   1.236135   .1422334     1.84   0.065     .9865618    1.548844
+        Ibu < ayah  |   1.104993   .1490506     0.74   0.459     .8482867    1.439384
+        Ibu > ayah  |   1.124149   .1477357     0.89   0.373     .8688778    1.454416
+                    |
+             wealth |
+            Miskin  |   1.130443   .1663541     0.83   0.405     .8472025    1.508378
+          Menengah  |   1.115386   .1489149     0.82   0.413     .8585817    1.449002
+                    |
+             reside |
+         Perdesaan  |   .8760836   .0858192    -1.35   0.177     .7230424    1.061518
+                    |
+         pwdisthfac |   1.404886   .4142387     1.15   0.249     .7882419    2.503933
+                    |
+              chsex |
+         Laki-laki  |    1.21491   .0981152     2.41   0.016     1.037055    1.423267
+                    |
+             bordin |
+           Pertama  |   1.517112   .1857194     3.40   0.001     1.193484    1.928495
+   2 dan <24 bulan  |   1.702704   .3715335     2.44   0.015      1.11021    2.611398
+>=3 dan >=24 bulan  |   1.165947   .1466791     1.22   0.222      .911162    1.491977
+ >=3 dan <24 bulan  |   2.599966   .4230292     5.87   0.000     1.890046    3.576539
+                    |
+              mageb |
+               <20  |   1.455096    .201792     2.70   0.007     1.108786    1.909571
+             30-39  |   1.213544   .1267012     1.85   0.064     .9889742    1.489107
+             40-49  |   2.508415   .4547255     5.07   0.000     1.758303    3.578535
+                    |
+              _cons |   .0056844   .0009296   -31.61   0.000     .0041255    .0078324
+--------------------+----------------------------------------------------------------
+psu                 |
+          var(_cons)|   .3334888   .0991997                      .1861584    .5974203
+-------------------------------------------------------------------------------------
+Note: Estimates are transformed only in the first equation to odds ratios.
+Note: _cons estimates baseline odds (conditional on zero random effects).
+LR test vs. logistic model: chibar2(01) = 14.41       Prob >= chibar2 = 0.0001
+
+. estimate store mdl_a5;
+
+. resignif;
+
+P-value of random effect through ln transformation
+
+ln(var(_cons[psu]))             = -1.10e+00
+Std. err ln(var(_cons[psu]))    = 0.2974603
+95% CI ln(var(_cons[psu]))      = [-1.68e+00; -.51513443]
+P-value H1: sigmau2 > tau       = 0.0000000
+95% CI var(_cons[psu])          = [0.1861584; .59742028]
+note: tau is assumed close to zero, .001
+
+. iccsignif;
+
+Residual intraclass correlation
+
+------------------------------------------------------------------------------
+                       Level |        ICC   Std. err.     [95% conf. interval]
+-----------------------------+------------------------------------------------
+                         psu |   .0920386    .024858      .0535549    .1536856
+------------------------------------------------------------------------------
+logit(ICC)              = -2.29e+00
+Std. err logit(ICC)     = 0.2974603
+95% CI logit(ICC)       = [-2.87e+00; -1.7059819]
+P-value H1: ICC > tau   = 0.0000000
+95% CI ICC              = [0.0535549; .15368561]
+note: tau is assumed close to zero, .001
+
+. // /likelihood ratio test model a5 vs model a4;
+> lrtest mdl_a4 mdl_a5;
+
+Likelihood-ratio test
+Assumption: mdl_a4 nested within mdl_a5
+
+ LR chi2(2) =   1.58
+Prob > chi2 = 0.4537
+
+. #delimit cr
+delimiter now cr
+. 
+. 
+. 
+. /*
+> ================================================================================
+> B. IDEATH                                                                                                       
+> ================================================================================
+> */
+. 
+. #delimit ;
+delimiter now ;
+. // Model 1 - baseline hazard;
+> collect, tag(model[B. Bayi] nmodel[Model 1]):
+>  melogit ideath i.periods
+>              if data == 2 || psu:, or;
+
+Fitting fixed-effects model:
+
+Iteration 0:   log likelihood = -14363.519  
+Iteration 1:   log likelihood = -5921.4864  
+Iteration 2:   log likelihood = -5835.1437  
+Iteration 3:   log likelihood = -5796.1787  
+Iteration 4:   log likelihood = -5796.0762  
+Iteration 5:   log likelihood = -5796.0762  
+
+Refining starting values:
+
+Grid node 0:   log likelihood = -5871.2125
+
+Fitting full model:
+
+Iteration 0:   log likelihood = -5871.2125  (not concave)
+Iteration 1:   log likelihood = -5791.9767  
+Iteration 2:   log likelihood = -5780.4491  
+Iteration 3:   log likelihood = -5780.3705  
+Iteration 4:   log likelihood = -5780.3705  
+
+Mixed-effects logistic regression               Number of obs     =    137,214
+Group variable: psu                             Number of groups  =      1,970
+
+                                                Obs per group:
+                                                              min =         12
+                                                              avg =       69.7
+                                                              max =        212
+
+Integration method: mvaghermite                 Integration pts.  =          7
+
+                                                Wald chi2(3)      =     315.55
+Log likelihood = -5780.3705                     Prob > chi2       =     0.0000
+----------------------------------------------------------------------------------
+          ideath | Odds ratio   Std. err.      z    P>|z|     [95% conf. interval]
+-----------------+----------------------------------------------------------------
+         periods |
+      7-28 hari  |   .2656665   .0259147   -13.59   0.000     .2194347    .3216387
+29 hari-5 bulan  |   .4582302   .0367156    -9.74   0.000      .391635    .5361497
+     6-11 bulan  |   .2777338    .026784   -13.28   0.000     .2299011    .3355186
+                 |
+           _cons |   .0124528    .000725   -75.34   0.000       .01111    .0139579
+-----------------+----------------------------------------------------------------
+psu              |
+       var(_cons)|   .3204278   .0675125                      .2120246    .4842549
+----------------------------------------------------------------------------------
+Note: Estimates are transformed only in the first equation to odds ratios.
+Note: _cons estimates baseline odds (conditional on zero random effects).
+LR test vs. logistic model: chibar2(01) = 31.41       Prob >= chibar2 = 0.0000
+
+. resignif;
+
+P-value of random effect through ln transformation
+
+ln(var(_cons[psu]))             = -1.14e+00
+Std. err ln(var(_cons[psu]))    = 0.2106949
+95% CI ln(var(_cons[psu]))      = [-1.55e+00; -.72514389]
+P-value H1: sigmau2 > tau       = 0.0000000
+95% CI var(_cons[psu])          = [0.2120246; .48425488]
+note: tau is assumed close to zero, .001
+
+. iccsignif;
+
+Residual intraclass correlation
+
+------------------------------------------------------------------------------
+                       Level |        ICC   Std. err.     [95% conf. interval]
+-----------------------------+------------------------------------------------
+                         psu |   .0887539   .0170403      .0605457    .1283092
+------------------------------------------------------------------------------
+logit(ICC)              = -2.33e+00
+Std. err logit(ICC)     = 0.2106949
+95% CI logit(ICC)       = [-2.74e+00; -1.9159914]
+P-value H1: ICC > tau   = 0.0000000
+95% CI ICC              = [0.0605457; .12830925]
+note: tau is assumed close to zero, .001
+
+. // Model 2 - tanpa kontrol;
+> collect, tag(model[B. Bayi] nmodel[Model 2]):
+>  melogit ideath i.periods i.depriv
+>                  if data == 2 || psu:, or;
+
+Fitting fixed-effects model:
+
+Iteration 0:   log likelihood = -14361.723  
+Iteration 1:   log likelihood =  -5905.447  
+Iteration 2:   log likelihood = -5814.1161  
+Iteration 3:   log likelihood = -5766.1324  
+Iteration 4:   log likelihood = -5765.9138  
+Iteration 5:   log likelihood = -5765.9138  
+
+Refining starting values:
+
+Grid node 0:   log likelihood = -5848.4143
+
+Fitting full model:
+
+Iteration 0:   log likelihood = -5848.4143  (not concave)
+Iteration 1:   log likelihood = -5763.2488  
+Iteration 2:   log likelihood = -5755.7906  
+Iteration 3:   log likelihood = -5755.7118  
+Iteration 4:   log likelihood = -5755.7117  
+
+Mixed-effects logistic regression               Number of obs     =    137,214
+Group variable: psu                             Number of groups  =      1,970
+
+                                                Obs per group:
+                                                              min =         12
+                                                              avg =       69.7
+                                                              max =        212
+
+Integration method: mvaghermite                 Integration pts.  =          7
+
+                                                Wald chi2(5)      =     365.81
+Log likelihood = -5755.7117                     Prob > chi2       =     0.0000
+----------------------------------------------------------------------------------
+          ideath | Odds ratio   Std. err.      z    P>|z|     [95% conf. interval]
+-----------------+----------------------------------------------------------------
+         periods |
+      7-28 hari  |   .2655891   .0259071   -13.59   0.000     .2193709    .3215447
+29 hari-5 bulan  |   .4580904   .0367042    -9.74   0.000     .3915157    .5359857
+     6-11 bulan  |   .2776678   .0267776   -13.29   0.000     .2298464    .3354387
+                 |
+          depriv |
+         Rendah  |   1.434279   .1089236     4.75   0.000     1.235921    1.664472
+         Tinggi  |   1.776522   .1507115     6.77   0.000     1.504384    2.097888
+                 |
+           _cons |   .0102146   .0006937   -67.50   0.000     .0089416    .0116688
+-----------------+----------------------------------------------------------------
+psu              |
+       var(_cons)|   .2603589    .065838                      .1586082    .4273848
+----------------------------------------------------------------------------------
+Note: Estimates are transformed only in the first equation to odds ratios.
+Note: _cons estimates baseline odds (conditional on zero random effects).
+LR test vs. logistic model: chibar2(01) = 20.40       Prob >= chibar2 = 0.0000
+
+. resignif;
+
+P-value of random effect through ln transformation
+
+ln(var(_cons[psu]))             = -1.35e+00
+Std. err ln(var(_cons[psu]))    = 0.2528739
+95% CI ln(var(_cons[psu]))      = [-1.84e+00; -.85007039]
+P-value H1: sigmau2 > tau       = 0.0000000
+95% CI var(_cons[psu])          = [0.1586082; .42738485]
+note: tau is assumed close to zero, .001
+
+. iccsignif;
+
+Residual intraclass correlation
+
+------------------------------------------------------------------------------
+                       Level |        ICC   Std. err.     [95% conf. interval]
+-----------------------------+------------------------------------------------
+                         psu |   .0733358   .0171847      .0459937    .1149733
+------------------------------------------------------------------------------
+logit(ICC)              = -2.54e+00
+Std. err logit(ICC)     = 0.2528739
+95% CI logit(ICC)       = [-3.03e+00; -2.0409179]
+P-value H1: ICC > tau   = 0.0000000
+95% CI ICC              = [0.0459937; .1149733]
+note: tau is assumed close to zero, .001
+
+. // Model 3 - kontrol: sosek;
+> collect, tag(model[B. Bayi] nmodel[Model 3]):
+>  melogit ideath i.periods i.depriv
+>                  b3.pareduc b2.wealth b1.reside pwdisthfac
+>                  if data == 2 || psu:, or;
+
+Fitting fixed-effects model:
+
+Iteration 0:   log likelihood = -14360.812  
+Iteration 1:   log likelihood =  -5897.365  
+Iteration 2:   log likelihood = -5804.7778  
+Iteration 3:   log likelihood = -5751.6893  
+Iteration 4:   log likelihood = -5751.3763  
+Iteration 5:   log likelihood = -5751.3762  
+
+Refining starting values:
+
+Grid node 0:   log likelihood = -5837.2776
+
+Fitting full model:
+
+Iteration 0:   log likelihood = -5837.2776  (not concave)
+Iteration 1:   log likelihood = -5747.1313  
+Iteration 2:   log likelihood = -5743.1706  
+Iteration 3:   log likelihood = -5743.1606  
+Iteration 4:   log likelihood = -5743.1606  
+
+Mixed-effects logistic regression               Number of obs     =    137,214
+Group variable: psu                             Number of groups  =      1,970
+
+                                                Obs per group:
+                                                              min =         12
+                                                              avg =       69.7
+                                                              max =        212
+
+Integration method: mvaghermite                 Integration pts.  =          7
+
+                                                Wald chi2(12)     =     392.47
+Log likelihood = -5743.1606                     Prob > chi2       =     0.0000
+----------------------------------------------------------------------------------
+          ideath | Odds ratio   Std. err.      z    P>|z|     [95% conf. interval]
+-----------------+----------------------------------------------------------------
+         periods |
+      7-28 hari  |   .2655772   .0259062   -13.59   0.000     .2193607     .321531
+29 hari-5 bulan  |   .4580361   .0367005    -9.74   0.000     .3914683    .5359236
+     6-11 bulan  |    .277687   .0267798   -13.29   0.000     .2298618    .3354627
+                 |
+          depriv |
+         Rendah  |   1.289339   .1073723     3.05   0.002      1.09517    1.517933
+         Tinggi  |   1.436328   .1482717     3.51   0.000     1.173233    1.758421
+                 |
+         pareduc |
+         Rendah  |   1.328082   .1162802     3.24   0.001      1.11866     1.57671
+     Ibu < ayah  |   1.199885   .1238334     1.77   0.077     .9801488    1.468884
+     Ibu > ayah  |   1.041933   .1117551     0.38   0.702     .8443879    1.285694
+                 |
+          wealth |
+         Miskin  |   1.231608   .1470275     1.75   0.081     .9746696     1.55628
+       Menengah  |   1.104852   .1220368     0.90   0.367     .8897838    1.371905
+                 |
+          reside |
+      Perdesaan  |   .9294997   .0728299    -0.93   0.351     .7971762    1.083788
+                 |
+      pwdisthfac |    1.62919   .3722352     2.14   0.033     1.041095    2.549489
+           _cons |   .0086497   .0009063   -45.34   0.000      .007044    .0106215
+-----------------+----------------------------------------------------------------
+psu              |
+       var(_cons)|   .2318575   .0647335                      .1341435    .4007492
+----------------------------------------------------------------------------------
+Note: Estimates are transformed only in the first equation to odds ratios.
+Note: _cons estimates baseline odds (conditional on zero random effects).
+LR test vs. logistic model: chibar2(01) = 16.43       Prob >= chibar2 = 0.0000
+
+. resignif;
+
+P-value of random effect through ln transformation
+
+ln(var(_cons[psu]))             = -1.46e+00
+Std. err ln(var(_cons[psu]))    = 0.2791953
+95% CI ln(var(_cons[psu]))      = [-2.01e+00; -.91441954]
+P-value H1: sigmau2 > tau       = 0.0000000
+95% CI var(_cons[psu])          = [0.1341435; .40074918]
+note: tau is assumed close to zero, .001
+
+. iccsignif;
+
+Residual intraclass correlation
+
+------------------------------------------------------------------------------
+                       Level |        ICC   Std. err.     [95% conf. interval]
+-----------------------------+------------------------------------------------
+                         psu |   .0658363    .017171      .0391773    .1085859
+------------------------------------------------------------------------------
+logit(ICC)              = -2.65e+00
+Std. err logit(ICC)     = 0.2791953
+95% CI logit(ICC)       = [-3.20e+00; -2.105267]
+P-value H1: ICC > tau   = 0.0000000
+95% CI ICC              = [0.0391773; .10858595]
+note: tau is assumed close to zero, .001
+
+. // Model 4 - kontrol: full;
+> collect, tag(model[B. Bayi] nmodel[Model 4]):
+>  melogit ideath i.periods i.depriv
+>                  b3.pareduc b2.wealth b1.reside pwdisthfac
+>                  i.chsex b1.bordin b1.mageb
+>                  if data == 2 || psu:, or;
+
+Fitting fixed-effects model:
+
+Iteration 0:   log likelihood =  -14357.81  
+Iteration 1:   log likelihood = -5871.0283  
+Iteration 2:   log likelihood = -5777.4999  
+Iteration 3:   log likelihood = -5706.9167  
+Iteration 4:   log likelihood = -5706.2476  
+Iteration 5:   log likelihood = -5706.2473  
+
+Refining starting values:
+
+Grid node 0:   log likelihood = -5795.7395
+
+Fitting full model:
+
+Iteration 0:   log likelihood = -5795.7395  (not concave)
+Iteration 1:   log likelihood = -5703.1251  
+Iteration 2:   log likelihood = -5699.7908  
+Iteration 3:   log likelihood = -5699.7844  
+Iteration 4:   log likelihood = -5699.7844  
+
+Mixed-effects logistic regression               Number of obs     =    137,214
+Group variable: psu                             Number of groups  =      1,970
+
+                                                Obs per group:
+                                                              min =         12
+                                                              avg =       69.7
+                                                              max =        212
+
+Integration method: mvaghermite                 Integration pts.  =          7
+
+                                                Wald chi2(20)     =     485.62
+Log likelihood = -5699.7844                     Prob > chi2       =     0.0000
+-------------------------------------------------------------------------------------
+             ideath | Odds ratio   Std. err.      z    P>|z|     [95% conf. interval]
+--------------------+----------------------------------------------------------------
+            periods |
+         7-28 hari  |   .2657731   .0259334   -13.58   0.000     .2195094    .3217874
+   29 hari-5 bulan  |   .4586471   .0367666    -9.72   0.000     .3919616    .5366779
+        6-11 bulan  |   .2781219   .0268305   -13.27   0.000     .2302076     .336009
+                    |
+             depriv |
+            Rendah  |   1.248704   .1042336     2.66   0.008     1.060246     1.47066
+            Tinggi  |   1.366422   .1416662     3.01   0.003     1.115154    1.674305
+                    |
+            pareduc |
+            Rendah  |   1.278026   .1145825     2.74   0.006     1.072073    1.523543
+        Ibu < ayah  |   1.164772   .1215104     1.46   0.144     .9493855    1.429023
+        Ibu > ayah  |    1.04113   .1118574     0.38   0.708      .843438    1.285159
+                    |
+             wealth |
+            Miskin  |   1.219115    .146205     1.65   0.099     .9637456    1.542151
+          Menengah  |    1.12013   .1239091     1.03   0.305     .9017958    1.391325
+                    |
+             reside |
+         Perdesaan  |   .9353314   .0729948    -0.86   0.392     .8026687     1.08992
+                    |
+         pwdisthfac |   1.503851   .3410418     1.80   0.072     .9642066    2.345522
+                    |
+              chsex |
+         Laki-laki  |   1.106584    .070717     1.58   0.113     .9763099    1.254241
+                    |
+             bordin |
+           Pertama  |   1.399355   .1403233     3.35   0.001     1.149667    1.703272
+   2 dan <24 bulan  |   2.021495   .3308179     4.30   0.000     1.466808    2.785941
+>=3 dan >=24 bulan  |    1.40009   .1386551     3.40   0.001     1.153078    1.700016
+ >=3 dan <24 bulan  |   2.580979   .3371095     7.26   0.000      1.99805    3.333976
+                    |
+              mageb |
+               <20  |   1.398147   .1597203     2.93   0.003     1.117671    1.749008
+             30-39  |   1.167203   .0955993     1.89   0.059     .9940975    1.370452
+             40-49  |   1.819898    .277531     3.93   0.000      1.34971    2.453882
+                    |
+              _cons |   .0056105   .0007429   -39.14   0.000      .004328     .007273
+--------------------+----------------------------------------------------------------
+psu                 |
+          var(_cons)|   .2049338    .063638                      .1115039     .376649
+-------------------------------------------------------------------------------------
+Note: Estimates are transformed only in the first equation to odds ratios.
+Note: _cons estimates baseline odds (conditional on zero random effects).
+LR test vs. logistic model: chibar2(01) = 12.93       Prob >= chibar2 = 0.0002
+
+.                  estimate store mdl_b4;
+
+. resignif;
+
+P-value of random effect through ln transformation
+
+ln(var(_cons[psu]))             = -1.59e+00
+Std. err ln(var(_cons[psu]))    = 0.3105296
+95% CI ln(var(_cons[psu]))      = [-2.19e+00; -.97644152]
+P-value H1: sigmau2 > tau       = 0.0000000
+95% CI var(_cons[psu])          = [0.1115039; .37664902]
+note: tau is assumed close to zero, .001
+
+. iccsignif;
+
+Residual intraclass correlation
+
+------------------------------------------------------------------------------
+                       Level |        ICC   Std. err.     [95% conf. interval]
+-----------------------------+------------------------------------------------
+                         psu |   .0586396   .0171415       .032782    .1027266
+------------------------------------------------------------------------------
+logit(ICC)              = -2.78e+00
+Std. err logit(ICC)     = 0.3105296
+95% CI logit(ICC)       = [-3.38e+00; -2.167289]
+P-value H1: ICC > tau   = 0.0000000
+95% CI ICC              = [0.0327820; .10272665]
+note: tau is assumed close to zero, .001
+
+. // Model 5 - interaksi periode umur;
+> collect, tag(model[B. Bayi] nmodel[Model 5]):
+>  melogit ideath i.periods i.periods#i.depriv 
+>                  b3.pareduc b2.wealth b1.reside pwdisthfac
+>                  i.chsex b1.bordin b1.mageb
+>                  if data == 2 || psu:, or;
+
+Fitting fixed-effects model:
+
+Iteration 0:   log likelihood = -14357.606  
+Iteration 1:   log likelihood = -5869.6171  
+Iteration 2:   log likelihood = -5768.7296  
+Iteration 3:   log likelihood = -5702.4167  
+Iteration 4:   log likelihood = -5701.6992  
+Iteration 5:   log likelihood = -5701.6984  
+Iteration 6:   log likelihood = -5701.6984  
+
+Refining starting values:
+
+Grid node 0:   log likelihood =  -5791.172
+
+Fitting full model:
+
+Iteration 0:   log likelihood =  -5791.172  (not concave)
+Iteration 1:   log likelihood = -5698.5666  
+Iteration 2:   log likelihood = -5695.2289  
+Iteration 3:   log likelihood = -5695.2224  
+Iteration 4:   log likelihood = -5695.2224  
+
+Mixed-effects logistic regression               Number of obs     =    137,214
+Group variable: psu                             Number of groups  =      1,970
+
+                                                Obs per group:
+                                                              min =         12
+                                                              avg =       69.7
+                                                              max =        212
+
+Integration method: mvaghermite                 Integration pts.  =          7
+
+                                                Wald chi2(26)     =     475.80
+Log likelihood = -5695.2224                     Prob > chi2       =     0.0000
+-----------------------------------------------------------------------------------------
+                 ideath | Odds ratio   Std. err.      z    P>|z|     [95% conf. interval]
+------------------------+----------------------------------------------------------------
+                periods |
+             7-28 hari  |   .2566857   .0375736    -9.29   0.000     .1926651    .3419796
+       29 hari-5 bulan  |    .380881    .048137    -7.64   0.000     .2973114    .4879407
+            6-11 bulan  |   .2154194   .0339841    -9.73   0.000     .1581252    .2934733
+                        |
+         periods#depriv |
+       0-6 hari#Rendah  |   1.141233   .1257666     1.20   0.231     .9195381    1.416376
+       0-6 hari#Tinggi  |   1.110855   .1488331     0.78   0.433     .8543045    1.444448
+      7-28 hari#Rendah  |   1.056632   .2225032     0.26   0.794     .6993255    1.596496
+      7-28 hari#Tinggi  |   1.415384    .314396     1.56   0.118     .9157966    2.187509
+29 hari-5 bulan#Rendah  |   1.476991   .2369838     2.43   0.015     1.078456    2.022803
+29 hari-5 bulan#Tinggi  |   1.667321   .2993065     2.85   0.004     1.172782    2.370399
+     6-11 bulan#Rendah  |   1.577377   .3270591     2.20   0.028     1.050617    2.368246
+     6-11 bulan#Tinggi  |   1.967602   .4373108     3.05   0.002     1.272779    3.041737
+                        |
+                pareduc |
+                Rendah  |    1.27811   .1145746     2.74   0.006     1.072169    1.523608
+            Ibu < ayah  |   1.164856   .1215108     1.46   0.144      .949467    1.429106
+            Ibu > ayah  |    1.04109   .1118471     0.37   0.708     .8434151    1.285095
+                        |
+                 wealth |
+                Miskin  |   1.219105   .1462405     1.65   0.099     .9636813     1.54223
+              Menengah  |   1.119997    .123929     1.02   0.306     .9016347    1.391245
+                        |
+                 reside |
+             Perdesaan  |   .9353283       .073    -0.86   0.392      .802657    1.089929
+                        |
+             pwdisthfac |   1.503719   .3409019     1.80   0.072     .9642601    2.344979
+                        |
+                  chsex |
+             Laki-laki  |   1.106516   .0707084     1.58   0.113     .9762572    1.254154
+                        |
+                 bordin |
+               Pertama  |   1.399297   .1403224     3.35   0.001     1.149611    1.703213
+       2 dan <24 bulan  |   2.021621   .3308086     4.30   0.000     1.466942    2.786034
+    >=3 dan >=24 bulan  |   1.399948   .1386438     3.40   0.001     1.152957     1.69985
+     >=3 dan <24 bulan  |   2.581775   .3371515     7.26   0.000     1.998761    3.334848
+                        |
+                  mageb |
+                   <20  |    1.39849   .1597444     2.94   0.003     1.117969      1.7494
+                 30-39  |   1.167066   .0955854     1.89   0.059     .9939853    1.370284
+                 40-49  |   1.819637   .2774466     3.93   0.000     1.349581    2.453412
+                        |
+                  _cons |   .0060628   .0008259   -37.48   0.000     .0046422    .0079182
+------------------------+----------------------------------------------------------------
+psu                     |
+              var(_cons)|   .2050159   .0636095                      .1116063    .3766054
+-----------------------------------------------------------------------------------------
+Note: Estimates are transformed only in the first equation to odds ratios.
+Note: _cons estimates baseline odds (conditional on zero random effects).
+LR test vs. logistic model: chibar2(01) = 12.95       Prob >= chibar2 = 0.0002
+
+. estimate store mdl_b5;
+
+. resignif;
+
+P-value of random effect through ln transformation
+
+ln(var(_cons[psu]))             = -1.58e+00
+Std. err ln(var(_cons[psu]))    = 0.3102661
+95% CI ln(var(_cons[psu]))      = [-2.19e+00; -.9765572]
+P-value H1: sigmau2 > tau       = 0.0000000
+95% CI var(_cons[psu])          = [0.1116063; .37660545]
+note: tau is assumed close to zero, .001
+
+. iccsignif;
+
+Residual intraclass correlation
+
+------------------------------------------------------------------------------
+                       Level |        ICC   Std. err.     [95% conf. interval]
+-----------------------------+------------------------------------------------
+                         psu |   .0586617   .0171331      .0328111     .102716
+------------------------------------------------------------------------------
+logit(ICC)              = -2.78e+00
+Std. err logit(ICC)     = 0.3102661
+95% CI logit(ICC)       = [-3.38e+00; -2.1674047]
+P-value H1: ICC > tau   = 0.0000000
+95% CI ICC              = [0.0328111; .10271599]
+note: tau is assumed close to zero, .001
+
+. // /likelihood ratio test model b4 vs model b5;
+> lrtest mdl_b4 mdl_b5;
+
+Likelihood-ratio test
+Assumption: mdl_b4 nested within mdl_b5
+
+ LR chi2(6) =   9.12
+Prob > chi2 = 0.1667
+
+. #delimit cr
+delimiter now cr
+. 
+. 
+. 
+. /*
+> ================================================================================
+> C. U5DEATH                                                                                                      
+> ================================================================================
+> */
+. 
+. #delimit ;
+delimiter now ;
+. // Model 1 - baseline hazard;
+> collect, tag(model[C. <5 Tahun] nmodel[Model 1]):
+>  melogit u5death i.periods
+>              if data == 3 || psu:, or;
+
+Fitting fixed-effects model:
+
+Iteration 0:   log likelihood = -20629.741  
+Iteration 1:   log likelihood = -7340.5314  
+Iteration 2:   log likelihood = -7239.8979  
+Iteration 3:   log likelihood =    -7200.6  
+Iteration 4:   log likelihood = -7200.4947  
+Iteration 5:   log likelihood = -7200.4947  
+
+Refining starting values:
+
+Grid node 0:   log likelihood = -7277.4884
+
+Fitting full model:
+
+Iteration 0:   log likelihood = -7277.4884  (not concave)
+Iteration 1:   log likelihood = -7206.8036  
+Iteration 2:   log likelihood = -7180.3735  
+Iteration 3:   log likelihood = -7174.7725  
+Iteration 4:   log likelihood = -7174.7588  
+Iteration 5:   log likelihood = -7174.7588  
+
+Mixed-effects logistic regression               Number of obs     =    204,706
+Group variable: psu                             Number of groups  =      1,970
+
+                                                Obs per group:
+                                                              min =         18
+                                                              avg =      103.9
+                                                              max =        315
+
+Integration method: mvaghermite                 Integration pts.  =          7
+
+                                                Wald chi2(5)      =     496.48
+Log likelihood = -7174.7588                     Prob > chi2       =     0.0000
+----------------------------------------------------------------------------------
+         u5death | Odds ratio   Std. err.      z    P>|z|     [95% conf. interval]
+-----------------+----------------------------------------------------------------
+         periods |
+      7-28 hari  |    .265577   .0259081   -13.59   0.000     .2193574    .3215353
+29 hari-5 bulan  |   .4581601   .0367138    -9.74   0.000     .3915685    .5360765
+     6-11 bulan  |   .2777338   .0267857   -13.28   0.000     .2298982    .3355226
+    12-23 bulan  |   .2183358   .0232245   -14.31   0.000     .1772483    .2689477
+    24-59 bulan  |   .2010192   .0221641   -14.55   0.000     .1619515    .2495111
+                 |
+           _cons |   .0122714   .0006854   -78.79   0.000     .0109989     .013691
+-----------------+----------------------------------------------------------------
+psu              |
+       var(_cons)|   .3390929     .05872                      .2415005    .4761233
+----------------------------------------------------------------------------------
+Note: Estimates are transformed only in the first equation to odds ratios.
+Note: _cons estimates baseline odds (conditional on zero random effects).
+LR test vs. logistic model: chibar2(01) = 51.47       Prob >= chibar2 = 0.0000
+
+. resignif;
+
+P-value of random effect through ln transformation
+
+ln(var(_cons[psu]))             = -1.08e+00
+Std. err ln(var(_cons[psu]))    = 0.1731678
+95% CI ln(var(_cons[psu]))      = [-1.42e+00; -.74207838]
+P-value H1: sigmau2 > tau       = 0.0000000
+95% CI var(_cons[psu])          = [0.2415005; .47612332]
+note: tau is assumed close to zero, .001
+
+. iccsignif;
+
+Residual intraclass correlation
+
+------------------------------------------------------------------------------
+                       Level |        ICC   Std. err.     [95% conf. interval]
+-----------------------------+------------------------------------------------
+                         psu |   .0934408    .014669      .0683872    .1264271
+------------------------------------------------------------------------------
+logit(ICC)              = -2.27e+00
+Std. err logit(ICC)     = 0.1731678
+95% CI logit(ICC)       = [-2.61e+00; -1.9329259]
+P-value H1: ICC > tau   = 0.0000000
+95% CI ICC              = [0.0683872; .12642708]
+note: tau is assumed close to zero, .001
+
+. // Model 2 - tanpa kontrol;
+> collect, tag(model[C. <5 Tahun] nmodel[Model 2]):
+>  melogit u5death i.periods i.depriv
+>                  if data == 3 || psu:, or;
+
+Fitting fixed-effects model:
+
+Iteration 0:   log likelihood = -20627.833  
+Iteration 1:   log likelihood = -7323.1371  
+Iteration 2:   log likelihood = -7208.2902  
+Iteration 3:   log likelihood = -7161.2566  
+Iteration 4:   log likelihood = -7161.0719  
+Iteration 5:   log likelihood = -7161.0719  
+
+Refining starting values:
+
+Grid node 0:   log likelihood = -7252.5881
+
+Fitting full model:
+
+Iteration 0:   log likelihood = -7252.5881  (not concave)
+Iteration 1:   log likelihood = -7180.8052  
+Iteration 2:   log likelihood = -7156.6632  
+Iteration 3:   log likelihood = -7145.4506  
+Iteration 4:   log likelihood = -7145.3933  
+Iteration 5:   log likelihood = -7145.3933  
+
+Mixed-effects logistic regression               Number of obs     =    204,706
+Group variable: psu                             Number of groups  =      1,970
+
+                                                Obs per group:
+                                                              min =         18
+                                                              avg =      103.9
+                                                              max =        315
+
+Integration method: mvaghermite                 Integration pts.  =          7
+
+                                                Wald chi2(7)      =     556.79
+Log likelihood = -7145.3933                     Prob > chi2       =     0.0000
+----------------------------------------------------------------------------------
+         u5death | Odds ratio   Std. err.      z    P>|z|     [95% conf. interval]
+-----------------+----------------------------------------------------------------
+         periods |
+      7-28 hari  |   .2655082   .0259004   -13.59   0.000     .2193022    .3214496
+29 hari-5 bulan  |   .4579928   .0366984    -9.75   0.000      .391429     .535876
+     6-11 bulan  |   .2776351   .0267752   -13.29   0.000     .2298181     .335401
+    12-23 bulan  |   .2182775   .0232176   -14.31   0.000     .1772021    .2688742
+    24-59 bulan  |   .2009749   .0221586   -14.55   0.000     .1619169    .2494546
+                 |
+          depriv |
+         Rendah  |   1.441634    .100473     5.25   0.000     1.257568    1.652641
+         Tinggi  |   1.784848   .1394782     7.41   0.000     1.531382    2.080267
+                 |
+           _cons |   .0101083   .0006468   -71.80   0.000     .0089169    .0114588
+-----------------+----------------------------------------------------------------
+psu              |
+       var(_cons)|   .2656936    .056283                      .1754153    .4024339
+----------------------------------------------------------------------------------
+Note: Estimates are transformed only in the first equation to odds ratios.
+Note: _cons estimates baseline odds (conditional on zero random effects).
+LR test vs. logistic model: chibar2(01) = 31.36       Prob >= chibar2 = 0.0000
+
+. resignif;
+
+P-value of random effect through ln transformation
+
+ln(var(_cons[psu]))             = -1.33e+00
+Std. err ln(var(_cons[psu]))    = 0.2118341
+95% CI ln(var(_cons[psu]))      = [-1.74e+00; -.91022445]
+P-value H1: sigmau2 > tau       = 0.0000000
+95% CI var(_cons[psu])          = [0.1754153; .40243389]
+note: tau is assumed close to zero, .001
+
+. iccsignif;
+
+Residual intraclass correlation
+
+------------------------------------------------------------------------------
+                       Level |        ICC   Std. err.     [95% conf. interval]
+-----------------------------+------------------------------------------------
+                         psu |   .0747262   .0146467      .0506208    .1089927
+------------------------------------------------------------------------------
+logit(ICC)              = -2.52e+00
+Std. err logit(ICC)     = 0.2118341
+95% CI logit(ICC)       = [-2.93e+00; -2.1010719]
+P-value H1: ICC > tau   = 0.0000000
+95% CI ICC              = [0.0506208; .10899268]
+note: tau is assumed close to zero, .001
+
+. // Model 3 - kontrol: sosek;
+> collect, tag(model[C. <5 Tahun] nmodel[Model 3]):
+>  melogit u5death i.periods i.depriv
+>                  b3.pareduc b2.wealth b1.reside pwdisthfac
+>                  if data == 3 || psu:, or;
+
+Fitting fixed-effects model:
+
+Iteration 0:   log likelihood = -20626.648  
+Iteration 1:   log likelihood = -7312.3904  
+Iteration 2:   log likelihood = -7190.5515  
+Iteration 3:   log likelihood = -7137.8858  
+Iteration 4:   log likelihood = -7137.6264  
+Iteration 5:   log likelihood = -7137.6264  
+
+Refining starting values:
+
+Grid node 0:   log likelihood =  -7234.931
+
+Fitting full model:
+
+Iteration 0:   log likelihood =  -7234.931  (not concave)
+Iteration 1:   log likelihood = -7162.6709  
+Iteration 2:   log likelihood = -7135.7814  
+Iteration 3:   log likelihood = -7125.8557  
+Iteration 4:   log likelihood = -7125.7438  
+Iteration 5:   log likelihood = -7125.7437  
+
+Mixed-effects logistic regression               Number of obs     =    204,706
+Group variable: psu                             Number of groups  =      1,970
+
+                                                Obs per group:
+                                                              min =         18
+                                                              avg =      103.9
+                                                              max =        315
+
+Integration method: mvaghermite                 Integration pts.  =          7
+
+                                                Wald chi2(14)     =     598.41
+Log likelihood = -7125.7437                     Prob > chi2       =     0.0000
+----------------------------------------------------------------------------------
+         u5death | Odds ratio   Std. err.      z    P>|z|     [95% conf. interval]
+-----------------+----------------------------------------------------------------
+         periods |
+      7-28 hari  |   .2654763   .0258979   -13.60   0.000     .2192749    .3214123
+29 hari-5 bulan  |   .4579058   .0366926    -9.75   0.000     .3913526     .535777
+     6-11 bulan  |    .277627    .026775   -13.29   0.000     .2298104    .3353928
+    12-23 bulan  |   .2182758   .0232179   -14.31   0.000     .1772001    .2688732
+    24-59 bulan  |   .2010021    .022162   -14.55   0.000     .1619381    .2494894
+                 |
+          depriv |
+         Rendah  |   1.266533   .0965469     3.10   0.002     1.090762    1.470629
+         Tinggi  |   1.390706   .1312171     3.50   0.000     1.155905    1.673203
+                 |
+         pareduc |
+         Rendah  |   1.336154   .1071128     3.61   0.000     1.141878    1.563483
+     Ibu < ayah  |   1.316186   .1205638     3.00   0.003     1.099883    1.575027
+     Ibu > ayah  |   1.059488   .1038505     0.59   0.556      .874302    1.283897
+                 |
+          wealth |
+         Miskin  |   1.288186   .1424099     2.29   0.022     1.037236    1.599851
+       Menengah  |   1.146268   .1176108     1.33   0.183     .9374545    1.401594
+                 |
+          reside |
+      Perdesaan  |   .9475954   .0684591    -0.75   0.456     .8224846    1.091737
+                 |
+      pwdisthfac |   1.747091   .3650581     2.67   0.008     1.159993    2.631333
+           _cons |    .008115   .0008009   -48.78   0.000     .0066878    .0098468
+-----------------+----------------------------------------------------------------
+psu              |
+       var(_cons)|   .2299577   .0549854                      .1439184    .3674343
+----------------------------------------------------------------------------------
+Note: Estimates are transformed only in the first equation to odds ratios.
+Note: _cons estimates baseline odds (conditional on zero random effects).
+LR test vs. logistic model: chibar2(01) = 23.77       Prob >= chibar2 = 0.0000
+
+. resignif;
+
+P-value of random effect through ln transformation
+
+ln(var(_cons[psu]))             = -1.47e+00
+Std. err ln(var(_cons[psu]))    = 0.2391110
+95% CI ln(var(_cons[psu]))      = [-1.94e+00; -1.0012107]
+P-value H1: sigmau2 > tau       = 0.0000000
+95% CI var(_cons[psu])          = [0.1439184; .36743431]
+note: tau is assumed close to zero, .001
+
+. iccsignif;
+
+Residual intraclass correlation
+
+------------------------------------------------------------------------------
+                       Level |        ICC   Std. err.     [95% conf. interval]
+-----------------------------+------------------------------------------------
+                         psu |   .0653321    .014601      .0419125    .1004659
+------------------------------------------------------------------------------
+logit(ICC)              = -2.66e+00
+Std. err logit(ICC)     = 0.2391110
+95% CI logit(ICC)       = [-3.13e+00; -2.1920582]
+P-value H1: ICC > tau   = 0.0000000
+95% CI ICC              = [0.0419125; .10046593]
+note: tau is assumed close to zero, .001
+
+. // Model 4 - kontrol: full;
+> collect, tag(model[C. <5 Tahun] nmodel[Model 4]):
+>  melogit u5death i.periods i.depriv
+>                  b3.pareduc b2.wealth b1.reside pwdisthfac
+>                  i.chsex b1.bordin b1.mageb
+>                  if data == 3 || psu:, or;
+
+Fitting fixed-effects model:
+
+Iteration 0:   log likelihood = -20623.484  
+Iteration 1:   log likelihood = -7284.1047  
+Iteration 2:   log likelihood = -7152.6696  
+Iteration 3:   log likelihood = -7082.1495  
+Iteration 4:   log likelihood = -7081.5234  
+Iteration 5:   log likelihood =  -7081.523  
+
+Refining starting values:
+
+Grid node 0:   log likelihood =  -7185.803
+
+Fitting full model:
+
+Iteration 0:   log likelihood =  -7185.803  (not concave)
+Iteration 1:   log likelihood = -7113.2512  
+Iteration 2:   log likelihood = -7081.7871  
+Iteration 3:   log likelihood =  -7073.179  
+Iteration 4:   log likelihood =  -7073.148  
+Iteration 5:   log likelihood =  -7073.148  
+
+Mixed-effects logistic regression               Number of obs     =    204,706
+Group variable: psu                             Number of groups  =      1,970
+
+                                                Obs per group:
+                                                              min =         18
+                                                              avg =      103.9
+                                                              max =        315
+
+Integration method: mvaghermite                 Integration pts.  =          7
+
+                                                Wald chi2(22)     =     715.42
+Log likelihood = -7073.148                      Prob > chi2       =     0.0000
+-------------------------------------------------------------------------------------
+            u5death | Odds ratio   Std. err.      z    P>|z|     [95% conf. interval]
+--------------------+----------------------------------------------------------------
+            periods |
+         7-28 hari  |   .2656254   .0259204   -13.59   0.000     .2193852    .3216118
+   29 hari-5 bulan  |    .458428   .0367512    -9.73   0.000     .3917708    .5364264
+        6-11 bulan  |   .2779719   .0268168   -13.27   0.000     .2300821    .3358297
+       12-23 bulan  |   .2186299   .0232616   -14.29   0.000     .1774777     .269324
+       24-59 bulan  |    .201421   .0222137   -14.53   0.000      .162267    .2500226
+                    |
+             depriv |
+            Rendah  |   1.224794   .0934751     2.66   0.008      1.05463    1.422414
+            Tinggi  |   1.317638   .1246272     2.92   0.004     1.094677     1.58601
+                    |
+            pareduc |
+            Rendah  |   1.277535   .1047724     2.99   0.003     1.087839     1.50031
+        Ibu < ayah  |   1.273049   .1178981     2.61   0.009     1.061732    1.526426
+        Ibu > ayah  |   1.055886   .1036119     0.55   0.579     .8711451    1.279805
+                    |
+             wealth |
+            Miskin  |   1.276577   .1416075     2.20   0.028      1.02713    1.586604
+          Menengah  |   1.164337   .1195421     1.48   0.138     .9521079    1.423873
+                    |
+             reside |
+         Perdesaan  |   .9530427   .0682927    -0.67   0.502      .828166    1.096749
+                    |
+         pwdisthfac |   1.598845   .3291907     2.28   0.023     1.067948    2.393661
+                    |
+              chsex |
+         Laki-laki  |    1.13875    .066348     2.23   0.026      1.01586    1.276505
+                    |
+             bordin |
+           Pertama  |   1.297988     .11835     2.86   0.004     1.085572    1.551969
+   2 dan <24 bulan  |   2.043234   .2986225     4.89   0.000     1.534311    2.720965
+>=3 dan >=24 bulan  |   1.414563   .1266709     3.87   0.000     1.186858    1.685953
+ >=3 dan <24 bulan  |   2.631499   .3082482     8.26   0.000      2.09168    3.310633
+                    |
+              mageb |
+               <20  |   1.295974   .1382168     2.43   0.015     1.051513    1.597267
+             30-39  |   1.062498   .0789558     0.82   0.415      .918489    1.229085
+             40-49  |   1.782062   .2426383     4.24   0.000     1.364667    2.327121
+                    |
+              _cons |   .0055706   .0006814   -42.43   0.000     .0043831    .0070798
+--------------------+----------------------------------------------------------------
+psu                 |
+          var(_cons)|   .1933524   .0537478                      .1121332    .3333996
+-------------------------------------------------------------------------------------
+Note: Estimates are transformed only in the first equation to odds ratios.
+Note: _cons estimates baseline odds (conditional on zero random effects).
+LR test vs. logistic model: chibar2(01) = 16.75       Prob >= chibar2 = 0.0000
+
+.                  estimate store mdl_c4;
+
+. resignif;
+
+P-value of random effect through ln transformation
+
+ln(var(_cons[psu]))             = -1.64e+00
+Std. err ln(var(_cons[psu]))    = 0.2779782
+95% CI ln(var(_cons[psu]))      = [-2.19e+00; -1.0984135]
+P-value H1: sigmau2 > tau       = 0.0000000
+95% CI var(_cons[psu])          = [0.1121332; .33339961]
+note: tau is assumed close to zero, .001
+
+. iccsignif;
+
+Residual intraclass correlation
+
+------------------------------------------------------------------------------
+                       Level |        ICC   Std. err.     [95% conf. interval]
+-----------------------------+------------------------------------------------
+                         psu |   .0555097   .0145739       .032961    .0920163
+------------------------------------------------------------------------------
+logit(ICC)              = -2.83e+00
+Std. err logit(ICC)     = 0.2779782
+95% CI logit(ICC)       = [-3.38e+00; -2.289261]
+P-value H1: ICC > tau   = 0.0000000
+95% CI ICC              = [0.0329610; .09201628]
+note: tau is assumed close to zero, .001
+
+. // Model 5 - interaksi periode umur;
+> collect, tag(model[C. <5 Tahun] nmodel[Model 5]):
+>  melogit u5death i.periods i.periods#i.depriv
+>                  b3.pareduc b2.wealth b1.reside pwdisthfac
+>                  i.chsex b1.bordin b1.mageb
+>                  if data == 3 || psu:, or;
+
+Fitting fixed-effects model:
+
+Iteration 0:   log likelihood = -20623.077  
+Iteration 1:   log likelihood =  -7281.057  
+Iteration 2:   log likelihood = -7143.5219  
+Iteration 3:   log likelihood = -7075.1291  
+Iteration 4:   log likelihood = -7074.4873  
+Iteration 5:   log likelihood = -7074.4867  
+
+Refining starting values:
+
+Grid node 0:   log likelihood = -7178.7618
+
+Fitting full model:
+
+Iteration 0:   log likelihood = -7178.7618  (not concave)
+Iteration 1:   log likelihood = -7106.2774  
+Iteration 2:   log likelihood = -7074.7424  
+Iteration 3:   log likelihood = -7066.1335  
+Iteration 4:   log likelihood = -7066.1019  
+Iteration 5:   log likelihood = -7066.1019  
+
+Mixed-effects logistic regression               Number of obs     =    204,706
+Group variable: psu                             Number of groups  =      1,970
+
+                                                Obs per group:
+                                                              min =         18
+                                                              avg =      103.9
+                                                              max =        315
+
+Integration method: mvaghermite                 Integration pts.  =          7
+
+                                                Wald chi2(32)     =     705.63
+Log likelihood = -7066.1019                     Prob > chi2       =     0.0000
+-----------------------------------------------------------------------------------------
+                u5death | Odds ratio   Std. err.      z    P>|z|     [95% conf. interval]
+------------------------+----------------------------------------------------------------
+                periods |
+             7-28 hari  |   .2566123   .0375626    -9.29   0.000     .1926104    .3418813
+       29 hari-5 bulan  |   .3807675   .0481221    -7.64   0.000     .2972237    .4877939
+            6-11 bulan  |    .215353   .0339733    -9.73   0.000      .158077    .2933818
+           12-23 bulan  |   .1630533    .028942   -10.22   0.000      .115144    .2308969
+           24-59 bulan  |   .2034701   .0329465    -9.83   0.000     .1481397    .2794664
+                        |
+         periods#depriv |
+       0-6 hari#Rendah  |   1.108699   .1210282     0.95   0.345      .895147    1.373197
+       0-6 hari#Tinggi  |   1.042631   .1371256     0.32   0.751      .805715     1.34921
+      7-28 hari#Rendah  |   1.026297   .2155628     0.12   0.902     .6799657    1.549026
+      7-28 hari#Tinggi  |   1.327767   .2929886     1.28   0.199     .8615759    2.046211
+29 hari-5 bulan#Rendah  |   1.434556   .2291591     2.26   0.024     1.048925     1.96196
+29 hari-5 bulan#Tinggi  |   1.564473   .2779909     2.52   0.012     1.104379    2.216246
+     6-11 bulan#Rendah  |   1.531746   .3167627     2.06   0.039     1.021315     2.29728
+     6-11 bulan#Tinggi  |   1.846296    .407646     2.78   0.005     1.197743    2.846029
+    12-23 bulan#Rendah  |   1.524955   .3619198     1.78   0.075     .9577236    2.428141
+    12-23 bulan#Tinggi  |   2.100029   .5124132     3.04   0.002     1.301756    3.387825
+    24-59 bulan#Rendah  |   1.092257   .2550051     0.38   0.705     .6911907    1.726043
+    24-59 bulan#Tinggi  |   1.014963   .2747721     0.05   0.956     .5970512    1.725395
+                        |
+                pareduc |
+                Rendah  |   1.277649   .1047682     2.99   0.003     1.087958    1.500412
+            Ibu < ayah  |   1.273176    .117903     2.61   0.009     1.061848    1.526561
+            Ibu > ayah  |   1.055846   .1036038     0.55   0.580     .8711183    1.279746
+                        |
+                 wealth |
+                Miskin  |   1.276608   .1416449     2.20   0.028     1.027102    1.586726
+              Menengah  |   1.164241   .1195639     1.48   0.139     .9519788    1.423832
+                        |
+                 reside |
+             Perdesaan  |   .9530554   .0682973    -0.67   0.502     .8281706    1.096772
+                        |
+             pwdisthfac |   1.598516   .3290054     2.28   0.023     1.067882    2.392823
+                        |
+                  chsex |
+             Laki-laki  |   1.138658   .0663388     2.23   0.026     1.015786    1.276394
+                        |
+                 bordin |
+               Pertama  |   1.297967   .1183521     2.86   0.004     1.085548    1.551953
+       2 dan <24 bulan  |   2.043478   .2986298     4.89   0.000     1.534536    2.721215
+    >=3 dan >=24 bulan  |   1.414492   .1266668     3.87   0.000     1.186795    1.685873
+     >=3 dan <24 bulan  |   2.632137   .3082632     8.26   0.000     2.092281     3.31129
+                        |
+                  mageb |
+                   <20  |   1.296256   .1382331     2.43   0.015     1.051764    1.597582
+                 30-39  |   1.062361   .0789431     0.81   0.416     .9183747    1.228921
+                 40-49  |   1.781857   .2425715     4.24   0.000     1.364568    2.326753
+                        |
+                  _cons |   .0060794   .0007738   -40.09   0.000     .0047371     .007802
+------------------------+----------------------------------------------------------------
+psu                     |
+              var(_cons)|   .1933344   .0537218                      .1121465    .3332977
+-----------------------------------------------------------------------------------------
+Note: Estimates are transformed only in the first equation to odds ratios.
+Note: _cons estimates baseline odds (conditional on zero random effects).
+LR test vs. logistic model: chibar2(01) = 16.77       Prob >= chibar2 = 0.0000
+
+. estimate store mdl_c5;
+
+. resignif;
+
+P-value of random effect through ln transformation
+
+ln(var(_cons[psu]))             = -1.64e+00
+Std. err ln(var(_cons[psu]))    = 0.2778699
+95% CI ln(var(_cons[psu]))      = [-2.19e+00; -1.0987191]
+P-value H1: sigmau2 > tau       = 0.0000000
+95% CI var(_cons[psu])          = [0.1121465; .33329775]
+note: tau is assumed close to zero, .001
+
+. iccsignif;
+
+Residual intraclass correlation
+
+------------------------------------------------------------------------------
+                       Level |        ICC   Std. err.     [95% conf. interval]
+-----------------------------+------------------------------------------------
+                         psu |   .0555048   .0145671      .0329647    .0919907
+------------------------------------------------------------------------------
+logit(ICC)              = -2.83e+00
+Std. err logit(ICC)     = 0.2778699
+95% CI logit(ICC)       = [-3.38e+00; -2.2895665]
+P-value H1: ICC > tau   = 0.0000000
+95% CI ICC              = [0.0329647; .09199075]
+note: tau is assumed close to zero, .001
+
+. // /likelihood ratio test model c4 vs model c5;
+> lrtest mdl_c4 mdl_c5;
+
+Likelihood-ratio test
+Assumption: mdl_c4 nested within mdl_c5
+
+LR chi2(10) =  14.09
+Prob > chi2 = 0.1688
+
+. #delimit cr
+delimiter now cr
+. 
+. 
+. 
+. /*
+> ================================================================================
+> TABEL (REPORT)                                                                                                  
+> ================================================================================
+> */
+. 
+. /*
+> ------------------------------------------------------------------
+> SE
+> ------------------------------------------------------------------
+> */
+. 
+. *samping
+. #delimit;
+delimiter now ;
+. quietly collect layout (colname[_cons periods depriv periods#depriv
+>  chsex bordin mageb pareduc wealth reside pwdisthfac var(_cons[psu])])
+>  (nmodel#result[_r_b _r_se]) (model);
+
+. #delimit cr
+delimiter now cr
+. collect style cell result[_r_b], nformat(%6,3fc)
+
+. collect style cell result[_r_se], nformat(%6,3fc) sformat("(%s)")
+
+. collect stars _r_p "0.001" "***" "0.01" "** " "0.05" "*  " "1" "   ", attach(_r_b)
+
+. collect style column, dups(center)
+
+. collect style header result, level(label)
+
+. collect style row stack, nobinder delimiter(" x ")
+
+. collect style cell border_block, border(right, pattern(nil))
+
+. collect label levels result ///
+>         _r_b "OR" ///
+>         _r_se "SE" ///
+>         , modify
+
+. collect label values colname ///
+>          _cons "Intersep" ///
+>          , modify
+
+. collect preview
+
+A. Neonatal
+------------------------------------------------------------------------------------------------------------------------------------------------------
+                                                                       Model 1          Model 2          Model 3          Model 4          Model 5    
+                                                                        OR      SE       OR      SE       OR      SE       OR      SE       OR      SE
+------------------------------------------------------------------------------------------------------------------------------------------------------
+Intersep                                                          0,012*** (0,001) 0,010*** (0,001) 0,009*** (0,001) 0,006*** (0,001) 0,006*** (0,001)
+Periode/interval umur                                                                                                                                 
+  0-6 hari                                                           1,000 (0,000)    1,000 (0,000)    1,000 (0,000)    1,000 (0,000)    1,000 (0,000)
+  7-28 hari                                                       0,266*** (0,026) 0,266*** (0,026) 0,266*** (0,026) 0,266*** (0,026) 0,257*** (0,038)
+Tingkat deprivasi lingkungan rumah tangga                                                                                                             
+  Tidak                                                                               1,000 (0,000)    1,000 (0,000)    1,000 (0,000)                 
+  Rendah                                                                           1,299**  (0,123) 1,234*   (0,128) 1,201    (0,125)                 
+  Tinggi                                                                           1,543*** (0,166) 1,383*   (0,182) 1,319*   (0,174)                 
+Periode/interval umur x Tingkat deprivasi lingkungan rumah tangga                                                                                     
+  0-6 hari x Tidak                                                                                                                       1,000 (0,000)
+  0-6 hari x Rendah                                                                                                                   1,220    (0,139)
+  0-6 hari x Tinggi                                                                                                                   1,248    (0,179)
+  7-28 hari x Tidak                                                                                                                      1,000 (0,000)
+  7-28 hari x Rendah                                                                                                                  1,129    (0,240)
+  7-28 hari x Tinggi                                                                                                                  1,592*   (0,363)
+Jenis kelamin anak                                                                                                                                    
+  Perempuan                                                                                                             1,000 (0,000)    1,000 (0,000)
+  Laki-laki                                                                                                          1,215*   (0,098) 1,215*   (0,098)
+Urutan dan jarak kelahiran sebelumnya                                                                                                                 
+  Pertama                                                                                                            1,517*** (0,186) 1,517*** (0,186)
+  2 dan >=24 bulan                                                                                                      1,000 (0,000)    1,000 (0,000)
+  2 dan <24 bulan                                                                                                    1,702*   (0,371) 1,703*   (0,372)
+  >=3 dan >=24 bulan                                                                                                 1,166    (0,147) 1,166    (0,147)
+  >=3 dan <24 bulan                                                                                                  2,600*** (0,423) 2,600*** (0,423)
+Umur ibu saat melahirkan                                                                                                                              
+  <20                                                                                                                1,455**  (0,202) 1,455**  (0,202)
+  20-29                                                                                                                 1,000 (0,000)    1,000 (0,000)
+  30-39                                                                                                              1,214    (0,127) 1,214    (0,127)
+  40-49                                                                                                              2,509*** (0,455) 2,508*** (0,455)
+Pendidikan orang tua (ibu-ayah)                                                                                                                       
+  Rendah                                                                                            1,250*   (0,140) 1,236    (0,142) 1,236    (0,142)
+  Ibu < ayah                                                                                        1,109    (0,148) 1,105    (0,149) 1,105    (0,149)
+  Ibu > ayah                                                                                        1,120    (0,147) 1,124    (0,148) 1,124    (0,148)
+  Tinggi                                                                                               1,000 (0,000)    1,000 (0,000)    1,000 (0,000)
+Indeks kekayaan rumah tangga                                                                                                                          
+  Miskin                                                                                            1,154    (0,169) 1,130    (0,166) 1,130    (0,166)
+  Menengah                                                                                          1,113    (0,148) 1,115    (0,149) 1,115    (0,149)
+  Kaya                                                                                                 1,000 (0,000)    1,000 (0,000)    1,000 (0,000)
+Wilayah tempat tinggal                                                                                                                                
+  Perdesaan                                                                                         0,872    (0,085) 0,876    (0,086) 0,876    (0,086)
+  Perkotaan                                                                                            1,000 (0,000)    1,000 (0,000)    1,000 (0,000)
+Masalah aksesibilitas ke faskes                                                                     1,499    (0,442) 1,405    (0,414) 1,405    (0,414)
+var(_cons[psu])                                                      0,404 (0,102)    0,371 (0,101)    0,349 (0,100)    0,333 (0,099)    0,333 (0,099)
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+B. Bayi
+------------------------------------------------------------------------------------------------------------------------------------------------------
+                                                                       Model 1          Model 2          Model 3          Model 4          Model 5    
+                                                                        OR      SE       OR      SE       OR      SE       OR      SE       OR      SE
+------------------------------------------------------------------------------------------------------------------------------------------------------
+Intersep                                                          0,012*** (0,001) 0,010*** (0,001) 0,009*** (0,001) 0,006*** (0,001) 0,006*** (0,001)
+Periode/interval umur                                                                                                                                 
+  0-6 hari                                                           1,000 (0,000)    1,000 (0,000)    1,000 (0,000)    1,000 (0,000)    1,000 (0,000)
+  7-28 hari                                                       0,266*** (0,026) 0,266*** (0,026) 0,266*** (0,026) 0,266*** (0,026) 0,257*** (0,038)
+  29 hari-5 bulan                                                 0,458*** (0,037) 0,458*** (0,037) 0,458*** (0,037) 0,459*** (0,037) 0,381*** (0,048)
+  6-11 bulan                                                      0,278*** (0,027) 0,278*** (0,027) 0,278*** (0,027) 0,278*** (0,027) 0,215*** (0,034)
+Tingkat deprivasi lingkungan rumah tangga                                                                                                             
+  Tidak                                                                               1,000 (0,000)    1,000 (0,000)    1,000 (0,000)                 
+  Rendah                                                                           1,434*** (0,109) 1,289**  (0,107) 1,249**  (0,104)                 
+  Tinggi                                                                           1,777*** (0,151) 1,436*** (0,148) 1,366**  (0,142)                 
+Periode/interval umur x Tingkat deprivasi lingkungan rumah tangga                                                                                     
+  0-6 hari x Tidak                                                                                                                       1,000 (0,000)
+  0-6 hari x Rendah                                                                                                                   1,141    (0,126)
+  0-6 hari x Tinggi                                                                                                                   1,111    (0,149)
+  7-28 hari x Tidak                                                                                                                      1,000 (0,000)
+  7-28 hari x Rendah                                                                                                                  1,057    (0,223)
+  7-28 hari x Tinggi                                                                                                                  1,415    (0,314)
+  29 hari-5 bulan x Tidak                                                                                                                1,000 (0,000)
+  29 hari-5 bulan x Rendah                                                                                                            1,477*   (0,237)
+  29 hari-5 bulan x Tinggi                                                                                                            1,667**  (0,299)
+  6-11 bulan x Tidak                                                                                                                     1,000 (0,000)
+  6-11 bulan x Rendah                                                                                                                 1,577*   (0,327)
+  6-11 bulan x Tinggi                                                                                                                 1,968**  (0,437)
+Jenis kelamin anak                                                                                                                                    
+  Perempuan                                                                                                             1,000 (0,000)    1,000 (0,000)
+  Laki-laki                                                                                                          1,107    (0,071) 1,107    (0,071)
+Urutan dan jarak kelahiran sebelumnya                                                                                                                 
+  Pertama                                                                                                            1,399*** (0,140) 1,399*** (0,140)
+  2 dan >=24 bulan                                                                                                      1,000 (0,000)    1,000 (0,000)
+  2 dan <24 bulan                                                                                                    2,021*** (0,331) 2,022*** (0,331)
+  >=3 dan >=24 bulan                                                                                                 1,400*** (0,139) 1,400*** (0,139)
+  >=3 dan <24 bulan                                                                                                  2,581*** (0,337) 2,582*** (0,337)
+Umur ibu saat melahirkan                                                                                                                              
+  <20                                                                                                                1,398**  (0,160) 1,398**  (0,160)
+  20-29                                                                                                                 1,000 (0,000)    1,000 (0,000)
+  30-39                                                                                                              1,167    (0,096) 1,167    (0,096)
+  40-49                                                                                                              1,820*** (0,278) 1,820*** (0,277)
+Pendidikan orang tua (ibu-ayah)                                                                                                                       
+  Rendah                                                                                            1,328**  (0,116) 1,278**  (0,115) 1,278**  (0,115)
+  Ibu < ayah                                                                                        1,200    (0,124) 1,165    (0,122) 1,165    (0,122)
+  Ibu > ayah                                                                                        1,042    (0,112) 1,041    (0,112) 1,041    (0,112)
+  Tinggi                                                                                               1,000 (0,000)    1,000 (0,000)    1,000 (0,000)
+Indeks kekayaan rumah tangga                                                                                                                          
+  Miskin                                                                                            1,232    (0,147) 1,219    (0,146) 1,219    (0,146)
+  Menengah                                                                                          1,105    (0,122) 1,120    (0,124) 1,120    (0,124)
+  Kaya                                                                                                 1,000 (0,000)    1,000 (0,000)    1,000 (0,000)
+Wilayah tempat tinggal                                                                                                                                
+  Perdesaan                                                                                         0,929    (0,073) 0,935    (0,073) 0,935    (0,073)
+  Perkotaan                                                                                            1,000 (0,000)    1,000 (0,000)    1,000 (0,000)
+Masalah aksesibilitas ke faskes                                                                     1,629*   (0,372) 1,504    (0,341) 1,504    (0,341)
+var(_cons[psu])                                                      0,320 (0,068)    0,260 (0,066)    0,232 (0,065)    0,205 (0,064)    0,205 (0,064)
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+C. <5 Tahun
+------------------------------------------------------------------------------------------------------------------------------------------------------
+                                                                       Model 1          Model 2          Model 3          Model 4          Model 5    
+                                                                        OR      SE       OR      SE       OR      SE       OR      SE       OR      SE
+------------------------------------------------------------------------------------------------------------------------------------------------------
+Intersep                                                          0,012*** (0,001) 0,010*** (0,001) 0,008*** (0,001) 0,006*** (0,001) 0,006*** (0,001)
+Periode/interval umur                                                                                                                                 
+  0-6 hari                                                           1,000 (0,000)    1,000 (0,000)    1,000 (0,000)    1,000 (0,000)    1,000 (0,000)
+  7-28 hari                                                       0,266*** (0,026) 0,266*** (0,026) 0,265*** (0,026) 0,266*** (0,026) 0,257*** (0,038)
+  29 hari-5 bulan                                                 0,458*** (0,037) 0,458*** (0,037) 0,458*** (0,037) 0,458*** (0,037) 0,381*** (0,048)
+  6-11 bulan                                                      0,278*** (0,027) 0,278*** (0,027) 0,278*** (0,027) 0,278*** (0,027) 0,215*** (0,034)
+  12-23 bulan                                                     0,218*** (0,023) 0,218*** (0,023) 0,218*** (0,023) 0,219*** (0,023) 0,163*** (0,029)
+  24-59 bulan                                                     0,201*** (0,022) 0,201*** (0,022) 0,201*** (0,022) 0,201*** (0,022) 0,203*** (0,033)
+Tingkat deprivasi lingkungan rumah tangga                                                                                                             
+  Tidak                                                                               1,000 (0,000)    1,000 (0,000)    1,000 (0,000)                 
+  Rendah                                                                           1,442*** (0,100) 1,267**  (0,097) 1,225**  (0,093)                 
+  Tinggi                                                                           1,785*** (0,139) 1,391*** (0,131) 1,318**  (0,125)                 
+Periode/interval umur x Tingkat deprivasi lingkungan rumah tangga                                                                                     
+  0-6 hari x Tidak                                                                                                                       1,000 (0,000)
+  0-6 hari x Rendah                                                                                                                   1,109    (0,121)
+  0-6 hari x Tinggi                                                                                                                   1,043    (0,137)
+  7-28 hari x Tidak                                                                                                                      1,000 (0,000)
+  7-28 hari x Rendah                                                                                                                  1,026    (0,216)
+  7-28 hari x Tinggi                                                                                                                  1,328    (0,293)
+  29 hari-5 bulan x Tidak                                                                                                                1,000 (0,000)
+  29 hari-5 bulan x Rendah                                                                                                            1,435*   (0,229)
+  29 hari-5 bulan x Tinggi                                                                                                            1,564*   (0,278)
+  6-11 bulan x Tidak                                                                                                                     1,000 (0,000)
+  6-11 bulan x Rendah                                                                                                                 1,532*   (0,317)
+  6-11 bulan x Tinggi                                                                                                                 1,846**  (0,408)
+  12-23 bulan x Tidak                                                                                                                    1,000 (0,000)
+  12-23 bulan x Rendah                                                                                                                1,525    (0,362)
+  12-23 bulan x Tinggi                                                                                                                2,100**  (0,512)
+  24-59 bulan x Tidak                                                                                                                    1,000 (0,000)
+  24-59 bulan x Rendah                                                                                                                1,092    (0,255)
+  24-59 bulan x Tinggi                                                                                                                1,015    (0,275)
+Jenis kelamin anak                                                                                                                                    
+  Perempuan                                                                                                             1,000 (0,000)    1,000 (0,000)
+  Laki-laki                                                                                                          1,139*   (0,066) 1,139*   (0,066)
+Urutan dan jarak kelahiran sebelumnya                                                                                                                 
+  Pertama                                                                                                            1,298**  (0,118) 1,298**  (0,118)
+  2 dan >=24 bulan                                                                                                      1,000 (0,000)    1,000 (0,000)
+  2 dan <24 bulan                                                                                                    2,043*** (0,299) 2,043*** (0,299)
+  >=3 dan >=24 bulan                                                                                                 1,415*** (0,127) 1,414*** (0,127)
+  >=3 dan <24 bulan                                                                                                  2,631*** (0,308) 2,632*** (0,308)
+Umur ibu saat melahirkan                                                                                                                              
+  <20                                                                                                                1,296*   (0,138) 1,296*   (0,138)
+  20-29                                                                                                                 1,000 (0,000)    1,000 (0,000)
+  30-39                                                                                                              1,062    (0,079) 1,062    (0,079)
+  40-49                                                                                                              1,782*** (0,243) 1,782*** (0,243)
+Pendidikan orang tua (ibu-ayah)                                                                                                                       
+  Rendah                                                                                            1,336*** (0,107) 1,278**  (0,105) 1,278**  (0,105)
+  Ibu < ayah                                                                                        1,316**  (0,121) 1,273**  (0,118) 1,273**  (0,118)
+  Ibu > ayah                                                                                        1,059    (0,104) 1,056    (0,104) 1,056    (0,104)
+  Tinggi                                                                                               1,000 (0,000)    1,000 (0,000)    1,000 (0,000)
+Indeks kekayaan rumah tangga                                                                                                                          
+  Miskin                                                                                            1,288*   (0,142) 1,277*   (0,142) 1,277*   (0,142)
+  Menengah                                                                                          1,146    (0,118) 1,164    (0,120) 1,164    (0,120)
+  Kaya                                                                                                 1,000 (0,000)    1,000 (0,000)    1,000 (0,000)
+Wilayah tempat tinggal                                                                                                                                
+  Perdesaan                                                                                         0,948    (0,068) 0,953    (0,068) 0,953    (0,068)
+  Perkotaan                                                                                            1,000 (0,000)    1,000 (0,000)    1,000 (0,000)
+Masalah aksesibilitas ke faskes                                                                     1,747**  (0,365) 1,599*   (0,329) 1,599*   (0,329)
+var(_cons[psu])                                                      0,339 (0,059)    0,266 (0,056)    0,230 (0,055)    0,193 (0,054)    0,193 (0,054)
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+. collect export ".\output\model-deprivc.xls", as(xls) sheet(SE) replace
+(collection default exported to file .\output\model-deprivc.xls)
+
+. 
+. /*
+> ------------------------------------------------------------------
+> 95% CI
+> ------------------------------------------------------------------
+> */
+. 
+. *samping
+. #delimit;
+delimiter now ;
+. quietly collect layout (colname[_cons periods depriv periods#depriv
+>  chsex bordin mageb pareduc wealth reside pwdisthfac var(_cons[psu])])
+>  (nmodel#result[_r_b _r_ci]) (model);
+
+. #delimit cr
+delimiter now cr
+. collect style cell result[_r_b], nformat(%6,3fc)
+
+. collect style cell result[_r_ci], nformat(%6,3fc) sformat("(%s)") cidelimiter("-")
+
+. collect stars _r_p "0.001" "***" "0.01" "** " "0.05" "*  " "1" "   ", attach(_r_b)
+
+. collect style column, dups(center)
+
+. collect style header result, level(label)
+
+. collect style row stack, nobinder delimiter(" x ")
+
+. collect style cell border_block, border(right, pattern(nil))
+
+. collect label levels result ///
+>         _r_b "OR" ///
+>         , modify
+
+. collect label values colname ///
+>          _cons "Intersep" ///
+>          , modify
+
+. collect preview
+
+A. Neonatal
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                                                                          Model 1                 Model 2                 Model 3                 Model 4                 Model 5        
+                                                                        OR     95% CI           OR     95% CI           OR     95% CI           OR     95% CI           OR     95% CI    
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Intersep                                                          0,012*** (0,011- 0,014) 0,010*** (0,009- 0,012) 0,009*** (0,007- 0,012) 0,006*** (0,004- 0,008) 0,006*** (0,004- 0,008)
+Periode/interval umur                                                                                                                                                                    
+  0-6 hari                                                           1,000                   1,000                   1,000                   1,000                   1,000               
+  7-28 hari                                                       0,266*** (0,220- 0,322) 0,266*** (0,219- 0,322) 0,266*** (0,220- 0,322) 0,266*** (0,220- 0,322) 0,257*** (0,193- 0,342)
+Tingkat deprivasi lingkungan rumah tangga                                                                                                                                                
+  Tidak                                                                                      1,000                   1,000                   1,000                                       
+  Rendah                                                                                  1,299**  (1,079- 1,565) 1,234*   (1,006- 1,513) 1,201    (0,979- 1,474)                        
+  Tinggi                                                                                  1,543*** (1,250- 1,905) 1,383*   (1,069- 1,789) 1,319*   (1,018- 1,709)                        
+Periode/interval umur x Tingkat deprivasi lingkungan rumah tangga                                                                                                                        
+  0-6 hari x Tidak                                                                                                                                                   1,000               
+  0-6 hari x Rendah                                                                                                                                               1,220    (0,975- 1,525)
+  0-6 hari x Tinggi                                                                                                                                               1,248    (0,942- 1,654)
+  7-28 hari x Tidak                                                                                                                                                  1,000               
+  7-28 hari x Rendah                                                                                                                                              1,129    (0,744- 1,713)
+  7-28 hari x Tinggi                                                                                                                                              1,592*   (1,018- 2,490)
+Jenis kelamin anak                                                                                                                                                                       
+  Perempuan                                                                                                                                  1,000                   1,000               
+  Laki-laki                                                                                                                               1,215*   (1,037- 1,423) 1,215*   (1,037- 1,423)
+Urutan dan jarak kelahiran sebelumnya                                                                                                                                                    
+  Pertama                                                                                                                                 1,517*** (1,194- 1,929) 1,517*** (1,193- 1,928)
+  2 dan >=24 bulan                                                                                                                           1,000                   1,000               
+  2 dan <24 bulan                                                                                                                         1,702*   (1,110- 2,611) 1,703*   (1,110- 2,611)
+  >=3 dan >=24 bulan                                                                                                                      1,166    (0,911- 1,492) 1,166    (0,911- 1,492)
+  >=3 dan <24 bulan                                                                                                                       2,600*** (1,890- 3,576) 2,600*** (1,890- 3,577)
+Umur ibu saat melahirkan                                                                                                                                                                 
+  <20                                                                                                                                     1,455**  (1,109- 1,909) 1,455**  (1,109- 1,910)
+  20-29                                                                                                                                      1,000                   1,000               
+  30-39                                                                                                                                   1,214    (0,989- 1,489) 1,214    (0,989- 1,489)
+  40-49                                                                                                                                   2,509*** (1,758- 3,579) 2,508*** (1,758- 3,579)
+Pendidikan orang tua (ibu-ayah)                                                                                                                                                          
+  Rendah                                                                                                          1,250*   (1,003- 1,557) 1,236    (0,986- 1,549) 1,236    (0,987- 1,549)
+  Ibu < ayah                                                                                                      1,109    (0,854- 1,440) 1,105    (0,848- 1,440) 1,105    (0,848- 1,439)
+  Ibu > ayah                                                                                                      1,120    (0,866- 1,448) 1,124    (0,869- 1,454) 1,124    (0,869- 1,454)
+  Tinggi                                                                                                             1,000                   1,000                   1,000               
+Indeks kekayaan rumah tangga                                                                                                                                                             
+  Miskin                                                                                                          1,154    (0,867- 1,537) 1,130    (0,847- 1,508) 1,130    (0,847- 1,508)
+  Menengah                                                                                                        1,113    (0,857- 1,445) 1,115    (0,859- 1,449) 1,115    (0,859- 1,449)
+  Kaya                                                                                                               1,000                   1,000                   1,000               
+Wilayah tempat tinggal                                                                                                                                                                   
+  Perdesaan                                                                                                       0,872    (0,719- 1,056) 0,876    (0,723- 1,062) 0,876    (0,723- 1,062)
+  Perkotaan                                                                                                          1,000                   1,000                   1,000               
+Masalah aksesibilitas ke faskes                                                                                   1,499    (0,841- 2,672) 1,405    (0,788- 2,505) 1,405    (0,788- 2,504)
+var(_cons[psu])                                                      0,404 (0,247- 0,662)    0,371 (0,218- 0,632)    0,349 (0,199- 0,611)    0,333 (0,186- 0,597)    0,333 (0,186- 0,597)
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+B. Bayi
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                                                                          Model 1                 Model 2                 Model 3                 Model 4                 Model 5        
+                                                                        OR     95% CI           OR     95% CI           OR     95% CI           OR     95% CI           OR     95% CI    
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Intersep                                                          0,012*** (0,011- 0,014) 0,010*** (0,009- 0,012) 0,009*** (0,007- 0,011) 0,006*** (0,004- 0,007) 0,006*** (0,005- 0,008)
+Periode/interval umur                                                                                                                                                                    
+  0-6 hari                                                           1,000                   1,000                   1,000                   1,000                   1,000               
+  7-28 hari                                                       0,266*** (0,219- 0,322) 0,266*** (0,219- 0,322) 0,266*** (0,219- 0,322) 0,266*** (0,220- 0,322) 0,257*** (0,193- 0,342)
+  29 hari-5 bulan                                                 0,458*** (0,392- 0,536) 0,458*** (0,392- 0,536) 0,458*** (0,391- 0,536) 0,459*** (0,392- 0,537) 0,381*** (0,297- 0,488)
+  6-11 bulan                                                      0,278*** (0,230- 0,336) 0,278*** (0,230- 0,335) 0,278*** (0,230- 0,335) 0,278*** (0,230- 0,336) 0,215*** (0,158- 0,293)
+Tingkat deprivasi lingkungan rumah tangga                                                                                                                                                
+  Tidak                                                                                      1,000                   1,000                   1,000                                       
+  Rendah                                                                                  1,434*** (1,236- 1,664) 1,289**  (1,095- 1,518) 1,249**  (1,060- 1,471)                        
+  Tinggi                                                                                  1,777*** (1,504- 2,098) 1,436*** (1,173- 1,758) 1,366**  (1,115- 1,674)                        
+Periode/interval umur x Tingkat deprivasi lingkungan rumah tangga                                                                                                                        
+  0-6 hari x Tidak                                                                                                                                                   1,000               
+  0-6 hari x Rendah                                                                                                                                               1,141    (0,920- 1,416)
+  0-6 hari x Tinggi                                                                                                                                               1,111    (0,854- 1,444)
+  7-28 hari x Tidak                                                                                                                                                  1,000               
+  7-28 hari x Rendah                                                                                                                                              1,057    (0,699- 1,596)
+  7-28 hari x Tinggi                                                                                                                                              1,415    (0,916- 2,188)
+  29 hari-5 bulan x Tidak                                                                                                                                            1,000               
+  29 hari-5 bulan x Rendah                                                                                                                                        1,477*   (1,078- 2,023)
+  29 hari-5 bulan x Tinggi                                                                                                                                        1,667**  (1,173- 2,370)
+  6-11 bulan x Tidak                                                                                                                                                 1,000               
+  6-11 bulan x Rendah                                                                                                                                             1,577*   (1,051- 2,368)
+  6-11 bulan x Tinggi                                                                                                                                             1,968**  (1,273- 3,042)
+Jenis kelamin anak                                                                                                                                                                       
+  Perempuan                                                                                                                                  1,000                   1,000               
+  Laki-laki                                                                                                                               1,107    (0,976- 1,254) 1,107    (0,976- 1,254)
+Urutan dan jarak kelahiran sebelumnya                                                                                                                                                    
+  Pertama                                                                                                                                 1,399*** (1,150- 1,703) 1,399*** (1,150- 1,703)
+  2 dan >=24 bulan                                                                                                                           1,000                   1,000               
+  2 dan <24 bulan                                                                                                                         2,021*** (1,467- 2,786) 2,022*** (1,467- 2,786)
+  >=3 dan >=24 bulan                                                                                                                      1,400*** (1,153- 1,700) 1,400*** (1,153- 1,700)
+  >=3 dan <24 bulan                                                                                                                       2,581*** (1,998- 3,334) 2,582*** (1,999- 3,335)
+Umur ibu saat melahirkan                                                                                                                                                                 
+  <20                                                                                                                                     1,398**  (1,118- 1,749) 1,398**  (1,118- 1,749)
+  20-29                                                                                                                                      1,000                   1,000               
+  30-39                                                                                                                                   1,167    (0,994- 1,370) 1,167    (0,994- 1,370)
+  40-49                                                                                                                                   1,820*** (1,350- 2,454) 1,820*** (1,350- 2,453)
+Pendidikan orang tua (ibu-ayah)                                                                                                                                                          
+  Rendah                                                                                                          1,328**  (1,119- 1,577) 1,278**  (1,072- 1,524) 1,278**  (1,072- 1,524)
+  Ibu < ayah                                                                                                      1,200    (0,980- 1,469) 1,165    (0,949- 1,429) 1,165    (0,949- 1,429)
+  Ibu > ayah                                                                                                      1,042    (0,844- 1,286) 1,041    (0,843- 1,285) 1,041    (0,843- 1,285)
+  Tinggi                                                                                                             1,000                   1,000                   1,000               
+Indeks kekayaan rumah tangga                                                                                                                                                             
+  Miskin                                                                                                          1,232    (0,975- 1,556) 1,219    (0,964- 1,542) 1,219    (0,964- 1,542)
+  Menengah                                                                                                        1,105    (0,890- 1,372) 1,120    (0,902- 1,391) 1,120    (0,902- 1,391)
+  Kaya                                                                                                               1,000                   1,000                   1,000               
+Wilayah tempat tinggal                                                                                                                                                                   
+  Perdesaan                                                                                                       0,929    (0,797- 1,084) 0,935    (0,803- 1,090) 0,935    (0,803- 1,090)
+  Perkotaan                                                                                                          1,000                   1,000                   1,000               
+Masalah aksesibilitas ke faskes                                                                                   1,629*   (1,041- 2,549) 1,504    (0,964- 2,346) 1,504    (0,964- 2,345)
+var(_cons[psu])                                                      0,320 (0,212- 0,484)    0,260 (0,159- 0,427)    0,232 (0,134- 0,401)    0,205 (0,112- 0,377)    0,205 (0,112- 0,377)
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+C. <5 Tahun
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                                                                          Model 1                 Model 2                 Model 3                 Model 4                 Model 5        
+                                                                        OR     95% CI           OR     95% CI           OR     95% CI           OR     95% CI           OR     95% CI    
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Intersep                                                          0,012*** (0,011- 0,014) 0,010*** (0,009- 0,011) 0,008*** (0,007- 0,010) 0,006*** (0,004- 0,007) 0,006*** (0,005- 0,008)
+Periode/interval umur                                                                                                                                                                    
+  0-6 hari                                                           1,000                   1,000                   1,000                   1,000                   1,000               
+  7-28 hari                                                       0,266*** (0,219- 0,322) 0,266*** (0,219- 0,321) 0,265*** (0,219- 0,321) 0,266*** (0,219- 0,322) 0,257*** (0,193- 0,342)
+  29 hari-5 bulan                                                 0,458*** (0,392- 0,536) 0,458*** (0,391- 0,536) 0,458*** (0,391- 0,536) 0,458*** (0,392- 0,536) 0,381*** (0,297- 0,488)
+  6-11 bulan                                                      0,278*** (0,230- 0,336) 0,278*** (0,230- 0,335) 0,278*** (0,230- 0,335) 0,278*** (0,230- 0,336) 0,215*** (0,158- 0,293)
+  12-23 bulan                                                     0,218*** (0,177- 0,269) 0,218*** (0,177- 0,269) 0,218*** (0,177- 0,269) 0,219*** (0,177- 0,269) 0,163*** (0,115- 0,231)
+  24-59 bulan                                                     0,201*** (0,162- 0,250) 0,201*** (0,162- 0,249) 0,201*** (0,162- 0,249) 0,201*** (0,162- 0,250) 0,203*** (0,148- 0,279)
+Tingkat deprivasi lingkungan rumah tangga                                                                                                                                                
+  Tidak                                                                                      1,000                   1,000                   1,000                                       
+  Rendah                                                                                  1,442*** (1,258- 1,653) 1,267**  (1,091- 1,471) 1,225**  (1,055- 1,422)                        
+  Tinggi                                                                                  1,785*** (1,531- 2,080) 1,391*** (1,156- 1,673) 1,318**  (1,095- 1,586)                        
+Periode/interval umur x Tingkat deprivasi lingkungan rumah tangga                                                                                                                        
+  0-6 hari x Tidak                                                                                                                                                   1,000               
+  0-6 hari x Rendah                                                                                                                                               1,109    (0,895- 1,373)
+  0-6 hari x Tinggi                                                                                                                                               1,043    (0,806- 1,349)
+  7-28 hari x Tidak                                                                                                                                                  1,000               
+  7-28 hari x Rendah                                                                                                                                              1,026    (0,680- 1,549)
+  7-28 hari x Tinggi                                                                                                                                              1,328    (0,862- 2,046)
+  29 hari-5 bulan x Tidak                                                                                                                                            1,000               
+  29 hari-5 bulan x Rendah                                                                                                                                        1,435*   (1,049- 1,962)
+  29 hari-5 bulan x Tinggi                                                                                                                                        1,564*   (1,104- 2,216)
+  6-11 bulan x Tidak                                                                                                                                                 1,000               
+  6-11 bulan x Rendah                                                                                                                                             1,532*   (1,021- 2,297)
+  6-11 bulan x Tinggi                                                                                                                                             1,846**  (1,198- 2,846)
+  12-23 bulan x Tidak                                                                                                                                                1,000               
+  12-23 bulan x Rendah                                                                                                                                            1,525    (0,958- 2,428)
+  12-23 bulan x Tinggi                                                                                                                                            2,100**  (1,302- 3,388)
+  24-59 bulan x Tidak                                                                                                                                                1,000               
+  24-59 bulan x Rendah                                                                                                                                            1,092    (0,691- 1,726)
+  24-59 bulan x Tinggi                                                                                                                                            1,015    (0,597- 1,725)
+Jenis kelamin anak                                                                                                                                                                       
+  Perempuan                                                                                                                                  1,000                   1,000               
+  Laki-laki                                                                                                                               1,139*   (1,016- 1,277) 1,139*   (1,016- 1,276)
+Urutan dan jarak kelahiran sebelumnya                                                                                                                                                    
+  Pertama                                                                                                                                 1,298**  (1,086- 1,552) 1,298**  (1,086- 1,552)
+  2 dan >=24 bulan                                                                                                                           1,000                   1,000               
+  2 dan <24 bulan                                                                                                                         2,043*** (1,534- 2,721) 2,043*** (1,535- 2,721)
+  >=3 dan >=24 bulan                                                                                                                      1,415*** (1,187- 1,686) 1,414*** (1,187- 1,686)
+  >=3 dan <24 bulan                                                                                                                       2,631*** (2,092- 3,311) 2,632*** (2,092- 3,311)
+Umur ibu saat melahirkan                                                                                                                                                                 
+  <20                                                                                                                                     1,296*   (1,052- 1,597) 1,296*   (1,052- 1,598)
+  20-29                                                                                                                                      1,000                   1,000               
+  30-39                                                                                                                                   1,062    (0,918- 1,229) 1,062    (0,918- 1,229)
+  40-49                                                                                                                                   1,782*** (1,365- 2,327) 1,782*** (1,365- 2,327)
+Pendidikan orang tua (ibu-ayah)                                                                                                                                                          
+  Rendah                                                                                                          1,336*** (1,142- 1,563) 1,278**  (1,088- 1,500) 1,278**  (1,088- 1,500)
+  Ibu < ayah                                                                                                      1,316**  (1,100- 1,575) 1,273**  (1,062- 1,526) 1,273**  (1,062- 1,527)
+  Ibu > ayah                                                                                                      1,059    (0,874- 1,284) 1,056    (0,871- 1,280) 1,056    (0,871- 1,280)
+  Tinggi                                                                                                             1,000                   1,000                   1,000               
+Indeks kekayaan rumah tangga                                                                                                                                                             
+  Miskin                                                                                                          1,288*   (1,037- 1,600) 1,277*   (1,027- 1,587) 1,277*   (1,027- 1,587)
+  Menengah                                                                                                        1,146    (0,937- 1,402) 1,164    (0,952- 1,424) 1,164    (0,952- 1,424)
+  Kaya                                                                                                               1,000                   1,000                   1,000               
+Wilayah tempat tinggal                                                                                                                                                                   
+  Perdesaan                                                                                                       0,948    (0,822- 1,092) 0,953    (0,828- 1,097) 0,953    (0,828- 1,097)
+  Perkotaan                                                                                                          1,000                   1,000                   1,000               
+Masalah aksesibilitas ke faskes                                                                                   1,747**  (1,160- 2,631) 1,599*   (1,068- 2,394) 1,599*   (1,068- 2,393)
+var(_cons[psu])                                                      0,339 (0,242- 0,476)    0,266 (0,175- 0,402)    0,230 (0,144- 0,367)    0,193 (0,112- 0,333)    0,193 (0,112- 0,333)
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+. collect export ".\output\model-deprivc.xls", as(xls) sheet(CI) modify
+(collection default exported to file .\output\model-deprivc.xls)
+
+. 
+. *stat
+. quietly collect layout (result[chi2 p chi2_c p_c N N_g]) (nmodel) (model)
+
+. collect style cell result[chi2 chi2_c], nformat(%6,3fc)
+
+. collect style cell result[N N_g], nformat(%9,0fc)
+
+. collect style column, dups(center)
+
+. collect style header result, level(label)
+
+. collect style cell border_block, border(right, pattern(nil))
+
+. collect label levels result ///
+>  chi2 "Chi2 (simultan)" ///
+>  p "p-val" ///
+>  chi2_c "Chi2 (vs fix)" ///
+>  p_c "p-val" ///
+>  N "Jumlah observasi" ///
+>  N_g "Jumlah komunitas" ///
+>  , modify
+
+. collect preview
+
+A. Neonatal
+-------------------------------------------------------------
+                  Model 1  Model 2  Model 3  Model 4  Model 5
+-------------------------------------------------------------
+Chi2 (simultan)   184,412  202,256  211,698  294,494  291,962
+p-val            5.27e-42 1.37e-43 5.83e-40 6.52e-52 3.53e-50
+Chi2 (vs fix)      20,879   17,586   15,687   14,402   14,407
+p-val            2.45e-06 .0000137 .0000374 .0000738 .0000736
+Jumlah observasi   69.109   69.109   69.109   69.109   69.109
+Jumlah komunitas    1.970    1.970    1.970    1.970    1.970
+-------------------------------------------------------------
+
+B. Bayi
+-------------------------------------------------------------
+                  Model 1  Model 2  Model 3  Model 4  Model 5
+-------------------------------------------------------------
+Chi2 (simultan)   315,549  365,805  392,470  485,625  475,799
+p-val            4.29e-68 6.91e-77 1.49e-76 2.96e-90 3.47e-84
+Chi2 (vs fix)      31,411   20,404   16,431   12,926   12,952
+p-val            1.04e-08 3.13e-06 .0000252  .000162 .0001598
+Jumlah observasi  137.214  137.214  137.214  137.214  137.214
+Jumlah komunitas    1.970    1.970    1.970    1.970    1.970
+-------------------------------------------------------------
+
+C. <5 Tahun
+-------------------------------------------------------------
+                  Model 1  Model 2  Model 3  Model 4  Model 5
+-------------------------------------------------------------
+Chi2 (simultan)   496,481  556,793  598,412  715,422  705,631
+p-val            4.6e-105 4.9e-116 1.2e-118 4.3e-137 7.8e-128
+Chi2 (vs fix)      51,472   31,357   23,765   16,750   16,770
+p-val            3.63e-13 1.07e-08 5.44e-07 .0000213 .0000211
+Jumlah observasi  204.706  204.706  204.706  204.706  204.706
+Jumlah komunitas    1.970    1.970    1.970    1.970    1.970
+-------------------------------------------------------------
+
+. collect export ".\output\model-deprivc.xls", as(xls) sheet(STAT) modify
+(collection default exported to file .\output\model-deprivc.xls)
+
+. 
+. 
+. *close log-file
+. log close _all
+      name:  log_10_model_deprivc_idhs17
+       log:  D:\RESEARCH & WRITING\master thesis_child mortality\stata\log\10_model_deprivc_idhs17.log
+  log type:  text
+ closed on:  25 Jan 2022, 16:03:56
+----------------------------------------------------------------------------------------------------------------------------------

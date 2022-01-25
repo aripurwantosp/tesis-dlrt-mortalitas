@@ -1,0 +1,659 @@
+----------------------------------------------------------------------------------------------------------------------------------
+      name:  log_7_descriptive_idhs17
+       log:  D:\RESEARCH & WRITING\master thesis_child mortality\stata\log\7_descriptive_idhs17.log
+  log type:  text
+ opened on:  25 Jan 2022, 13:03:30
+
+. 
+. /*
+> ================================================================================
+> ********************************************************************************
+> PROJECT:
+> PENELITIAN TESIS
+> HUBUNGAN ANTARA DEPRIVASI LINGKUNGAN RUMAH TANGGA DENGAN KEMATIAN BAYI DAN ANAK
+> DI INDONESIA: BUKTI DARI MODEL LOGISTIK MULTILEVEL HAZARD DISKRIT
+> 
+> SYNTAX:
+> 7-ANALISIS DESKRIPTIF
+> 
+> PENULIS:
+> ARI PURWANTO SARWO PRASOJO (2006500321)
+> MAGISTER EKONOMI KEPENDUDUKAN DAN KETENAGAKERJAAN
+> FAKULTAS EKONOMI DAN BISNIS, UNIVERSITAS INDONESIA
+> 2022
+> ********************************************************************************
+> ================================================================================
+> */
+. 
+. 
+. 
+. /*
+> ================================================================================
+> PENYIAPAN
+> ================================================================================
+> */
+. 
+. set maxvar 10000
+
+
+. 
+. 
+. 
+. /*
+> ================================================================================
+> ANAK-KELAHIRAN
+> ================================================================================
+> */
+. 
+. /*
+> ******************************************************************
+> Set sampel                                                                                                      [done]
+> ******************************************************************
+> */
+. 
+. *data
+. use "dta\6-chmort-`idhs'.dta"
+(Data merge\ 25 Jan 2022_11:39:17)
+
+. 
+. *filter non-missing
+. gen nomisvaruse = .
+(86,265 missing values generated)
+
+.         replace nomisvaruse = 1 if !(chalive == 0 & missing(agedeath)) &        ///
+>                                                            !missing(depriv) &                                           ///
+>                                                            !missing(pareduc)       
+(80,458 real changes made)
+
+. loc sett  "precsvy10==1 & nomisvaruse==1"
+
+. keep if `sett'
+(51,457 observations deleted)
+
+. 
+. *cek missing kategorik
+. #delimit ;
+delimiter now ;
+. glo vars
+>         /*var bebas utama, lingkungan*/
+>         depriv
+>         impdrinkwat impsan cookfldr
+>         /*antara*/
+>         chsex bordin mageb
+>         /*sosek*/
+>         meduc4c peduc4c pareduc wealth reside pwdisthfac3c
+>         ;
+
+. #delimit cr
+delimiter now cr
+. 
+. foreach p in $vars{
+  2.         nmissing `p'
+  3. }
+
+. 
+. *ganti label bordin
+. label drop bordin
+
+. lab def bordin 0 "Pertama"                      ///
+>                            1 "2 dan >=24"               ///
+>                            2 "2 dan <24"                ///
+>                            3 ">=3 dan >=24"             ///
+>                            4 ">=3 dan <24"
+
+. lab val bordin bordin
+
+. 
+. /*
+> *as survey design
+> egen strata = group(prov reside)
+> svyset psu [pw=wweight],strata(strata) */       
+. 
+. /*
+> ******************************************************************
+> Gambaran umum sampel                                                                            [done]
+> ******************************************************************
+> */
+. 
+. *\Unweighted
+. #delimit ;
+delimiter now ;
+. quietly collect: table, 
+>                                  stat(fvfrequency chalive nndeath ideath u5death $vars)
+>                                  stat(fvpercent chalive nndeath ideath u5death $vars)
+>                                  stat(mean pwdisthfac)
+>                                  stat(median pwdisthfac)
+>                                  stat(sd pwdisthfac)
+>                                  ;
+
+. #delimit cr
+delimiter now cr
+. quietly collect layout (colname) (result)
+
+. collect style row stack, nodelimiter nospacer indent length(.) wrapon(word)     ///
+>                 noabbreviate wrap(.) truncate(tail)
+
+. collect style cell border_block, border(right, pattern(nil))
+
+. collect style cell, nformat(%9.2f)
+
+. collect style save univar, replace
+(style from Table saved to file univar.stjson)
+
+. collect label levels result fvfrequency "n" fvpercent "%" sd "SD", modify
+
+. collect preview
+
+------------------------------------------------------------------------------------
+                                                    n       %   Mean   Median     SD
+------------------------------------------------------------------------------------
+Apakah anak masih hidup?                                                            
+  Tidak                                       1255.00    3.61                       
+  Ya                                         33553.00   96.39                       
+Meninggal saat periode neonatal                                                     
+  Tidak                                      34167.00   98.16                       
+  Ya                                           641.00    1.84                       
+Meninggal saat periode 0-11 bulan                                                   
+  Tidak                                      33800.00   97.10                       
+  Ya                                          1008.00    2.90                       
+Meninggal saat periode 0-59 bulan                                                   
+  Tidak                                      33593.00   96.51                       
+  Ya                                          1215.00    3.49                       
+Tingkat deprivasi lingkungan rumah tangga                                           
+  Tidak                                      18652.00   53.59                       
+  Rendah                                     10077.00   28.95                       
+  Tinggi                                      6079.00   17.46                       
+Kategori sumber utama air minum                                                     
+  Tidak layak                                 5208.00   14.96                       
+  Layak                                      29600.00   85.04                       
+Kategori fasilitas toilet/sanitasi                                                  
+  Tidak layak                                 6821.00   19.60                       
+  Layak                                      27987.00   80.40                       
+Kategori bahan bakar memasak                                                        
+  Tidak aman/polusi tinggi                   11490.00   33.01                       
+  Aman/polusi rendah                         23318.00   66.99                       
+Jenis kelamin anak                                                                  
+  Perempuan                                  16850.00   48.41                       
+  Laki-laki                                  17958.00   51.59                       
+Urutan dan jarak kelahiran sebelumnya                                               
+  Pertama                                    11693.00   33.59                       
+  2 dan >=24                                  9462.00   27.18                       
+  2 dan <24                                   1220.00    3.50                       
+  >=3 dan >=24                               10770.00   30.94                       
+  >=3 dan <24                                 1663.00    4.78                       
+Umur ibu saat melahirkan                                                            
+  <20                                         2899.00    8.33                       
+  20-29                                      18090.00   51.97                       
+  30-39                                      12671.00   36.40                       
+  40-49                                       1148.00    3.30                       
+Pendidikan tertinggi yang ditamatkan ibu                                            
+  Tidak sekolah                                627.00    1.80                       
+  Dasar                                       9714.00   27.91                       
+  Menengah                                   18940.00   54.41                       
+  Tinggi                                      5527.00   15.88                       
+Pendidikan tertinggi yang ditamatkan ayah                                           
+  Tidak sekolah                                609.00    1.75                       
+  Dasar                                       9931.00   28.53                       
+  Menengah                                   19326.00   55.52                       
+  Tinggi                                      4942.00   14.20                       
+Pendidikan orang tua (ibu-ayah)                                                     
+  Rendah                                      6440.00   18.50                       
+  Ibu < ayah                                  3901.00   11.21                       
+  Ibu > ayah                                  4100.00   11.78                       
+  Tinggi                                     20367.00   58.51                       
+Indeks kekayaan rumah tangga                                                        
+  Miskin                                     16708.00   48.00                       
+  Menengah                                   11990.00   34.45                       
+  Kaya                                        6110.00   17.55                       
+Wilayah tempat tinggal                                                              
+  Perdesaan                                  17749.00   50.99                       
+  Perkotaan                                  17059.00   49.01                       
+Masalah aksesibilitas ke faskes (kategorik)                                         
+  Rendah                                     13147.00   37.77                       
+  Sedang                                     13893.00   39.91                       
+  Tinggi                                      7768.00   22.32                       
+Masalah aksesibilitas ke faskes                                 0.13     0.09   0.14
+------------------------------------------------------------------------------------
+
+. collect export ".\output\univar.xls", as(xls) sheet(uw) replace
+(collection Table exported to file .\output\univar.xls)
+
+. 
+. /*
+> *\Weighted
+> #delimit ;
+> quietly collect: table [iw=wweight], 
+>                                  stat(fvfrequency chalive nndeath ideath u5death $vars)
+>                                  stat(fvpercent chalive nndeath ideath u5death $vars)
+>                                  stat(mean pwdisthfac)
+>                                  stat(median pwdisthfac)
+>                                  stat(sd pwdisthfac)
+>                                  ;
+> #delimit cr
+> collect style use univar, replace layout
+> collect label levels result fvfrequency "n" fvpercent "%" sd "SD", modify
+> collect preview
+> collect export ".\output\univar.xls", as(xls) sheet(w) modify
+> */
+.   
+. /*
+> ******************************************************************
+> Karakteristik sosial ekonomi dan status deprivasi                       [done]
+> ******************************************************************
+> */
+. 
+. *\Tabulasi silang
+. *\\Unweighted
+. tabmult, cat(meduc4c peduc4c pareduc wealth reside)                                             ///
+>                  by(impdrinkwat impsan cookfldr depriv) row                                             ///
+>                  save(output\desc_soc_depriv.xls) sheet(persen) replace
+note: results saved to output\desc_soc_depriv.xls
+
+. 
+. tabmult, cat(meduc4c peduc4c pareduc wealth reside)                                             ///
+>                  by(impdrinkwat impsan cookfldr depriv)                                                 ///
+>                  save(output\desc_soc_depriv.xls) sheet(absolut) append
+note: results saved to output\desc_soc_depriv.xls
+
+. 
+. /*
+> *\\Weighted
+> tabmult [aw=wweight],                                                                                                   ///
+>                 cat(meduc4c peduc4c pareduc wealth reside)                                              ///
+>                 by(impdrinkwat impsan cookfldr depriv) row                                              ///
+>                 save(output\desc_soc_depriv.xls) sheet(persen_w) append
+> */
+. 
+. *\Two-way pearson chi-squared
+. #delimit ;
+delimiter now ;
+. quietly collect: table (command) (result),
+>                                  command(r(chi2) r(r): tab meduc4c impdrinkwat, row chi2)
+>                                  command(r(chi2) r(r): tab peduc4c impdrinkwat, row chi2)
+>                                  command(r(chi2) r(r): tab pareduc impdrinkwat, row chi2)
+>                                  command(r(chi2) r(r): tab wealth impdrinkwat, row chi2)
+>                                  command(r(chi2) r(r): tab reside impdrinkwat, row chi2)
+>                                  
+>                                  command(r(chi2) r(r): tab meduc4c impsan, row chi2)
+>                                  command(r(chi2) r(r): tab peduc4c impsan, row chi2)
+>                                  command(r(chi2) r(r): tab pareduc impsan, row chi2)
+>                                  command(r(chi2) r(r): tab wealth impsan, row chi2)
+>                                  command(r(chi2) r(r): tab reside impsan, row chi2)
+>                                  
+>                                  command(r(chi2) r(r): tab meduc4c cookfldr, row chi2)
+>                                  command(r(chi2) r(r): tab peduc4c cookfldr, row chi2)
+>                                  command(r(chi2) r(r): tab pareduc cookfldr, row chi2)
+>                                  command(r(chi2) r(r): tab wealth cookfldr, row chi2)
+>                                  command(r(chi2) r(r): tab reside cookfldr, row chi2)
+>                                                                  
+>                                  command(r(chi2) r(r): tab meduc4c depriv, row chi2)
+>                                  command(r(chi2) r(r): tab peduc4c depriv, row chi2)
+>                                  command(r(chi2) r(r): tab pareduc depriv, row chi2)
+>                                  command(r(chi2) r(r): tab wealth depriv, row chi2)
+>                                  command(r(chi2) r(r): tab reside depriv, row chi2)
+>         ;
+
+. #delimit cr
+delimiter now cr
+. collect style row stack, nodelimiter nospacer indent length(.) wrapon(word)     ///
+>                 noabbreviate wrap(.) truncate(tail)
+
+. collect style cell border_block, border(right, pattern(nil))
+
+. collect style cell, nformat(%9.3f)
+
+. collect style save chi2, replace
+(style from Table saved to file chi2.stjson)
+
+. collect stars p "0.001" "***" "0.01" "** " "0.05" "*  " "1" "   ", attach(chi2)
+
+. collect preview
+
+----------------------------------------------------------------
+                                   Pearson's χ²   Number of rows
+----------------------------------------------------------------
+tab meduc4c impdrinkwat, row chi2   1080.183***            4.000
+tab reside impsan, row chi2         1867.616***            2.000
+tab meduc4c cookfldr, row chi2      1923.832***            4.000
+tab peduc4c cookfldr, row chi2      1529.652***            4.000
+tab pareduc cookfldr, row chi2      1995.767***            4.000
+tab wealth cookfldr, row chi2       6209.553***            3.000
+tab reside cookfldr, row chi2       3835.264***            2.000
+tab meduc4c depriv, row chi2        3800.289***            4.000
+tab peduc4c depriv, row chi2        3324.755***            4.000
+tab pareduc depriv, row chi2        4089.839***            4.000
+tab wealth depriv, row chi2        10053.111***            3.000
+tab peduc4c impdrinkwat, row chi2   1000.610***            4.000
+tab reside depriv, row chi2         5497.431***            2.000
+tab pareduc impdrinkwat, row chi2   1168.894***            4.000
+tab wealth impdrinkwat, row chi2    2035.959***            3.000
+tab reside impdrinkwat, row chi2    1895.451***            2.000
+tab meduc4c impsan, row chi2        2561.001***            4.000
+tab peduc4c impsan, row chi2        2331.461***            4.000
+tab pareduc impsan, row chi2        2816.400***            4.000
+tab wealth impsan, row chi2         5414.535***            3.000
+----------------------------------------------------------------
+
+. collect export ".\output\pearson-chi2.xls", as(xls) sheet(sosek-depriv) replace
+(collection Table exported to file .\output\pearson-chi2.xls)
+
+. 
+. *\Spearman corr
+. #delimit ;
+delimiter now ;
+. quietly collect: table (rowname) (colname),
+>                                  command(r(Rho): spearman meduc4c peduc4c pareduc wealth reside
+>                                                              impdrinkwat impsan cookfldr depriv)
+>         ;
+
+. #delimit cr
+delimiter now cr
+. collect style row stack, nodelimiter nospacer indent length(.) wrapon(word)     ///
+>                 noabbreviate wrap(.) truncate(tail)
+
+. collect style cell border_block, border(right, pattern(nil))
+
+. collect style cell, nformat(%9.3f)
+
+. collect style save spearmancor, replace
+(style from Table saved to file spearmancor.stjson)
+
+. collect stars P "0.001" "***" "0.01" "** " "0.05" "*  " "1" "   ", attach(Rho)
+
+. collect preview
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+> -------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                                           Pendidikan tertinggi yang ditamatkan ibu   Pendidikan tertinggi yang ditamatkan ayah   Pendidikan orang tua (ibu-ayah)   Indeks kekayaan rumah tangga   Wilay
+> ah tempat tinggal   Kategori sumber utama air minum   Kategori fasilitas toilet/sanitasi   Kategori bahan bakar memasak   Tingkat deprivasi lingkungan rumah tangga
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+> -------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Pendidikan tertinggi yang ditamatkan ibu                                   1.000***                                    0.565***                          0.823***                       0.427***        
+>          0.246***                          0.166***                             0.265***                       0.212***                                   -0.301***
+Pendidikan tertinggi yang ditamatkan ayah                                  0.565***                                    1.000***                          0.741***                       0.431***        
+>          0.257***                          0.165***                             0.256***                       0.198***                                   -0.293***
+Pendidikan orang tua (ibu-ayah)                                            0.823***                                    0.741***                          1.000***                       0.411***        
+>          0.284***                          0.182***                             0.282***                       0.239***                                   -0.332***
+Indeks kekayaan rumah tangga                                               0.427***                                    0.431***                          0.411***                       1.000***        
+>          0.412***                          0.239***                             0.386***                       0.414***                                   -0.526***
+Wilayah tempat tinggal                                                     0.246***                                    0.257***                          0.284***                       0.412***        
+>          1.000***                          0.233***                             0.232***                       0.332***                                   -0.397***
+Kategori sumber utama air minum                                            0.166***                                    0.165***                          0.182***                       0.239***        
+>          0.233***                          1.000***                             0.195***                       0.172***                                   -0.535***
+Kategori fasilitas toilet/sanitasi                                         0.265***                                    0.256***                          0.282***                       0.386***        
+>          0.232***                          0.195***                             1.000***                       0.260***                                   -0.641***
+Kategori bahan bakar memasak                                               0.212***                                    0.198***                          0.239***                       0.414***        
+>          0.332***                          0.172***                             0.260***                       1.000***                                   -0.778***
+Tingkat deprivasi lingkungan rumah tangga                                 -0.301***                                   -0.293***                         -0.332***                      -0.526***        
+>         -0.397***                         -0.535***                            -0.641***                      -0.778***                                    1.000***
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+> -------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+. collect export ".\output\spearman.xls", as(xls) sheet(sosek-depriv) replace
+(collection Table exported to file .\output\spearman.xls)
+
+. 
+. /*
+> ******************************************************************
+> Kecenderungan kematian anak menurut kovariat                            [done]
+> ******************************************************************
+> */
+. 
+. *\Tabulasi silang
+. *Unweighted
+. tabmult, cat(depriv impdrinkwat impsan cookfldr                                                 ///
+>                      chsex bordin mageb pareduc wealth reside                                   ///
+>                          pwdisthfac3c)                                                                                          
+> ///
+>                 by(nndeath ideath u5death) row                                                                  ///
+>                 save(output\desc_2way_death.xls) sheet(persen) replace
+note: results saved to output\desc_2way_death.xls
+
+. 
+. tabmult, cat(depriv impdrinkwat impsan cookfldr                                                 ///
+>                      chsex bordin mageb pareduc wealth reside                                   ///
+>                          pwdisthfac3c)                                                                                          
+> ///
+>                 by(nndeath ideath u5death)                                                                              ///
+>                 save(output\desc_2way_death.xls) sheet(absolut) append
+note: results saved to output\desc_2way_death.xls
+
+.                 
+. /*
+> *Weighted
+> tabmult [aw=wweight],                                                                                                   ///
+>                 cat(depriv depriv2c impdrinkwat impsan cookfldr                                 ///
+>                      chsex bordin mageb pareduc wealth reside                                   ///
+>                          pwdisthfac3c)                                                                                          
+> ///
+>                 by(nndeath ideath u5death) row                                                                  ///
+>                 save(output\desc_2way_death.xls) sheet(persen_w) append
+> */
+. 
+. *\Two-way pearson chi-squared
+. #delimit ;
+delimiter now ;
+. quietly collect: table (command) (result),
+>                                  command(r(chi2) r(r): tab depriv nndeath, row chi2)
+>                                  command(r(chi2) r(r): tab impdrinkwat nndeath, row chi2)
+>                                  command(r(chi2) r(r): tab impsan nndeath, row chi2)
+>                                  command(r(chi2) r(r): tab cookfldr nndeath, row chi2)
+>                                  command(r(chi2) r(r): tab chsex nndeath, row chi2)
+>                                  command(r(chi2) r(r): tab bordin nndeath, row chi2)
+>                                  command(r(chi2) r(r): tab mageb nndeath, row chi2)
+>                                  command(r(chi2) r(r): tab meduc4c nndeath, row chi2)
+>                                  command(r(chi2) r(r): tab peduc4c nndeath, row chi2)
+>                                  command(r(chi2) r(r): tab pareduc nndeath, row chi2)
+>                                  command(r(chi2) r(r): tab wealth nndeath, row chi2)
+>                                  command(r(chi2) r(r): tab reside nndeath, row chi2)
+>                                  command(r(chi2) r(r): tab pwdisthfac3c nndeath, row chi2)
+>                                  
+>                                  command(r(chi2) r(r): tab depriv ideath, row chi2)
+>                                  command(r(chi2) r(r): tab impdrinkwat ideath, row chi2)
+>                                  command(r(chi2) r(r): tab impsan ideath, row chi2)
+>                                  command(r(chi2) r(r): tab cookfldr ideath, row chi2)
+>                                  command(r(chi2) r(r): tab chsex ideath, row chi2)
+>                                  command(r(chi2) r(r): tab bordin ideath, row chi2)
+>                                  command(r(chi2) r(r): tab mageb ideath, row chi2)
+>                                  command(r(chi2) r(r): tab meduc4c ideath, row chi2)
+>                                  command(r(chi2) r(r): tab peduc4c ideath, row chi2)
+>                                  command(r(chi2) r(r): tab pareduc ideath, row chi2)
+>                                  command(r(chi2) r(r): tab wealth ideath, row chi2)
+>                                  command(r(chi2) r(r): tab reside ideath, row chi2)
+>                                  command(r(chi2) r(r): tab pwdisthfac3c ideath, row chi2)
+>                                  
+>                                  command(r(chi2) r(r): tab depriv u5death, row chi2)
+>                                  command(r(chi2) r(r): tab impdrinkwat u5death, row chi2)
+>                                  command(r(chi2) r(r): tab impsan u5death, row chi2)
+>                                  command(r(chi2) r(r): tab cookfldr u5death, row chi2)
+>                                  command(r(chi2) r(r): tab chsex u5death, row chi2)
+>                                  command(r(chi2) r(r): tab bordin u5death, row chi2)
+>                                  command(r(chi2) r(r): tab mageb u5death, row chi2)
+>                                  command(r(chi2) r(r): tab meduc4c u5death, row chi2)
+>                                  command(r(chi2) r(r): tab peduc4c u5death, row chi2)
+>                                  command(r(chi2) r(r): tab pareduc u5death, row chi2)
+>                                  command(r(chi2) r(r): tab wealth u5death, row chi2)
+>                                  command(r(chi2) r(r): tab reside u5death, row chi2)
+>                                  command(r(chi2) r(r): tab pwdisthfac3c u5death, row chi2)
+>         ;
+
+. #delimit cr
+delimiter now cr
+. collect style use chi2, replace layout
+
+Collection: Table
+      Rows: command
+   Columns: result
+   Table 1: 39 x 2
+
+. collect stars p "0.001" "***" "0.01" "** " "0.05" "*  " "1" "   ", attach(chi2)
+
+. collect preview
+
+-----------------------------------------------------------------
+                                    Pearson's χ²   Number of rows
+-----------------------------------------------------------------
+tab depriv nndeath, row chi2           21.530***            3.000
+tab pareduc nndeath, row chi2          15.241**             4.000
+tab wealth nndeath, row chi2           12.834**             3.000
+tab reside nndeath, row chi2            1.273               2.000
+tab pwdisthfac3c nndeath, row chi2     13.566**             3.000
+tab depriv ideath, row chi2            62.536***            3.000
+tab impdrinkwat ideath, row chi2        6.377*              2.000
+tab impsan ideath, row chi2            19.952***            2.000
+tab cookfldr ideath, row chi2          56.170***            2.000
+tab chsex ideath, row chi2              2.973               2.000
+tab bordin ideath, row chi2            98.292***            5.000
+tab impdrinkwat nndeath, row chi2       5.043*              2.000
+tab mageb ideath, row chi2             40.023***            4.000
+tab meduc4c ideath, row chi2           49.521***            4.000
+tab peduc4c ideath, row chi2           69.986***            4.000
+tab pareduc ideath, row chi2           47.305***            4.000
+tab wealth ideath, row chi2            44.360***            3.000
+tab reside ideath, row chi2            11.925***            2.000
+tab pwdisthfac3c ideath, row chi2      28.663***            3.000
+tab depriv u5death, row chi2           81.950***            3.000
+tab impdrinkwat u5death, row chi2       6.117*              2.000
+tab impsan u5death, row chi2           29.566***            2.000
+tab impsan nndeath, row chi2            6.502*              2.000
+tab cookfldr u5death, row chi2         79.895***            2.000
+tab chsex u5death, row chi2             5.786*              2.000
+tab bordin u5death, row chi2          134.878***            5.000
+tab mageb u5death, row chi2            42.241***            4.000
+tab meduc4c u5death, row chi2          84.192***            4.000
+tab peduc4c u5death, row chi2          88.806***            4.000
+tab pareduc u5death, row chi2          69.441***            4.000
+tab wealth u5death, row chi2           63.853***            3.000
+tab reside u5death, row chi2           19.431***            2.000
+tab pwdisthfac3c u5death, row chi2     38.703***            3.000
+tab cookfldr nndeath, row chi2         16.842***            2.000
+tab chsex nndeath, row chi2             6.234*              2.000
+tab bordin nndeath, row chi2           55.726***            5.000
+tab mageb nndeath, row chi2            42.996***            4.000
+tab meduc4c nndeath, row chi2          13.125**             4.000
+tab peduc4c nndeath, row chi2          44.865***            4.000
+-----------------------------------------------------------------
+
+. collect export ".\output\pearson-chi2.xls", as(xls) sheet(kovar-death) modify
+(collection Table exported to file .\output\pearson-chi2.xls)
+
+. 
+. *\Spearman corr
+. #delimit ;
+delimiter now ;
+. quietly collect: table (rowname) (colname),
+>                                  command(r(Rho): spearman $vars pwdisthfac
+>                                                                  nndeath ideath u5death)
+>         ;
+
+. #delimit cr
+delimiter now cr
+. collect style use spearmancor, replace layout
+
+Collection: Table
+      Rows: rowname
+   Columns: colname
+    Tables: result
+   Table 1: 17 x 17
+
+. collect stars P "0.001" "***" "0.01" "** " "0.05" "*  " "1" "   ", attach(Rho)
+
+. collect preview
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+> ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+> ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+> -------------------------------------------
+                                             Tingkat deprivasi lingkungan rumah tangga   Kategori sumber utama air minum   Kategori fasilitas toilet/sanitasi   Kategori bahan bakar memasak   Jenis kel
+> amin anak   Urutan dan jarak kelahiran sebelumnya   Umur ibu saat melahirkan   Pendidikan tertinggi yang ditamatkan ibu   Pendidikan tertinggi yang ditamatkan ayah   Pendidikan orang tua (ibu-ayah) 
+>   Indeks kekayaan rumah tangga   Wilayah tempat tinggal   Masalah aksesibilitas ke faskes (kategorik)   Masalah aksesibilitas ke faskes   Meninggal saat periode neonatal   Meninggal saat periode 0-1
+> 1 bulan   Meninggal saat periode 0-59 bulan
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+> ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+> ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+> -------------------------------------------
+Tingkat deprivasi lingkungan rumah tangga                                     1.000***                         -0.535***                            -0.641***                      -0.778***            
+>  0.004                                   0.105***                  -0.054***                                  -0.301***                                   -0.293***                         -0.332*** 
+>                      -0.526***                -0.397***                                      0.259***                          0.271***                          0.025***                            0
+> .042***                            0.048***
+Kategori sumber utama air minum                                              -0.535***                          1.000***                             0.195***                       0.172***            
+> -0.009                                  -0.040***                   0.035***                                   0.166***                                    0.165***                          0.182*** 
+>                       0.239***                 0.233***                                     -0.135***                         -0.150***                         -0.012*                             -0
+> .014*                             -0.013*  
+Kategori fasilitas toilet/sanitasi                                           -0.641***                          0.195***                             1.000***                       0.260***            
+> -0.005                                  -0.048***                   0.067***                                   0.265***                                    0.256***                          0.282*** 
+>                       0.386***                 0.232***                                     -0.167***                         -0.178***                         -0.014*                             -0
+> .024***                           -0.029***
+Kategori bahan bakar memasak                                                 -0.778***                          0.172***                             0.260***                       1.000***            
+>  0.002                                  -0.118***                   0.015**                                    0.212***                                    0.198***                          0.239*** 
+>                       0.414***                 0.332***                                     -0.230***                         -0.233***                         -0.022***                           -0
+> .040***                           -0.048***
+Jenis kelamin anak                                                            0.004                            -0.009                               -0.005                          0.002               
+>  1.000***                                0.001                      0.003                                     -0.003                                      -0.006                            -0.006    
+>                      -0.003                    0.002                                         0.001                             0.003                             0.013*                              0
+> .009                               0.013*  
+Urutan dan jarak kelahiran sebelumnya                                         0.105***                         -0.040***                            -0.048***                      -0.118***            
+>  0.001                                   1.000***                   0.550***                                  -0.217***                                   -0.134***                         -0.203*** 
+>                      -0.078***                -0.053***                                      0.079***                          0.075***                          0.010                               0
+> .028***                            0.037***
+Umur ibu saat melahirkan                                                     -0.054***                          0.035***                             0.067***                       0.015**             
+>  0.003                                   0.550***                   1.000***                                  -0.047***                                   -0.008                            -0.069*** 
+>                       0.087***                 0.058***                                     -0.021***                         -0.024***                          0.005                               0
+> .010                               0.010   
+Pendidikan tertinggi yang ditamatkan ibu                                     -0.301***                          0.166***                             0.265***                       0.212***            
+> -0.003                                  -0.217***                  -0.047***                                   1.000***                                    0.565***                          0.823*** 
+>                       0.427***                 0.246***                                     -0.156***                         -0.168***                         -0.018**                            -0
+> .032***                           -0.041***
+Pendidikan tertinggi yang ditamatkan ayah                                    -0.293***                          0.165***                             0.256***                       0.198***            
+> -0.006                                  -0.134***                  -0.008                                      0.565***                                    1.000***                          0.741*** 
+>                       0.431***                 0.257***                                     -0.142***                         -0.147***                         -0.023***                           -0
+> .030***                           -0.033***
+Pendidikan orang tua (ibu-ayah)                                              -0.332***                          0.182***                             0.282***                       0.239***            
+> -0.006                                  -0.203***                  -0.069***                                   0.823***                                    0.741***                          1.000*** 
+>                       0.411***                 0.284***                                     -0.174***                         -0.185***                         -0.021***                           -0
+> .036***                           -0.044***
+Indeks kekayaan rumah tangga                                                 -0.526***                          0.239***                             0.386***                       0.414***            
+> -0.003                                  -0.078***                   0.087***                                   0.427***                                    0.431***                          0.411*** 
+>                       1.000***                 0.412***                                     -0.235***                         -0.246***                         -0.019***                           -0
+> .036***                           -0.043***
+Wilayah tempat tinggal                                                       -0.397***                          0.233***                             0.232***                       0.332***            
+>  0.002                                  -0.053***                   0.058***                                   0.246***                                    0.257***                          0.284*** 
+>                       0.412***                 1.000***                                     -0.244***                         -0.254***                         -0.006                              -0
+> .019***                           -0.024***
+Masalah aksesibilitas ke faskes (kategorik)                                   0.259***                         -0.135***                            -0.167***                      -0.230***            
+>  0.001                                   0.079***                  -0.021***                                  -0.156***                                   -0.142***                         -0.174*** 
+>                      -0.235***                -0.244***                                      1.000***                          0.936***                          0.017**                             0
+> .028***                            0.032***
+Masalah aksesibilitas ke faskes                                               0.271***                         -0.150***                            -0.178***                      -0.233***            
+>  0.003                                   0.075***                  -0.024***                                  -0.168***                                   -0.147***                         -0.185*** 
+>                      -0.246***                -0.254***                                      0.936***                          1.000***                          0.016**                             0
+> .029***                            0.033***
+Meninggal saat periode neonatal                                               0.025***                         -0.012*                              -0.014*                        -0.022***            
+>  0.013*                                  0.010                      0.005                                     -0.018**                                    -0.023***                         -0.021*** 
+>                      -0.019***                -0.006                                         0.017**                           0.016**                           1.000***                            0
+> .793***                            0.720***
+Meninggal saat periode 0-11 bulan                                             0.042***                         -0.014*                              -0.024***                      -0.040***            
+>  0.009                                   0.028***                   0.010                                     -0.032***                                   -0.030***                         -0.036*** 
+>                      -0.036***                -0.019***                                      0.028***                          0.029***                          0.793***                            1
+> .000***                            0.908***
+Meninggal saat periode 0-59 bulan                                             0.048***                         -0.013*                              -0.029***                      -0.048***            
+>  0.013*                                  0.037***                   0.010                                     -0.041***                                   -0.033***                         -0.044*** 
+>                      -0.043***                -0.024***                                      0.032***                          0.033***                          0.720***                            0
+> .908***                            1.000***
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+> ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+> ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+> -------------------------------------------
+
+. collect export ".\output\spearman.xls", as(xls) sheet(kovar-death) modify
+(collection Table exported to file .\output\spearman.xls)
+
+. 
+. 
+. *close log-file
+. log close _all
+      name:  log_7_descriptive_idhs17
+       log:  D:\RESEARCH & WRITING\master thesis_child mortality\stata\log\7_descriptive_idhs17.log
+  log type:  text
+ closed on:  25 Jan 2022, 13:04:09
+----------------------------------------------------------------------------------------------------------------------------------

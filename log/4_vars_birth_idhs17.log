@@ -2,7 +2,7 @@
       name:  log_4_vars_birth_idhs17
        log:  D:\RESEARCH & WRITING\master thesis_child mortality\stata\log\4_vars_birth_idhs17.log
   log type:  text
- opened on:  15 Dec 2021, 16:32:28
+ opened on:  25 Jan 2022, 11:29:21
 
 . 
 . /*
@@ -10,7 +10,8 @@
 > ********************************************************************************
 > PROJECT:
 > PENELITIAN TESIS
-> DEPRIVASI LINGKUNGAN RUMAH TANGGA DAN KEMATIAN BAYI DAN ANAK DI INDONESIA
+> HUBUNGAN ANTARA DEPRIVASI LINGKUNGAN RUMAH TANGGA DENGAN KEMATIAN BAYI DAN ANAK
+> DI INDONESIA: BUKTI DARI MODEL LOGISTIK MULTILEVEL HAZARD DISKRIT
 > 
 > SYNTAX:
 > 4-MEMBENTUK VARIABEL ANAK/KELAHIRAN
@@ -18,8 +19,8 @@
 > PENULIS:
 > ARI PURWANTO SARWO PRASOJO (2006500321)
 > MAGISTER EKONOMI KEPENDUDUKAN DAN KETENAGAKERJAAN
-> FEB, UNIVERSITAS INDONESIA
-> 2021
+> FAKULTAS EKONOMI DAN BISNIS, UNIVERSITAS INDONESIA
+> 2022
 > ********************************************************************************
 > ================================================================================
 > */
@@ -32,16 +33,8 @@
 > ================================================================================
 > */
 . 
-. clear all
-
-. macro drop _all
-
 . set maxvar 10000
 
-
-. 
-. *direktori kerja
-. loc dtadir              "dta"
 
 . 
 . *set the date
@@ -60,7 +53,7 @@
 
 . 
 . *\dataset disimpan sebagai (nama)
-. loc savenm              "`dtadir'\4-vars-birth-`idhs'.dta"
+. loc savenm              "dta\4-vars-birth-`idhs'.dta"
 
 . 
 . *read data
@@ -83,74 +76,6 @@
 . gen hypage = v008-b3
 
 .         lab var hypage "Umur hipotetik (lahir-interview, bulan)"
-
-. 
-. *\anak dilahirkan tunggal / tidak memiliki saudara kembar       [done]
-. recode b0 (0 = 1) (1/5 = 0), g(chsingle)
-(86265 differences between b0 and chsingle)
-
-.         lab var chsingle "Anak dilahirkan tidak memiliki saudara kembar"
-
-.         lab val chsingle yatidak
-
-.         tab chsingle, m
-
-       Anak |
- dilahirkan |
-      tidak |
-   memiliki |
-    saudara |
-     kembar |      Freq.     Percent        Cum.
-------------+-----------------------------------
-      Tidak |      1,212        1.40        1.40
-         Ya |     85,053       98.60      100.00
-------------+-----------------------------------
-      Total |     86,265      100.00
-
-. 
-. *\anak terakhir dilahirkan
-. gen lastbirth = bidx == 1
-
-.         lab var lastbirth "Kelahiran terakhir"
-
-.         lab val lastbirth yatidak
-
-.         tab lastbirth, m
-
-  Kelahiran |
-   terakhir |      Freq.     Percent        Cum.
-------------+-----------------------------------
-      Tidak |     52,066       60.36       60.36
-         Ya |     34,199       39.64      100.00
-------------+-----------------------------------
-      Total |     86,265      100.00
-
-. 
-. *\anak yang dilahirkan 0-5 tahun sebelum survei                         [done]
-. gen precsvy5 = .
-(86,265 missing values generated)
-
-.         lab var precsvy5 "Dilahirkan 0-5 tahun sebelum survei"
-
-.         replace precsvy5 = 1 if inrange(hypage, 0, 59)
-(17,848 real changes made)
-
-.         replace precsvy5 = 0 if hypage > 59
-(68,417 real changes made)
-
-.         lab val precsvy5 yatidak
-
-.         tab precsvy5, m
-
- Dilahirkan |
-  0-5 tahun |
-    sebelum |
-     survei |      Freq.     Percent        Cum.
-------------+-----------------------------------
-      Tidak |     68,417       79.31       79.31
-         Ya |     17,848       20.69      100.00
-------------+-----------------------------------
-      Total |     86,265      100.00
 
 .         
 . *\anak yang dilahirkan 0-10 tahun sebelum survei                        [done]
@@ -176,33 +101,6 @@
 ------------+-----------------------------------
       Tidak |     49,894       57.84       57.84
          Ya |     36,371       42.16      100.00
-------------+-----------------------------------
-      Total |     86,265      100.00
-
-. 
-. *\anak yang dilahirkan 0-15 tahun sebelum survei                        [done]
-. gen precsvy15 = .
-(86,265 missing values generated)
-
-.         lab var precsvy15 "Dilahirkan 0-15 tahun sebelum survei"
-
-.         replace precsvy15 = 1 if inrange(hypage, 0, 179)
-(54,116 real changes made)
-
-.         replace precsvy15 = 0 if hypage > 179
-(32,149 real changes made)
-
-.         lab val precsvy15 yatidak
-
-.         tab precsvy15, m
-
- Dilahirkan |
- 0-15 tahun |
-    sebelum |
-     survei |      Freq.     Percent        Cum.
-------------+-----------------------------------
-      Tidak |     32,149       37.27       37.27
-         Ya |     54,116       62.73      100.00
 ------------+-----------------------------------
       Total |     86,265      100.00
 
@@ -663,16 +561,6 @@ Satuan usia |
 ------------+-----------------------------------
       Total |     86,265      100.00
 
-. 
-. /*
-> *\Umur ibu saat melahirkan, 3 kategori
-> recode mageby (min/19 = 0 "<20")                                                                                ///
->                           (20/34  = 1 "20-34")                                                                          ///
->                           (35/max = 2 ">34"),                                                                           ///
->                           gen(mageb3c)
->         lab var mageb3c "Umur ibu saat melahirkan"
->         tab mageb3c, m
-> */
 .         
 . /*
 > ******************************************************************
@@ -741,24 +629,21 @@ Satuan usia |
 . quietly compress
 
 . datasignature set, reset
-  86265:29(22477):3213997320:2714642448       (data signature set)
+  86265:25(36044):1968217006:3183192433       (data signature set)
 
 . lab data "Variabel anak-kelahiran \ `time_date'"
 
 . note: `idhs'-mortstudy-birth.dta \ `tag'
 
 . save "`savenm'", replace
-(file dta\4-vars-birth-.dta not found)
-file dta\4-vars-birth-.dta saved
+file dta\4-vars-birth-idhs17.dta saved
 
 . 
-end of do-file
-
-. do "D:\RESEARCH & WRITING\master thesis_child mortality\stata\do\5-vars-community.do"
-
+. 
+. *close log-file
 . log close _all
       name:  log_4_vars_birth_idhs17
        log:  D:\RESEARCH & WRITING\master thesis_child mortality\stata\log\4_vars_birth_idhs17.log
   log type:  text
- closed on:  15 Dec 2021, 16:32:52
+ closed on:  25 Jan 2022, 11:29:24
 ----------------------------------------------------------------------------------------------------------------------------------

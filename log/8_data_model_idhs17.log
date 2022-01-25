@@ -2,7 +2,7 @@
       name:  log_8_data_model_idhs17
        log:  D:\RESEARCH & WRITING\master thesis_child mortality\stata\log\8_data_model_idhs17.log
   log type:  text
- opened on:  15 Dec 2021, 16:38:05
+ opened on:  25 Jan 2022, 15:37:51
 
 . 
 . /*
@@ -10,16 +10,17 @@
 > ********************************************************************************
 > PROJECT:
 > PENELITIAN TESIS
-> DEPRIVASI LINGKUNGAN RUMAH TANGGA DAN KEMATIAN BAYI DAN ANAK DI INDONESIA
+> HUBUNGAN ANTARA DEPRIVASI LINGKUNGAN RUMAH TANGGA DENGAN KEMATIAN BAYI DAN ANAK
+> DI INDONESIA: BUKTI DARI MODEL LOGISTIK MULTILEVEL HAZARD DISKRIT
 > 
 > SYNTAX:
-> 8a-MENYIAPKAN DATA UNTUK PEMODELAN
+> 8-MENYIAPKAN DATA UNTUK PEMODELAN-ANAK PERIODE
 > 
 > PENULIS:
 > ARI PURWANTO SARWO PRASOJO (2006500321)
 > MAGISTER EKONOMI KEPENDUDUKAN DAN KETENAGAKERJAAN
-> FEB, UNIVERSITAS INDONESIA
-> 2021
+> FAKULTAS EKONOMI DAN BISNIS, UNIVERSITAS INDONESIA
+> 2022
 > ********************************************************************************
 > ================================================================================
 > */
@@ -32,18 +33,9 @@
 > ================================================================================
 > */
 . 
-. clear all
-
-. macro drop _all
-
 . set maxvar 10000
 
 
-. 
-. *direktori kerja
-. loc dtadir              "dta"
-
-. *loc outdir             "output"
 . 
 . *tag
 . loc date = c(current_date)
@@ -56,9 +48,9 @@
 
 . 
 . *data
-. loc dta                 "`dtadir'\6-chmort-`idhs'.dta"
+. loc dta                 "dta\6-chmort-`idhs'.dta"
 
-. loc savenm              "`dtadir'\8-data-model-`idhs'.dta"
+. loc savenm              "dta\8-data-model-`idhs'.dta"
 
 . 
 . *set sampel
@@ -70,7 +62,7 @@
 delimiter now ;
 . glo vars
 >         /*lokasi*/
->         psu prov
+>         psu
 >                 
 >         /*bobot*/
 >         wweight hhweight
@@ -81,7 +73,8 @@ delimiter now ;
 >         u5death ageu5deathd
 >         
 >         /*var bebas*/
->         depriv depriv2c chsex bordin
+>         impdrinkwat impsan cookfldr
+>         depriv chsex bordin
 >         mageb pareduc wealth reside pwdisthfac
 >         ;
 
@@ -113,7 +106,7 @@ delimiter now cr
 > */
 . 
 . use `dta'
-(Data merge\ 15 Dec 2021_16:33:10)
+(Data merge\ 25 Jan 2022_11:39:17)
 
 . 
 . *cek missing
@@ -133,9 +126,13 @@ u5death            35
 
 ageu5deathd        35
 
-depriv             37
+impdrinkwat        11
 
-depriv2c           37
+impsan             29
+
+cookfldr            4
+
+depriv             37
 
 pareduc          5737
 
@@ -182,47 +179,47 @@ mid_str generated as str2
 > */
 . 
 . *\Diskritisasi
-. egen survdis = cut(agenndeath), at(0 7 29) icodes
+. egen agedis = cut(agenndeath), at(0 7 29) icodes
 
-.         replace survdis = survdis + 1
+.         replace agedis = agedis + 1
 (34,808 real changes made)
 
-.         lab var survdis "Interval umur"
+.         lab var agedis "Umur (periods)"
 
-.         lab def survdis 1 "0-6 hari"                    ///
+.         lab def agedis 1 "0-6 hari"                     ///
 >                                         2 "7-28 hari"                   ///
 >                                         3 "29 hari-5 bulan"     ///
 >                                         4 "6-11 bulan"                  ///
 >                                         5 "12-23 bulan"                 ///
 >                                         6 "24-59 bulan" 
 
-.         lab val survdis survdis
+.         lab val agedis agedis
 
-.         *table survdis, c(min agenndeath max agenndeath)
-.         table survdis, stat(min agenndeath) stat(max agenndeath)
+.         *table agedis, c(min agenndeath max agenndeath)
+.         table agedis, stat(min agenndeath) stat(max agenndeath)
 
-----------------------------------------------
-              |  Minimum value   Maximum value
---------------+-------------------------------
-Interval umur |                               
-  0-6 hari    |              0               6
-  7-28 hari   |              7              28
-  Total       |              0              28
-----------------------------------------------
+-----------------------------------------------
+               |  Minimum value   Maximum value
+---------------+-------------------------------
+Umur (periods) |                               
+  0-6 hari     |              0               6
+  7-28 hari    |              7              28
+  Total        |              0              28
+-----------------------------------------------
 
 .         
 . *\Ekspansi data 
-. expand survdis
+. expand agedis
 (34,301 observations created)
 
-. bysort birthid: gen interval = _n
+. bysort birthid: gen periods = _n
 
-. lab val interval survdis
+. lab val periods agedis
 
-. replace nndeath = 0 if nndeath == 1 & survdis != interval 
+. replace nndeath = 0 if nndeath == 1 & agedis != periods 
 (134 real changes made)
 
-. tab interval nndeath, row m
+. tab periods nndeath, row m
 
 +----------------+
 | Key            |
@@ -233,7 +230,7 @@ Interval umur |
 
                 |    Meninggal saat
                 |   periode neonatal
-       interval |     Tidak         Ya |     Total
+        periods |     Tidak         Ya |     Total
 ----------------+----------------------+----------
        0-6 hari |    34,301        507 |    34,808 
                 |     98.54       1.46 |    100.00 
@@ -246,7 +243,7 @@ Interval umur |
 
 . 
 . *\Simpan sementara
-. keep interval survdis $vars $id chsingle lastbirth
+. keep periods agedis $vars $id
 
 . gen data = 1
 
@@ -275,7 +272,7 @@ file data-mdl-a.dta saved
 . clear all
 
 . use `dta'
-(Data merge\ 15 Dec 2021_16:33:10)
+(Data merge\ 25 Jan 2022_11:39:17)
 
 . 
 . *cek missing
@@ -295,9 +292,13 @@ u5death            35
 
 ageu5deathd        35
 
-depriv             37
+impdrinkwat        11
 
-depriv2c           37
+impsan             29
+
+cookfldr            4
+
+depriv             37
 
 pareduc          5737
 
@@ -344,29 +345,29 @@ mid_str generated as str2
 > */
 . 
 . *\Diskritisasi
-. egen survdis = cut(ageideathd), at(0 7 29 180 360) icodes
+. egen agedis = cut(ageideathd), at(0 7 29 180 360) icodes
 
-.         replace survdis = survdis + 1
+.         replace agedis = agedis + 1
 (34,808 real changes made)
 
-.         lab var survdis "Interval umur"
+.         lab var agedis "Umur (periods)"
 
-.         lab def survdis 1 "0-6 hari"                    ///
+.         lab def agedis 1 "0-6 hari"                     ///
 >                                         2 "7-28 hari"                   ///
 >                                         3 "29 hari-5 bulan"     ///
 >                                         4 "6-11 bulan"                  ///
 >                                         5 "12-23 bulan"                 ///
 >                                         6 "24-59 bulan"
 
-.         lab val survdis survdis
+.         lab val agedis agedis
 
-.         *table survdis, c(min ageideathd max ageideathd)
-.         table survdis, stat(min ageideathd) stat(max ageideathd)
+.         *table agedis, c(min ageideathd max ageideathd)
+.         table agedis, stat(min ageideathd) stat(max ageideathd)
 
 --------------------------------------------------
                   |  Minimum value   Maximum value
 ------------------+-------------------------------
-Interval umur     |                               
+Umur (periods)    |                               
   0-6 hari        |              0               6
   7-28 hari       |              7              28
   29 hari-5 bulan |             29             150
@@ -376,17 +377,17 @@ Interval umur     |
 
 .         
 . *\Ekspansi data 
-. expand survdis
+. expand agedis
 (102,406 observations created)
 
-. bysort birthid: gen interval = _n
+. bysort birthid: gen periods = _n
 
-. lab val interval survdis
+. lab val periods agedis
 
-. replace ideath = 0 if ideath == 1 & survdis != interval 
+. replace ideath = 0 if ideath == 1 & agedis != periods 
 (1,006 real changes made)
 
-. tab interval ideath, row m
+. tab periods ideath, row m
 
 +----------------+
 | Key            |
@@ -397,7 +398,7 @@ Interval umur     |
 
                 |    Meninggal saat
                 |  periode 0-11 bulan
-       interval |     Tidak         Ya |     Total
+        periods |     Tidak         Ya |     Total
 ----------------+----------------------+----------
        0-6 hari |    34,301        507 |    34,808 
                 |     98.54       1.46 |    100.00 
@@ -416,7 +417,7 @@ Interval umur     |
 
 . 
 . *\Simpan sementara
-. keep interval survdis $vars $id chsingle lastbirth
+. keep periods agedis $vars $id
 
 . gen data = 2
 
@@ -445,7 +446,7 @@ file data-mdl-b.dta saved
 . clear all
 
 . use `dta'
-(Data merge\ 15 Dec 2021_16:33:10)
+(Data merge\ 25 Jan 2022_11:39:17)
 
 . 
 . *cek missing
@@ -465,9 +466,13 @@ u5death            35
 
 ageu5deathd        35
 
-depriv             37
+impdrinkwat        11
 
-depriv2c           37
+impsan             29
+
+cookfldr            4
+
+depriv             37
 
 pareduc          5737
 
@@ -514,29 +519,29 @@ mid_str generated as str2
 > */
 . 
 . *\Diskritisasi umur
-. egen survdis = cut(ageu5deathd), at(0 7 29 180 360 720 1800) icodes
+. egen agedis = cut(ageu5deathd), at(0 7 29 180 360 720 1800) icodes
 
-.         replace survdis = survdis + 1
+.         replace agedis = agedis + 1
 (34,808 real changes made)
 
-.         lab var survdis "Interval umur"
+.         lab var agedis "Umur (periods)"
 
-.         lab def survdis 1 "0-6 hari"                    ///
+.         lab def agedis 1 "0-6 hari"                     ///
 >                                         2 "7-28 hari"                   ///
 >                                         3 "29 hari-5 bulan"     ///
 >                                         4 "6-11 bulan"                  ///
 >                                         5 "12-23 bulan"                 ///
 >                                         6 "24-59 bulan"
 
-.         lab val survdis survdis
+.         lab val agedis agedis
 
-.         *table survdis, c(min ageu5deathd max ageu5deathd)
-.         table survdis, stat(min ageu5deathd) stat(max ageu5deathd)
+.         *table agedis, c(min ageu5deathd max ageu5deathd)
+.         table agedis, stat(min ageu5deathd) stat(max ageu5deathd)
 
 --------------------------------------------------
                   |  Minimum value   Maximum value
 ------------------+-------------------------------
-Interval umur     |                               
+Umur (periods)    |                               
   0-6 hari        |              0               6
   7-28 hari       |              7              28
   29 hari-5 bulan |             29             150
@@ -548,17 +553,17 @@ Interval umur     |
 
 .         
 . *\Ekspansi data 
-. expand survdis
+. expand agedis
 (169,898 observations created)
 
-. bysort birthid: gen interval = _n
+. bysort birthid: gen periods = _n
 
-. lab val interval survdis
+. lab val periods agedis
 
-. replace u5death = 0 if u5death == 1 & survdis != interval 
+. replace u5death = 0 if u5death == 1 & agedis != periods 
 (1,933 real changes made)
 
-. tab interval u5death, row m
+. tab periods u5death, row m
 
 +----------------+
 | Key            |
@@ -569,7 +574,7 @@ Interval umur     |
 
                 |    Meninggal saat
                 |  periode 0-59 bulan
-       interval |     Tidak         Ya |     Total
+        periods |     Tidak         Ya |     Total
 ----------------+----------------------+----------
        0-6 hari |    34,301        507 |    34,808 
                 |     98.54       1.46 |    100.00 
@@ -594,7 +599,7 @@ Interval umur     |
 
 . 
 . *\Simpan sementara
-. keep interval survdis $vars $id chsingle lastbirth
+. keep periods agedis $vars $id
 
 . gen data = 3
 
@@ -617,10 +622,10 @@ file data-mdl-c.dta saved
 . clear all
 
 . use "data-mdl-a.dta"
-(Data merge\ 15 Dec 2021_16:33:10)
+(Data merge\ 25 Jan 2022_11:39:17)
 
 . append using "data-mdl-b.dta"
-(label survdis already defined)
+(label agedis already defined)
 (label yatidak already defined)
 (label chsex already defined)
 (label mageb already defined)
@@ -628,12 +633,13 @@ file data-mdl-c.dta saved
 (label pareduc already defined)
 (label wealth already defined)
 (label depriv already defined)
-(label depriv2c already defined)
+(label cookfldr already defined)
+(label impsan already defined)
+(label impdrinkwat already defined)
 (label reside already defined)
-(label prov already defined)
 
 . append using "data-mdl-c.dta"
-(label survdis already defined)
+(label agedis already defined)
 (label yatidak already defined)
 (label chsex already defined)
 (label mageb already defined)
@@ -641,14 +647,15 @@ file data-mdl-c.dta saved
 (label pareduc already defined)
 (label wealth already defined)
 (label depriv already defined)
-(label depriv2c already defined)
+(label cookfldr already defined)
+(label impsan already defined)
+(label impdrinkwat already defined)
 (label reside already defined)
-(label prov already defined)
 
 . 
 . lab var birthid "id kelahiran"
 
-. lab var interval "Interval umur"
+. lab var periods "Periode/interval umur"
 
 . 
 . lab var data "Untuk pemodelan"
@@ -661,15 +668,14 @@ file data-mdl-c.dta saved
 . quietly compress
 
 . datasignature set, reset
-  411029:29(64750):1348220412:3734242686       (data signature reset)
+  411029:28(88784):2552181403:1534725182       (data signature reset)
 
 . lab data "Dataset pemodelan \ `time_date'"
 
 . note: `idhs'-mortstudy-data-model.dta \ `tag'
 
 . save "`savenm'", replace
-(file dta\8-data-model-.dta not found)
-file dta\8-data-model-.dta saved
+file dta\8-data-model-idhs17.dta saved
 
 . 
 . erase "data-mdl-a.dta"
@@ -679,13 +685,54 @@ file dta\8-data-model-.dta saved
 . erase "data-mdl-c.dta"
 
 . 
-end of do-file
+. drop agenndeath ageideathd ageu5deathd
 
-. do "D:\RESEARCH & WRITING\master thesis_child mortality\stata\do\9-risk-by-age.do"
+. describe
 
+Contains data from dta\8-data-model-idhs17.dta
+ Observations:       411,029                  Dataset pemodelan \ 25 Jan 2022_15:37:51
+    Variables:            25                  25 Jan 2022 15:37
+                                              (_dta has notes)
+----------------------------------------------------------------------------------------------------------------------------------
+Variable      Storage   Display    Value
+    name         type    format    label      Variable label
+----------------------------------------------------------------------------------------------------------------------------------
+bidx_str        str1    %9s                   birth column number
+clust_str       str4    %9s                   cluster number
+hid_str         str2    %9s                   household number
+mid_str         str2    %9s                   respondent's line number
+nndeath         byte    %9.0g      yatidak    Meninggal saat periode neonatal
+ideath          byte    %9.0g      yatidak    Meninggal saat periode 0-11 bulan
+u5death         byte    %9.0g      yatidak    Meninggal saat periode 0-59 bulan
+chsex           byte    %9.0g      chsex      Jenis kelamin anak
+mageb           byte    %9.0g      mageb      Umur ibu saat melahirkan
+bordin          byte    %18.0g     bordin     Urutan dan jarak kelahiran sebelumnya
+wweight         float   %9.0g                 Penimbang perempuan
+pareduc         byte    %10.0g     pareduc    Pendidikan orang tua (ibu-ayah)
+psu             int     %9.0g                 Primary sampling unit (proksi komunitas)
+reside          byte    %9.0g      reside     Wilayah tempat tinggal
+hhweight        float   %9.0g                 Penimbang rumah tangga
+impdrinkwat     byte    %11.0g     impdrinkwat
+                                              Kategori sumber utama air minum
+impsan          byte    %11.0g     impsan     Kategori fasilitas toilet/sanitasi
+cookfldr        byte    %24.0g     cookfldr   Kategori bahan bakar memasak
+depriv          byte    %9.0g      depriv     Tingkat deprivasi lingkungan rumah tangga
+wealth          byte    %9.0g      wealth     Indeks kekayaan rumah tangga
+pwdisthfac      float   %9.0g                 Masalah aksesibilitas ke faskes
+birthid         str12   %12s                  id kelahiran
+agedis          byte    %15.0g     agedis     Umur (periods)
+periods         byte    %15.0g     agedis     Periode/interval umur
+data            byte    %16.0g     data       Untuk pemodelan
+----------------------------------------------------------------------------------------------------------------------------------
+Sorted by: 
+     Note: Dataset has changed since last saved.
+
+. 
+. 
+. *close log-file
 . log close _all
       name:  log_8_data_model_idhs17
        log:  D:\RESEARCH & WRITING\master thesis_child mortality\stata\log\8_data_model_idhs17.log
   log type:  text
- closed on:  15 Dec 2021, 16:38:32
+ closed on:  25 Jan 2022, 15:37:58
 ----------------------------------------------------------------------------------------------------------------------------------

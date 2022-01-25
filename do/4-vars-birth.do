@@ -13,7 +13,8 @@ log using 		"log\4_vars_birth_`idhs'", name(`dfn') text replace
 ********************************************************************************
 PROJECT:
 PENELITIAN TESIS
-DEPRIVASI LINGKUNGAN RUMAH TANGGA DAN KEMATIAN BAYI DAN ANAK DI INDONESIA
+HUBUNGAN ANTARA DEPRIVASI LINGKUNGAN RUMAH TANGGA DENGAN KEMATIAN BAYI DAN ANAK
+DI INDONESIA: BUKTI DARI MODEL LOGISTIK MULTILEVEL HAZARD DISKRIT
 
 SYNTAX:
 4-MEMBENTUK VARIABEL ANAK/KELAHIRAN
@@ -21,8 +22,8 @@ SYNTAX:
 PENULIS:
 ARI PURWANTO SARWO PRASOJO (2006500321)
 MAGISTER EKONOMI KEPENDUDUKAN DAN KETENAGAKERJAAN
-FEB, UNIVERSITAS INDONESIA
-2021
+FAKULTAS EKONOMI DAN BISNIS, UNIVERSITAS INDONESIA
+2022
 ********************************************************************************
 ================================================================================
 */
@@ -67,26 +68,6 @@ SAMPEL
 *\umur hipotetik/lama lahir-interview (bulan)				[done]
 gen hypage = v008-b3
 	lab var hypage "Umur hipotetik (lahir-interview, bulan)"
-
-*\anak dilahirkan tunggal / tidak memiliki saudara kembar	[done]
-recode b0 (0 = 1) (1/5 = 0), g(chsingle)
-	lab var chsingle "Anak dilahirkan tidak memiliki saudara kembar"
-	lab val chsingle yatidak
-	tab chsingle, m
-
-*\anak terakhir dilahirkan
-gen lastbirth = bidx == 1
-	lab var lastbirth "Kelahiran terakhir"
-	lab val lastbirth yatidak
-	tab lastbirth, m
-
-*\anak yang dilahirkan 0-5 tahun sebelum survei				[done]
-gen precsvy5 = .
-	lab var precsvy5 "Dilahirkan 0-5 tahun sebelum survei"
-	replace precsvy5 = 1 if inrange(hypage, 0, 59)
-	replace precsvy5 = 0 if hypage > 59
-	lab val precsvy5 yatidak
-	tab precsvy5, m
 	
 *\anak yang dilahirkan 0-10 tahun sebelum survei			[done]
 gen precsvy10 = .
@@ -95,14 +76,6 @@ gen precsvy10 = .
 	replace precsvy10 = 0 if hypage > 119
 	lab val precsvy10 yatidak
 	tab precsvy10, m
-
-*\anak yang dilahirkan 0-15 tahun sebelum survei			[done]
-gen precsvy15 = .
-	lab var precsvy15 "Dilahirkan 0-15 tahun sebelum survei"
-	replace precsvy15 = 1 if inrange(hypage, 0, 179)
-	replace precsvy15 = 0 if hypage > 179
-	lab val precsvy15 yatidak
-	tab precsvy15, m
 	
 
 	
@@ -283,16 +256,6 @@ recode mageby (min/19 = 0 "<20")										///
 			  gen(mageb)
 	lab var mageb "Umur ibu saat melahirkan"
 	tab mageb, m
-
-/*
-*\Umur ibu saat melahirkan, 3 kategori
-recode mageby (min/19 = 0 "<20")										///
-			  (20/34  = 1 "20-34")										///
-			  (35/max = 2 ">34"),										///
-			  gen(mageb3c)
-	lab var mageb3c "Umur ibu saat melahirkan"
-	tab mageb3c, m
-*/
 	
 /*
 ******************************************************************

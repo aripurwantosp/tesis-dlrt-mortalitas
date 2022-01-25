@@ -2,7 +2,7 @@
       name:  log_6_merge_idhs17
        log:  D:\RESEARCH & WRITING\master thesis_child mortality\stata\log\6_merge_idhs17.log
   log type:  text
- opened on:  15 Dec 2021, 16:33:10
+ opened on:  25 Jan 2022, 11:39:17
 
 . 
 . /*
@@ -10,7 +10,8 @@
 > ********************************************************************************
 > PROJECT:
 > PENELITIAN TESIS
-> DEPRIVASI LINGKUNGAN RUMAH TANGGA DAN KEMATIAN BAYI DAN ANAK DI INDONESIA
+> HUBUNGAN ANTARA DEPRIVASI LINGKUNGAN RUMAH TANGGA DENGAN KEMATIAN BAYI DAN ANAK
+> DI INDONESIA: BUKTI DARI MODEL LOGISTIK MULTILEVEL HAZARD DISKRIT
 > 
 > SYNTAX:
 > 6-MENGGABUNGKAN DATASET (1-5)
@@ -18,8 +19,8 @@
 > PENULIS:
 > ARI PURWANTO SARWO PRASOJO (2006500321)
 > MAGISTER EKONOMI KEPENDUDUKAN DAN KETENAGAKERJAAN
-> FEB, UNIVERSITAS INDONESIA
-> 2021
+> FAKULTAS EKONOMI DAN BISNIS, UNIVERSITAS INDONESIA
+> 2022
 > ********************************************************************************
 > ================================================================================
 > */
@@ -32,17 +33,10 @@
 > ================================================================================
 > */
 . 
-. clear all
-
-. macro drop _all
-
 . set maxvar 10000
 
 
 . 
-. *direktori kerja
-. loc dtadir              "dta"
-
 . loc yearsvy             2017
 
 . 
@@ -57,7 +51,7 @@
 
 . 
 . *\dataset disimpan sebagai (nama)
-. loc savenm              "`dtadir'\6-chmort-`idhs'.dta"
+. loc savenm              "dta\6-chmort-`idhs'.dta"
 
 . 
 . 
@@ -69,18 +63,10 @@
 > */
 . 
 . *merge dataset
-. use     "`dtadir'\4-vars-birth-`idhs'.dta"
-(Variabel anak-kelahiran \ 15 Dec 2021_16:32:28)
+. use     "dta\4-vars-birth-`idhs'.dta"
+(Variabel anak-kelahiran \ 25 Jan 2022_11:29:21)
 
-. merge m:1 v001 v002 v003 using "`dtadir'\3-vars-women-`idhs'.dta", keep(match) keepus() nogen
-
-    Result                      Number of obs
-    -----------------------------------------
-    Not matched                             0
-    Matched                            86,265  
-    -----------------------------------------
-
-. merge m:1 v001 v002 using "`dtadir'\2-vars-household-`idhs'.dta", keep(match) keepus() nogen
+. merge m:1 v001 v002 v003 using "dta\3-vars-women-`idhs'.dta", keep(match) keepus() nogen
 
     Result                      Number of obs
     -----------------------------------------
@@ -88,10 +74,15 @@
     Matched                            86,265  
     -----------------------------------------
 
-. merge m:1 psu using "`dtadir'\5-vars-community-`idhs'.dta", keep(match) keepus() nogen
-(label reside already defined)
-(label reg7c already defined)
-(label prov already defined)
+. merge m:1 v001 v002 using "dta\2-vars-household-`idhs'.dta", keep(match) keepus() nogen
+
+    Result                      Number of obs
+    -----------------------------------------
+    Not matched                             0
+    Matched                            86,265  
+    -----------------------------------------
+
+. merge m:1 psu using "dta\5-vars-community-`idhs'.dta", keep(match) keepus() nogen
 
     Result                      Number of obs
     -----------------------------------------
@@ -104,28 +95,124 @@
 
 .         lab var ydhs "Tahun survei"
 
-. 
+.         
 . quietly compress
 
 . datasignature set, reset
-  86265:98(13707):861730030:917878936       (data signature reset)
+  86265:74(56904):1747336446:3063954660       (data signature reset)
 
 . lab data "Data merge\ `time_date'"
 
 . note: `idhs'-mortstudy-mergedata.dta \ `tag'
 
 . save "`savenm'", replace
-(file dta\6-chmort-.dta not found)
-file dta\6-chmort-.dta saved
+file dta\6-chmort-idhs17.dta saved
 
 . 
-end of do-file
+. describe
 
-. do "D:\RESEARCH & WRITING\master thesis_child mortality\stata\do\7a-descriptive.do"
+Contains data from dta\6-chmort-idhs17.dta
+ Observations:        86,265                  Data merge\ 25 Jan 2022_11:39:17
+    Variables:            74                  25 Jan 2022 11:39
+                                              (_dta has notes)
+----------------------------------------------------------------------------------------------------------------------------------
+Variable      Storage   Display    Value
+    name         type    format    label      Variable label
+----------------------------------------------------------------------------------------------------------------------------------
+bidx            byte    %8.0g                 birth column number
+v001            int     %8.0g                 cluster number
+v002            byte    %8.0g                 household number
+v003            byte    %8.0g                 respondent's line number
+hypage          int     %9.0g                 Umur hipotetik (lahir-interview, bulan)
+precsvy10       byte    %9.0g      yatidak    Dilahirkan 0-10 tahun sebelum survei
+chalive         byte    %9.0g      yatidak    Apakah anak masih hidup?
+satdeath        byte    %9.0g      satdeath   Satuan usia saat meninggal
+agedeathimp     int     %9.0g                 Usia anak saat meninggal (bulan,imputasi DHS)
+agedeath        byte    %9.0g                 Usia anak saat meninggal
+agedeathd       int     %9.0g                 Usia anak saat meninggal (hari)
+agedeathm       int     %9.0g                 Usia anak saat meninggal (bulan)
+nndeath         byte    %9.0g      yatidak    Meninggal saat periode neonatal
+agenndeath      byte    %9.0g                 Umur bayi/anak, berdasarkan periode neonatal (hari)
+ideath          byte    %9.0g      yatidak    Meninggal saat periode 0-11 bulan
+ageideath       byte    %9.0g                 Umur bayi/anak, berdasarkan periode kematian bayi (bulan)
+ageideathd      int     %9.0g                 Umur bayi/anak, berdasarkan periode kematian bayi (hari)
+u5death         byte    %9.0g      yatidak    Meninggal saat periode 0-59 bulan
+ageu5death      byte    %9.0g                 Umur bayi/anak, berdasarkan periode kematian di bawah 5 tahun (bulan)
+ageu5deathd     int     %9.0g                 Umur bayi/anak, berdasarkan periode kematian di bawah 5 tahun (hari)
+chsex           byte    %9.0g      chsex      Jenis kelamin anak
+mageby          byte    %9.0g                 Umur ibu saat melahirkan
+mageby2         int     %9.0g                 Umur ibu saat melahirkan^2
+mageb           byte    %9.0g      mageb      Umur ibu saat melahirkan
+bordin          byte    %18.0g     bordin     Urutan dan jarak kelahiran sebelumnya
+wweight         float   %9.0g                 Penimbang perempuan
+meduc4c         byte    %13.0g     meduc4c    Pendidikan tertinggi yang ditamatkan ibu
+meduc2cs        byte    %21.0g     meduc2cs   Pendidikan tertinggi yang ditamatkan ibu
+peduc4c         byte    %13.0g     meduc4c    Pendidikan tertinggi yang ditamatkan ayah
+peduc2cs        byte    %21.0g     peduc2cs   Pendidikan tertinggi yang ditamatkan ayah
+pareduc         byte    %10.0g     pareduc    Pendidikan orang tua (ibu-ayah)
+mdisthfac       byte    %19.0g     mdisthfac
+                                              Jarak ke fasilitas kesehatan untuk mendapatkan pertolongan medis
+hhid            str12   %12s                  case identification
+psu             int     %9.0g                 Primary sampling unit (proksi komunitas)
+reside          byte    %9.0g      reside     Wilayah tempat tinggal
+hhweight        float   %9.0g                 Penimbang rumah tangga
+hmweight        float   %9.0g                 Penimbang rumah tangga x jumlah art
+wi_complete_all float   %9.0g                 Indeks kekayaan (lengkap, umum)
+wi_complete_u~r float   %9.0g                 Indeks kekayaan (lengkap, kota/desa)
+wi_complete_c~e float   %9.0g                 Indeks kekayaan (lengkap, kombinasi)
+wi_reduce_all   float   %9.0g                 Indeks kekayaan (tereduksi, umum)
+wi_reduce_urb~r float   %9.0g                 Indeks kekayaan (tereduksi, kota/desa)
+wi_reduce_com~e float   %9.0g                 Indeks kekayaan (tereduksi, kombinasi)
+wiq_complete_~r byte    %9.0g                 Kuintil indeks kekayaan (lengkap, kota/desa)
+wiq_complete_~e byte    %8.0g                 Kuintil indeks kekayaan (lengkap, kombinasi)
+wiq_reduce_ur~r byte    %9.0g                 Kuintil indeks kekayaan (tereduksi, kota-desa)
+wiq_reduce_co~e byte    %8.0g                 Kuintil indeks kekayaan (tereduksi, kombinasi)
+wid_complete_~r byte    %9.0g                 Desil indeks kekayaan (lengkap, kota/desa)
+wid_complete_~e byte    %8.0g                 Desil indeks kekayaan (lengkap, kombinasi)
+wid_reduce_ur~r byte    %9.0g                 Desil indeks kekayaan (tereduksi, kota-desa)
+wid_reduce_co~e byte    %8.0g                 Desil indeks kekayaan (tereduksi, kombinasi)
+drinkwat        byte    %45.0g     drinkwat   Sumber air minum utama di rumah tangga
+nondrinkwat     byte    %45.0g     drinkwat   Sumber utama air selain untuk minum
+impnondrinkwat  byte    %11.0g     impnondrinkwat
+                                              Kategori sumber air selain untuk minum
+drinkwatldr     byte    %13.0g     drinkwatldr
+                                              Level/kategori sumber utama air minum
+impdrinkwat     byte    %11.0g     impdrinkwat
+                                              Kategori sumber utama air minum
+impdrinkwatdhs  byte    %11.0g     layaktidak
+                                              Kategori sumber utama air minum (DHS report)
+toiletfac       byte    %58.0g     toiletfac
+                                              Jenis toilet yang biasa digunakan art
+sanldr          byte    %24.0g     sanldr     Level/kategori fasilitas toilet/sanitasi
+impsan          byte    %11.0g     impsan     Kategori fasilitas toilet/sanitasi
+sanldrdhs       byte    %15.0g     sanldrdhs
+                                              Level/kategori fasilitas toilet/sanitasi (DHS report)
+impsandhs       byte    %11.0g     impsandhs
+                                              Kategori fasilitas toilet/sanitasi (DHS report)
+cookfuel        byte    %39.0g     cookfuel   Bahan bakar memasak
+cookfldr        byte    %24.0g     cookfldr   Kategori bahan bakar memasak
+cookfldrdhs     byte    %13.0g     cookfldrdhs
+                                              Bahan bakar memasak
+impcookfldhs    byte    %26.0g     impcookfldhs
+                                              Bahan bakar memasak (DHS report)
+nenvfac         byte    %9.0g                 Banyaknya fasilitas (sumber air, sanitasi, bahan bakar) layak
+nenvfacdhs      byte    %9.0g                 
+depriv          byte    %9.0g      depriv     Tingkat deprivasi lingkungan rumah tangga
+wealth          byte    %9.0g      wealth     Indeks kekayaan rumah tangga
+pwdisthfac      float   %9.0g                 Masalah aksesibilitas ke faskes
+qpwdisthfac     byte    %9.0g      qpwdisthfac
+                                              Masalah aksesibilitas ke faskes
+pwdisthfac3c    byte    %9.0g      pwdisthfac3c
+                                              Masalah aksesibilitas ke faskes (kategorik)
+ydhs            int     %9.0g                 Tahun survei
+----------------------------------------------------------------------------------------------------------------------------------
+Sorted by: 
 
+. 
+. *close log-file
 . log close _all
       name:  log_6_merge_idhs17
        log:  D:\RESEARCH & WRITING\master thesis_child mortality\stata\log\6_merge_idhs17.log
   log type:  text
- closed on:  15 Dec 2021, 16:34:06
+ closed on:  25 Jan 2022, 11:39:18
 ----------------------------------------------------------------------------------------------------------------------------------

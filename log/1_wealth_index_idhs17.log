@@ -2,7 +2,7 @@
       name:  log_1_wealth_index_idhs17
        log:  D:\RESEARCH & WRITING\master thesis_child mortality\stata\log\1_wealth_index_idhs17.log
   log type:  text
- opened on:  15 Dec 2021, 16:30:04
+ opened on:  25 Jan 2022, 10:27:07
 
 . 
 . /*
@@ -10,7 +10,8 @@
 > ********************************************************************************
 > PROJECT:
 > PENELITIAN TESIS
-> DEPRIVASI LINGKUNGAN RUMAH TANGGA DAN KEMATIAN BAYI DAN ANAK DI INDONESIA
+> HUBUNGAN ANTARA DEPRIVASI LINGKUNGAN RUMAH TANGGA DENGAN KEMATIAN BAYI DAN ANAK
+> DI INDONESIA: BUKTI DARI MODEL LOGISTIK MULTILEVEL HAZARD DISKRIT
 > 
 > SYNTAX:
 > 1-MEMBENTUK INDEKS KEKAYAAN
@@ -33,16 +34,8 @@
 > ================================================================================
 > */
 . 
-. clear all
-
-. macro drop _all
-
 . set maxvar 10000
 
-
-. 
-. *direktori kerja
-. loc dtadir              "dta"
 
 . 
 . *set the date
@@ -69,7 +62,7 @@
 
 . 
 . *\dataset disimpan sebagai (nama)
-. loc savenm              "`dtadir'\1-wealth-index-`idhs'.dta"
+. loc savenm              "dta\1-wealth-index-`idhs'.dta"
 
 . 
 . *membuat label
@@ -91,10 +84,9 @@
 > Perempuan                                                                                                       [done]
 > ******************************************************************
 >  */
-. clear all                                                       
+. clear all
 
-. use caseid v001 v002 v003 v745a v745b ///
->         using "`irc'"
+. use caseid v001 v002 v003 v745a v745b using "`irc'"
 
 . 
 . recode v745a (0 = 0) (1/3 = 1), gen(whouse)
@@ -127,8 +119,7 @@ file whouseland.dta saved
 >  */
 . clear all
 
-. use mcaseid mv001 mv002 mv003 mv745a mv745b ///
->         using "`mrc'"
+. use mcaseid mv001 mv002 mv003 mv745a mv745b using "`mrc'"
 
 . 
 . rename mv001 v001
@@ -5239,11 +5230,13 @@ wi_complet~r |     47,963   -1.42e-10    .9999896  -4.078567    3.13425
 (bin=46, start=-4.0785666, width=.15680036)
 
 . graph export ".\output\hist_wi_complete_urbrur.png", replace
+(file .\output\hist_wi_complete_urbrur.png not found)
 file .\output\hist_wi_complete_urbrur.png saved as PNG format
 
 . sepscatter hv271 wi_complete_urbrur, separate(hv025)
 
 . graph export ".\output\scat_wi_complete_urbrur.png", replace
+(file .\output\scat_wi_complete_urbrur.png not found)
 file .\output\scat_wi_complete_urbrur.png saved as PNG format
 
 . 
@@ -5328,11 +5321,13 @@ wi_complet~e |     47,963    2.64e-10    .9974791  -3.260725   2.841249
 (bin=46, start=-3.2607255, width=.13265162)
 
 . graph export ".\output\hist_wi_complete_combine.png", replace
+(file .\output\hist_wi_complete_combine.png not found)
 file .\output\hist_wi_complete_combine.png saved as PNG format
 
 . sepscatter hv271a wi_complete_combine, separate(hv025)
 
 . graph export ".\output\scat_wi_complete_combine.png", replace
+(file .\output\scat_wi_complete_combine.png not found)
 file .\output\scat_wi_complete_combine.png saved as PNG format
 
 . 
@@ -6307,11 +6302,13 @@ wi_reduce_~r |     47,963   -1.07e-10    .9999896  -3.693398   3.646859
 (bin=46, start=-3.693398, width=.1595708)
 
 . graph export ".\output\hist_wi_reduce_urbrur.png", replace
+(file .\output\hist_wi_reduce_urbrur.png not found)
 file .\output\hist_wi_reduce_urbrur.png saved as PNG format
 
 . sepscatter hv271 wi_reduce_urbrur, separate(hv025)
 
 . graph export ".\output\scat_wi_reduce_urbrur.png", replace
+(file .\output\scat_wi_reduce_urbrur.png not found)
 file .\output\scat_wi_reduce_urbrur.png saved as PNG format
 
 . 
@@ -6396,11 +6393,13 @@ wi_reduce_~e |     47,963    7.31e-11    .9967347  -3.068229   3.387419
 (bin=46, start=-3.0682287, width=.14034017)
 
 . graph export ".\output\hist_wi_reduce_combine.png", replace
+(file .\output\hist_wi_reduce_combine.png not found)
 file .\output\hist_wi_reduce_combine.png saved as PNG format
 
 . sepscatter hv271a wi_reduce_combine, separate(hv025)
 
 . graph export ".\output\scat_wi_reduce_combine.png", replace
+(file .\output\scat_wi_reduce_combine.png not found)
 file .\output\scat_wi_reduce_combine.png saved as PNG format
 
 . 
@@ -6570,17 +6569,14 @@ urban/rura |     Kuintil indeks kekayaan (tereduksi, kota-desa)
 . note: `idhs'-mortstudy-wealth.dta \ `tag'
 
 . save `savenm', replace
-(file dta\1-wealth-index-.dta not found)
-file dta\1-wealth-index-.dta saved
+file dta\1-wealth-index-idhs17.dta saved
 
 . 
-end of do-file
-
-. do "D:\RESEARCH & WRITING\master thesis_child mortality\stata\do\2-vars-household.do"
-
+. 
+. *close log-file
 . log close _all
       name:  log_1_wealth_index_idhs17
        log:  D:\RESEARCH & WRITING\master thesis_child mortality\stata\log\1_wealth_index_idhs17.log
   log type:  text
- closed on:  15 Dec 2021, 16:31:09
+ closed on:  25 Jan 2022, 10:28:21
 ----------------------------------------------------------------------------------------------------------------------------------

@@ -13,16 +13,17 @@ log using 		"log\8_data_model_`idhs'", name(`dfn') text replace
 ********************************************************************************
 PROJECT:
 PENELITIAN TESIS
-DEPRIVASI LINGKUNGAN RUMAH TANGGA DAN KEMATIAN BAYI DAN ANAK DI INDONESIA
+HUBUNGAN ANTARA DEPRIVASI LINGKUNGAN RUMAH TANGGA DENGAN KEMATIAN BAYI DAN ANAK
+DI INDONESIA: BUKTI DARI MODEL LOGISTIK MULTILEVEL HAZARD DISKRIT
 
 SYNTAX:
-8-MENYIAPKAN DATA UNTUK PEMODELAN
+8-MENYIAPKAN DATA UNTUK PEMODELAN-ANAK PERIODE
 
 PENULIS:
 ARI PURWANTO SARWO PRASOJO (2006500321)
 MAGISTER EKONOMI KEPENDUDUKAN DAN KETENAGAKERJAAN
-FEB, UNIVERSITAS INDONESIA
-2021
+FAKULTAS EKONOMI DAN BISNIS, UNIVERSITAS INDONESIA
+2022
 ********************************************************************************
 ================================================================================
 */
@@ -54,7 +55,7 @@ loc sett  		"precsvy10==1 & nomisvaruse==1"
 #delimit ;
 glo vars
 	/*lokasi*/
-	psu prov
+	psu
 		
 	/*bobot*/
 	wweight hhweight
@@ -65,7 +66,8 @@ glo vars
 	u5death ageu5deathd
 	
 	/*var bebas*/
-	deprivs depriv depriv2c chsex bordin
+	impdrinkwat impsan cookfldr
+	depriv chsex bordin
 	mageb pareduc wealth reside pwdisthfac
 	;
 #delimit cr
@@ -124,28 +126,28 @@ Ekspansi													[done]
 */
 
 *\Diskritisasi
-egen survdis = cut(agenndeath), at(0 7 29) icodes
-	replace survdis = survdis + 1
-	lab var survdis "Umur (interval)"
-	lab def survdis 1 "0-6 hari"			///
+egen agedis = cut(agenndeath), at(0 7 29) icodes
+	replace agedis = agedis + 1
+	lab var agedis "Umur (periods)"
+	lab def agedis 1 "0-6 hari"			///
 					2 "7-28 hari"			///
 					3 "29 hari-5 bulan" 	///
 					4 "6-11 bulan"			///
 					5 "12-23 bulan"			///
 					6 "24-59 bulan"	
-	lab val survdis survdis
-	*table survdis, c(min agenndeath max agenndeath)
-	table survdis, stat(min agenndeath) stat(max agenndeath)
+	lab val agedis agedis
+	*table agedis, c(min agenndeath max agenndeath)
+	table agedis, stat(min agenndeath) stat(max agenndeath)
 	
 *\Ekspansi data	
-expand survdis
-bysort birthid: gen interval = _n
-lab val interval survdis
-replace nndeath = 0 if nndeath == 1 & survdis != interval 
-tab interval nndeath, row m
+expand agedis
+bysort birthid: gen periods = _n
+lab val periods agedis
+replace nndeath = 0 if nndeath == 1 & agedis != periods 
+tab periods nndeath, row m
 
 *\Simpan sementara
-keep interval survdis $vars $id chsingle lastbirth
+keep periods agedis $vars $id
 gen data = 1
 
 quietly compress
@@ -199,28 +201,28 @@ Ekspansi													[done]
 */
 
 *\Diskritisasi
-egen survdis = cut(ageideathd), at(0 7 29 180 360) icodes
-	replace survdis = survdis + 1
-	lab var survdis "Umur (interval)"
-	lab def survdis 1 "0-6 hari"			///
+egen agedis = cut(ageideathd), at(0 7 29 180 360) icodes
+	replace agedis = agedis + 1
+	lab var agedis "Umur (periods)"
+	lab def agedis 1 "0-6 hari"			///
 					2 "7-28 hari"			///
 					3 "29 hari-5 bulan" 	///
 					4 "6-11 bulan"			///
 					5 "12-23 bulan"			///
 					6 "24-59 bulan"
-	lab val survdis survdis
-	*table survdis, c(min ageideathd max ageideathd)
-	table survdis, stat(min ageideathd) stat(max ageideathd)
+	lab val agedis agedis
+	*table agedis, c(min ageideathd max ageideathd)
+	table agedis, stat(min ageideathd) stat(max ageideathd)
 	
 *\Ekspansi data	
-expand survdis
-bysort birthid: gen interval = _n
-lab val interval survdis
-replace ideath = 0 if ideath == 1 & survdis != interval 
-tab interval ideath, row m
+expand agedis
+bysort birthid: gen periods = _n
+lab val periods agedis
+replace ideath = 0 if ideath == 1 & agedis != periods 
+tab periods ideath, row m
 
 *\Simpan sementara
-keep interval survdis $vars $id chsingle lastbirth
+keep periods agedis $vars $id
 gen data = 2
 
 quietly compress
@@ -274,28 +276,28 @@ Ekspansi													[done]
 */
 
 *\Diskritisasi umur
-egen survdis = cut(ageu5deathd), at(0 7 29 180 360 720 1800) icodes
-	replace survdis = survdis + 1
-	lab var survdis "Umur (interval)"
-	lab def survdis 1 "0-6 hari"			///
+egen agedis = cut(ageu5deathd), at(0 7 29 180 360 720 1800) icodes
+	replace agedis = agedis + 1
+	lab var agedis "Umur (periods)"
+	lab def agedis 1 "0-6 hari"			///
 					2 "7-28 hari"			///
 					3 "29 hari-5 bulan" 	///
 					4 "6-11 bulan"			///
 					5 "12-23 bulan"			///
 					6 "24-59 bulan"
-	lab val survdis survdis
-	*table survdis, c(min ageu5deathd max ageu5deathd)
-	table survdis, stat(min ageu5deathd) stat(max ageu5deathd)
+	lab val agedis agedis
+	*table agedis, c(min ageu5deathd max ageu5deathd)
+	table agedis, stat(min ageu5deathd) stat(max ageu5deathd)
 	
 *\Ekspansi data	
-expand survdis
-bysort birthid: gen interval = _n
-lab val interval survdis
-replace u5death = 0 if u5death == 1 & survdis != interval 
-tab interval u5death, row m
+expand agedis
+bysort birthid: gen periods = _n
+lab val periods agedis
+replace u5death = 0 if u5death == 1 & agedis != periods 
+tab periods u5death, row m
 
 *\Simpan sementara
-keep interval survdis $vars $id chsingle lastbirth
+keep periods agedis $vars $id
 gen data = 3
 
 quietly compress
@@ -315,7 +317,7 @@ append using "data-mdl-b.dta"
 append using "data-mdl-c.dta"
 
 lab var birthid "id kelahiran"
-lab var interval "Interval umur"
+lab var periods "Periode/interval umur"
 
 lab var data "Untuk pemodelan"
 lab def data 1 "Neonatal" 2 "Bayi" 3 "Di bawah 5 tahun"

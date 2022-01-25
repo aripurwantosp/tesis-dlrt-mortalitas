@@ -1,0 +1,926 @@
+<?xml version="1.0"?>
+<?mso-application progid="Excel.Sheet"?>
+<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+ xmlns:o="urn:schemas-microsoft-com:office:office"
+ xmlns:x="urn:schemas-microsoft-com:office:excel"
+ xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"
+ xmlns:html="http://www.w3.org/TR/REC-html40">
+ <DocumentProperties xmlns="urn:schemas-microsoft-com:office:office">
+  <Description>created using tabmult</Description>
+  <Version>16.00</Version>
+ </DocumentProperties>
+ <OfficeDocumentSettings xmlns="urn:schemas-microsoft-com:office:office">
+  <AllowPNG/>
+ </OfficeDocumentSettings>
+ <ExcelWorkbook xmlns="urn:schemas-microsoft-com:office:excel">
+  <WindowHeight>6770</WindowHeight>
+  <WindowWidth>19200</WindowWidth>
+  <WindowTopX>32767</WindowTopX>
+  <WindowTopY>32767</WindowTopY>
+  <ProtectStructure>False</ProtectStructure>
+  <ProtectWindows>False</ProtectWindows>
+ </ExcelWorkbook>
+ <Styles>
+  <Style ss:ID="Default" ss:Name="Normal">
+   <Alignment ss:Vertical="Bottom"/>
+   <Borders/>
+   <Font ss:FontName="Calibri" x:CharSet="1" x:Family="Swiss" ss:Size="11"
+    ss:Color="#000000"/>
+   <Interior/>
+   <NumberFormat/>
+   <Protection/>
+  </Style>
+  <Style ss:ID="s62">
+   <Alignment ss:Horizontal="Center" ss:Vertical="Center"/>
+   <Borders/>
+   <Font ss:FontName="Times New Roman" x:Family="Roman" ss:Bold="1"/>
+   <Interior/>
+   <NumberFormat/>
+   <Protection/>
+  </Style>
+  <Style ss:ID="s64">
+   <Alignment ss:Horizontal="Left" ss:Vertical="Center"/>
+   <Borders/>
+   <Font ss:FontName="Times New Roman" x:Family="Roman" ss:Bold="1"/>
+   <Interior/>
+   <NumberFormat/>
+   <Protection/>
+  </Style>
+  <Style ss:ID="s65">
+   <Alignment ss:Horizontal="Left" ss:Vertical="Center"/>
+   <Borders/>
+   <Font ss:FontName="Times New Roman" x:Family="Roman"/>
+   <Interior/>
+   <NumberFormat/>
+   <Protection/>
+  </Style>
+  <Style ss:ID="s66">
+   <Alignment ss:Horizontal="Center" ss:Vertical="Center"/>
+   <Borders/>
+   <Font ss:FontName="Times New Roman" x:Family="Roman"/>
+   <Interior/>
+   <NumberFormat ss:Format="#,##0.00&quot;&quot;;\-#,##0.00&quot;&quot;"/>
+   <Protection/>
+  </Style>
+  <Style ss:ID="s68">
+   <Alignment ss:Horizontal="Right" ss:Vertical="Center"/>
+   <Borders/>
+   <Font ss:FontName="Times New Roman" x:Family="Roman"/>
+   <Interior/>
+   <NumberFormat ss:Format="#,##0&quot;&quot;;\-#,##0&quot;&quot;"/>
+   <Protection/>
+  </Style>
+  <Style ss:ID="s69">
+   <Alignment ss:Horizontal="Right" ss:Vertical="Center"/>
+   <Borders/>
+   <Font ss:FontName="Times New Roman" x:Family="Roman"/>
+   <Interior/>
+   <NumberFormat/>
+   <Protection/>
+  </Style>
+ </Styles>
+ <Worksheet ss:Name="persen">
+  <Table ss:ExpandedColumnCount="7" ss:ExpandedRowCount="45" x:FullColumns="1"
+   x:FullRows="1" ss:DefaultRowHeight="14.5">
+   <Column ss:AutoFitWidth="0" ss:Width="203"/>
+   <Column ss:AutoFitWidth="0" ss:Width="76.5" ss:Span="5"/>
+   <Row>
+    <Cell ss:StyleID="s62"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:MergeAcross="1" ss:StyleID="s62"><Data ss:Type="String">Meninggal Saat Periode Neonatal</Data></Cell>
+    <Cell ss:MergeAcross="1" ss:StyleID="s62"><Data ss:Type="String">Meninggal Saat Periode 0-11 Bulan</Data></Cell>
+    <Cell ss:MergeAcross="1" ss:StyleID="s62"><Data ss:Type="String">Meninggal Saat Periode 0-59 Bulan</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s62"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">Tidak</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">Ya</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">Tidak</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">Ya</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">Tidak</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">Ya</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">Tingkat Deprivasi Lingkungan Rumah Tangga</Data></Cell>
+    <Cell ss:StyleID="s65"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s65"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s65"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s65"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s65"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s65"><Data ss:Type="String"></Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s65"><Data ss:Type="String">   Tidak</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">98.445210000000003</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">1.5547930000000001</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">97.716059999999999</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">2.2839369999999999</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">97.271069999999995</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">2.7289300000000001</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s65"><Data ss:Type="String">   Rendah</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">97.975589999999997</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">2.0244119999999999</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">96.705370000000002</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">3.2946309999999999</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">96.030559999999994</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">3.9694349999999998</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s65"><Data ss:Type="String">   Tinggi</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">97.58184</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">2.418161</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">95.887479999999996</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">4.1125189999999998</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">94.966279999999998</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">5.0337230000000002</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">Kategori Sumber Utama Air Minum</Data></Cell>
+    <Cell ss:StyleID="s65"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s65"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s65"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s65"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s65"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s65"><Data ss:Type="String"></Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s65"><Data ss:Type="String">   Tidak Layak</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">97.772660000000002</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">2.2273429999999999</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">96.562979999999996</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">3.43702</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">95.929339999999996</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">4.0706610000000003</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s65"><Data ss:Type="String">   Layak</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">98.226349999999996</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">1.773649</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">97.19932</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">2.8006760000000002</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">96.611490000000003</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">3.3885139999999998</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">Kategori Fasilitas Toilet/Sanitasi</Data></Cell>
+    <Cell ss:StyleID="s65"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s65"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s65"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s65"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s65"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s65"><Data ss:Type="String"></Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s65"><Data ss:Type="String">   Tidak Layak</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">97.786249999999995</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">2.2137519999999999</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">96.290869999999998</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">3.7091340000000002</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">95.425889999999995</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">4.574109</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s65"><Data ss:Type="String">   Layak</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">98.249189999999999</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">1.750813</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">97.302319999999995</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">2.6976810000000002</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">96.773499999999999</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">3.2264979999999999</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">Kategori Bahan Bakar Memasak</Data></Cell>
+    <Cell ss:StyleID="s65"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s65"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s65"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s65"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s65"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s65"><Data ss:Type="String"></Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s65"><Data ss:Type="String">   Tidak Aman/Polusi Tinggi</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">97.737160000000003</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">2.2628370000000002</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">96.144469999999998</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">3.8555269999999999</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">95.256739999999994</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">4.7432550000000004</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s65"><Data ss:Type="String">   Aman/Polusi Rendah</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">98.366069999999993</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">1.633931</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">97.576980000000006</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">2.4230209999999999</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">97.126679999999993</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">2.8733170000000001</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">Jenis Kelamin Anak</Data></Cell>
+    <Cell ss:StyleID="s65"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s65"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s65"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s65"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s65"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s65"><Data ss:Type="String"></Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s65"><Data ss:Type="String">   Perempuan</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">98.344210000000004</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">1.655786</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">97.264089999999996</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">2.7359049999999998</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">96.753709999999998</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">3.2462909999999998</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s65"><Data ss:Type="String">   Laki-Laki</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">97.984189999999998</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">2.0158149999999999</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">96.953999999999994</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">3.0459960000000001</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">96.280209999999997</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">3.7197909999999998</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">Urutan Dan Jarak Kelahiran Sebelumnya</Data></Cell>
+    <Cell ss:StyleID="s65"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s65"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s65"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s65"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s65"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s65"><Data ss:Type="String"></Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s65"><Data ss:Type="String">   Pertama</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">98.024460000000005</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">1.975541</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">97.220560000000006</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">2.7794409999999998</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">96.810059999999993</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">3.189943</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s65"><Data ss:Type="String">   2 Dan &gt;=24</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">98.721199999999996</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">1.278799</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">98.065950000000001</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">1.9340520000000001</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">97.611500000000007</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">2.3885010000000002</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s65"><Data ss:Type="String">   2 Dan &lt;24</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">97.78689</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">2.2131150000000002</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">95.90164</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">4.0983609999999997</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">94.836070000000007</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">5.1639340000000002</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s65"><Data ss:Type="String">   &gt;=3 Dan &gt;=24</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">98.161559999999994</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">1.8384400000000001</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">96.740949999999998</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">3.2590530000000002</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">96.025999999999996</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">3.974002</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s65"><Data ss:Type="String">   &gt;=3 Dan &lt;24</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">96.151529999999994</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">3.8484669999999999</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">94.046899999999994</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">5.9530969999999996</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">92.483459999999994</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">7.5165360000000003</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">Umur Ibu Saat Melahirkan</Data></Cell>
+    <Cell ss:StyleID="s65"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s65"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s65"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s65"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s65"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s65"><Data ss:Type="String"></Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s65"><Data ss:Type="String">   &lt;20</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">97.309420000000003</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">2.6905830000000002</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">96.102099999999993</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">3.8978959999999998</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">95.61918</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">4.3808210000000001</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s65"><Data ss:Type="String">   20-29</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">98.407960000000003</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">1.5920399999999999</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">97.495850000000004</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">2.504146</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">96.876729999999995</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">3.1232730000000002</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s65"><Data ss:Type="String">   30-39</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">98.176940000000002</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">1.823061</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">96.969459999999998</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">3.0305420000000001</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">96.448580000000007</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">3.5514169999999998</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s65"><Data ss:Type="String">   40-49</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">96.167249999999996</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">3.8327529999999999</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">94.947739999999996</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">5.0522650000000002</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">93.641109999999998</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">6.3588849999999999</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">Pendidikan Orang Tua (Ibu-Ayah)</Data></Cell>
+    <Cell ss:StyleID="s65"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s65"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s65"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s65"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s65"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s65"><Data ss:Type="String"></Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s65"><Data ss:Type="String">   Rendah</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">97.655280000000005</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">2.3447200000000001</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">95.993790000000004</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">4.0062110000000004</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">95.170810000000003</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">4.8291930000000001</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s65"><Data ss:Type="String">   Ibu &lt; Ayah</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">98.000510000000006</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">1.999487</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">96.564980000000006</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">3.4350170000000002</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">95.488339999999994</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">4.5116639999999997</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s65"><Data ss:Type="String">   Ibu &gt; Ayah</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">98.024389999999997</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">1.9756100000000001</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">97.097560000000001</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">2.9024390000000002</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">96.512200000000007</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">3.4878049999999998</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s65"><Data ss:Type="String">   Tinggi</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">98.37482</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">1.625178</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">97.559780000000003</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">2.4402219999999999</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">97.127709999999993</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">2.872293</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">Indeks Kekayaan Rumah Tangga</Data></Cell>
+    <Cell ss:StyleID="s65"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s65"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s65"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s65"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s65"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s65"><Data ss:Type="String"></Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s65"><Data ss:Type="String">   Miskin</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">97.905199999999994</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">2.094805</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">96.498679999999993</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">3.5013169999999998</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">95.720609999999994</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">4.2793869999999998</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s65"><Data ss:Type="String">   Menengah</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">98.306920000000005</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">1.6930780000000001</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">97.522940000000006</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">2.4770639999999999</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">97.030860000000004</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">2.969141</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s65"><Data ss:Type="String">   Kaya</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">98.559740000000005</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">1.4402619999999999</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">97.937809999999999</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">2.0621930000000002</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">97.643209999999996</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">2.356792</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">Wilayah Tempat Tinggal</Data></Cell>
+    <Cell ss:StyleID="s65"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s65"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s65"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s65"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s65"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s65"><Data ss:Type="String"></Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s65"><Data ss:Type="String">   Perdesaan</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">98.078770000000006</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">1.921235</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">96.799819999999997</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">3.20018</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">96.084289999999996</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">3.9157139999999999</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s65"><Data ss:Type="String">   Perkotaan</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">98.241399999999999</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">1.758602</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">97.420720000000003</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">2.5792839999999999</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">96.951759999999993</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">3.048244</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">Masalah Aksesibilitas Ke Faskes (Kategorik)</Data></Cell>
+    <Cell ss:StyleID="s65"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s65"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s65"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s65"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s65"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s65"><Data ss:Type="String"></Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s65"><Data ss:Type="String">   Rendah</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">98.349429999999998</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">1.6505669999999999</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">97.611620000000002</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">2.3883779999999999</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">97.102000000000004</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">2.8980000000000001</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s65"><Data ss:Type="String">   Sedang</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">98.250919999999994</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">1.749082</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">97.056070000000005</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">2.9439289999999998</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">96.530630000000002</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">3.469373</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s65"><Data ss:Type="String">   Tinggi</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">97.669929999999994</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">2.3300719999999999</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">96.331100000000006</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">3.668898</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">95.468590000000006</Data></Cell>
+    <Cell ss:StyleID="s66"><Data ss:Type="Number">4.5314110000000003</Data></Cell>
+   </Row>
+  </Table>
+  <WorksheetOptions xmlns="urn:schemas-microsoft-com:office:excel">
+   <Selected/>
+   <Panes>
+    <Pane>
+     <Number>3</Number>
+     <ActiveRow>2</ActiveRow>
+     <ActiveCol>7</ActiveCol>
+    </Pane>
+   </Panes>
+   <ProtectObjects>False</ProtectObjects>
+   <ProtectScenarios>False</ProtectScenarios>
+  </WorksheetOptions>
+ </Worksheet>
+ <Worksheet ss:Name="absolut">
+  <Table ss:ExpandedColumnCount="7" ss:ExpandedRowCount="45" x:FullColumns="1"
+   x:FullRows="1" ss:DefaultRowHeight="14.5">
+   <Column ss:AutoFitWidth="0" ss:Width="209.5"/>
+   <Column ss:AutoFitWidth="0" ss:Width="76" ss:Span="5"/>
+   <Row>
+    <Cell ss:StyleID="s62"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:MergeAcross="1" ss:StyleID="s62"><Data ss:Type="String">Meninggal Saat Periode Neonatal</Data></Cell>
+    <Cell ss:MergeAcross="1" ss:StyleID="s62"><Data ss:Type="String">Meninggal Saat Periode 0-11 Bulan</Data></Cell>
+    <Cell ss:MergeAcross="1" ss:StyleID="s62"><Data ss:Type="String">Meninggal Saat Periode 0-59 Bulan</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s62"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">Tidak</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">Ya</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">Tidak</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">Ya</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">Tidak</Data></Cell>
+    <Cell ss:StyleID="s62"><Data ss:Type="String">Ya</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">Tingkat Deprivasi Lingkungan Rumah Tangga</Data></Cell>
+    <Cell ss:StyleID="s65"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s65"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s65"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s65"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s65"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s65"><Data ss:Type="String"></Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s65"><Data ss:Type="String">   Tidak</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">18362</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">290</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">18226</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">426</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">18143</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">509</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s65"><Data ss:Type="String">   Rendah</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">9873</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">204</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">9745</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">332</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">9677</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">400</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s65"><Data ss:Type="String">   Tinggi</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">5932</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">147</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">5829</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">250</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">5773</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">306</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">Kategori Sumber Utama Air Minum</Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String"></Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s65"><Data ss:Type="String">   Tidak Layak</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">5092</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">116</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">5029</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">179</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">4996</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">212</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s65"><Data ss:Type="String">   Layak</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">29075</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">525</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">28771</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">829</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">28597</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">1003</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">Kategori Fasilitas Toilet/Sanitasi</Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String"></Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s65"><Data ss:Type="String">   Tidak Layak</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">6670</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">151</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">6568</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">253</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">6509</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">312</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s65"><Data ss:Type="String">   Layak</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">27497</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">490</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">27232</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">755</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">27084</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">903</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">Kategori Bahan Bakar Memasak</Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String"></Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s65"><Data ss:Type="String">   Tidak Aman/Polusi Tinggi</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">11230</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">260</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">11047</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">443</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">10945</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">545</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s65"><Data ss:Type="String">   Aman/Polusi Rendah</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">22937</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">381</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">22753</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">565</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">22648</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">670</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">Jenis Kelamin Anak</Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String"></Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s65"><Data ss:Type="String">   Perempuan</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">16571</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">279</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">16389</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">461</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">16303</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">547</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s65"><Data ss:Type="String">   Laki-Laki</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">17596</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">362</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">17411</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">547</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">17290</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">668</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">Urutan Dan Jarak Kelahiran Sebelumnya</Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String"></Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s65"><Data ss:Type="String">   Pertama</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">11462</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">231</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">11368</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">325</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">11320</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">373</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s65"><Data ss:Type="String">   2 Dan &gt;=24</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">9341</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">121</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">9279</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">183</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">9236</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">226</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s65"><Data ss:Type="String">   2 Dan &lt;24</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">1193</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">27</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">1170</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">50</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">1157</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">63</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s65"><Data ss:Type="String">   &gt;=3 Dan &gt;=24</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">10572</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">198</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">10419</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">351</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">10342</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">428</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s65"><Data ss:Type="String">   &gt;=3 Dan &lt;24</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">1599</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">64</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">1564</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">99</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">1538</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">125</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">Umur Ibu Saat Melahirkan</Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String"></Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s65"><Data ss:Type="String">   &lt;20</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">2821</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">78</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">2786</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">113</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">2772</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">127</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s65"><Data ss:Type="String">   20-29</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">17802</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">288</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">17637</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">453</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">17525</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">565</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s65"><Data ss:Type="String">   30-39</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">12440</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">231</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">12287</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">384</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">12221</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">450</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s65"><Data ss:Type="String">   40-49</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">1104</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">44</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">1090</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">58</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">1075</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">73</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">Pendidikan Orang Tua (Ibu-Ayah)</Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String"></Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s65"><Data ss:Type="String">   Rendah</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">6289</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">151</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">6182</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">258</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">6129</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">311</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s65"><Data ss:Type="String">   Ibu &lt; Ayah</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">3823</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">78</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">3767</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">134</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">3725</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">176</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s65"><Data ss:Type="String">   Ibu &gt; Ayah</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">4019</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">81</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">3981</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">119</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">3957</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">143</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s65"><Data ss:Type="String">   Tinggi</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">20036</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">331</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">19870</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">497</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">19782</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">585</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">Indeks Kekayaan Rumah Tangga</Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String"></Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s65"><Data ss:Type="String">   Miskin</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">16358</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">350</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">16123</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">585</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">15993</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">715</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s65"><Data ss:Type="String">   Menengah</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">11787</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">203</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">11693</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">297</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">11634</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">356</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s65"><Data ss:Type="String">   Kaya</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">6022</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">88</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">5984</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">126</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">5966</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">144</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">Wilayah Tempat Tinggal</Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String"></Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s65"><Data ss:Type="String">   Perdesaan</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">17408</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">341</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">17181</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">568</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">17054</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">695</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s65"><Data ss:Type="String">   Perkotaan</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">16759</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">300</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">16619</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">440</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">16539</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">520</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s64"><Data ss:Type="String">Masalah Aksesibilitas Ke Faskes (Kategorik)</Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String"></Data></Cell>
+    <Cell ss:StyleID="s69"><Data ss:Type="String"></Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s65"><Data ss:Type="String">   Rendah</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">12930</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">217</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">12833</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">314</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">12766</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">381</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s65"><Data ss:Type="String">   Sedang</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">13650</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">243</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">13484</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">409</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">13411</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">482</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s65"><Data ss:Type="String">   Tinggi</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">7587</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">181</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">7483</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">285</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">7416</Data></Cell>
+    <Cell ss:StyleID="s68"><Data ss:Type="Number">352</Data></Cell>
+   </Row>
+  </Table>
+  <WorksheetOptions xmlns="urn:schemas-microsoft-com:office:excel">
+   <Panes>
+    <Pane>
+     <Number>3</Number>
+     <ActiveRow>3</ActiveRow>
+     <ActiveCol>1</ActiveCol>
+     <RangeSelection>R4C2:R45C7</RangeSelection>
+    </Pane>
+   </Panes>
+   <ProtectObjects>False</ProtectObjects>
+   <ProtectScenarios>False</ProtectScenarios>
+  </WorksheetOptions>
+ </Worksheet>
+ <ss:FontList>01 Times New Roman 10</ss:FontList>
+ <ss:Sheetnames>?persen?absolut?</ss:Sheetnames>
+</Workbook>
